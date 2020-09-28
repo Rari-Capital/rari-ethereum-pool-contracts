@@ -1,0 +1,17 @@
+{
+    "dYdX": {
+        "currencies": {
+            "WETH": {
+                "marketId": 0
+            }
+        },
+        "soloMarginAddress": "0x1E0447b19BB6EcFdAe1e4AE1694b0C3659614e4e"
+    },
+    "Compound": {
+        "currencies": {
+            "ETH": {
+                "cTokenAddress": "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5"
+            }
+        }
+    }
+}

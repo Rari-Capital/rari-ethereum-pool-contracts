@@ -1,0 +1,506 @@
+{
+  "contractName": "Operation",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "number",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct Account.Info[]",
+          "name": "accounts",
+          "type": "tuple[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum Actions.ActionType",
+              "name": "actionType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "accountId",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "bool",
+                  "name": "sign",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "enum Types.AssetDenomination",
+                  "name": "denomination",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum Types.AssetReference",
+                  "name": "ref",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "value",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Types.AssetAmount",
+              "name": "amount",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "primaryMarketId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "secondaryMarketId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "otherAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "otherAccountId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
+            }
+          ],
+          "internalType": "struct Actions.ActionArgs[]",
+          "name": "actions",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "operate",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.17+commit.d19bba13\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"number\",\"type\":\"uint256\"}],\"internalType\":\"struct Account.Info[]\",\"name\":\"accounts\",\"type\":\"tuple[]\"},{\"components\":[{\"internalType\":\"enum Actions.ActionType\",\"name\":\"actionType\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"accountId\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"bool\",\"name\":\"sign\",\"type\":\"bool\"},{\"internalType\":\"enum Types.AssetDenomination\",\"name\":\"denomination\",\"type\":\"uint8\"},{\"internalType\":\"enum Types.AssetReference\",\"name\":\"ref\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"internalType\":\"struct Types.AssetAmount\",\"name\":\"amount\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"primaryMarketId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"secondaryMarketId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"otherAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"otherAccountId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"struct Actions.ActionArgs[]\",\"name\":\"actions\",\"type\":\"tuple[]\"}],\"name\":\"operate\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"dYdX * Primary public function for allowing users and contracts to manage accounts within Solo\",\"methods\":{\"operate((address,uint256)[],(uint8,uint256,(bool,uint8,uint8,uint256),uint256,uint256,address,uint256,bytes)[])\":{\"params\":{\"accounts\":\"A list of all accounts that will be used in this operation. Cannot contain                  duplicates. In each action, the relevant account will be referred-to by its                  index in the list.\",\"actions\":\"An ordered list of all actions that will be taken in this operation. The                  actions will be processed in order.\"}}},\"title\":\"Operation\"},\"userdoc\":{\"methods\":{\"operate((address,uint256)[],(uint8,uint256,(bool,uint8,uint8,uint256),uint256,uint256,address,uint256,bytes)[])\":{\"notice\":\"The main entry-point to Solo that allows users and contracts to manage accounts. Take one or more actions on one or more accounts. The msg.sender must be the owner or operator of all accounts except for those being liquidated, vaporized, or traded with. One call to operate() is considered a singular \\\"operation\\\". Account collateralization is ensured only after the completion of the entire operation.\"}}}},\"settings\":{\"compilationTarget\":{\"/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Operation.sol\":\"Operation\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Operation.sol\":{\"keccak256\":\"0x202d5c176ebe31605576a91f2bb6c631137331c225a7b067558eee86c4a84974\",\"urls\":[\"bzz-raw://bf9cefea1126cf6eec6ec9bc0cc0c5271fda0d690b7cfe627412371c27f185f1\",\"dweb:/ipfs/QmQN7JgRdvsLGFTZyAsRqbc6BrWFKzLHJRQ7jntVgx6bt6\"]},\"/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Account.sol\":{\"keccak256\":\"0xa6ddfaeadda74522bfc34d1effa41ec16f61c2ca8507357199f28069f8a5a422\",\"urls\":[\"bzz-raw://abe54954f5e3fb6cd6af6d0d94ebba97d257b02875e45788e4c5ae5ef074853f\",\"dweb:/ipfs/QmQ4rBopBUNUYQABMj3g2YQqbSAmKtuQoXgMFp4aMa338v\"]},\"/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Actions.sol\":{\"keccak256\":\"0xc26bbe9bf4bac61cb7da76e976d99bfee033dcc7a86f581f1df27ad843efb44b\",\"urls\":[\"bzz-raw://30d88c181b7ea0f1e3c47d7acc5c38efda93fc40e54a1d1e303415be2cf013f9\",\"dweb:/ipfs/QmduNLGfprnVgG3JBr4HcpT67ie547oEZDuVQL7QGub9Lk\"]},\"/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Types.sol\":{\"keccak256\":\"0xb8e6b2a30658b94417df2e5922efa6e834963952cb25f6737aaa2375ea26e7a1\",\"urls\":[\"bzz-raw://291775fbd7fc2021e8eb3c5ed0986d58e6192c081a94fd1c11e1af6e6aee9053\",\"dweb:/ipfs/Qmev7mWwXFUYnf68cG3WsuF3SS5mfbiTv2FLZ3zCAoYSby\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "/*\n\n    Copyright 2019 dYdX Trading Inc.\n\n    Licensed under the Apache License, Version 2.0 (the \"License\");\n    you may not use this file except in compliance with the License.\n    You may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\n    Unless required by applicable law or agreed to in writing, software\n    distributed under the License is distributed on an \"AS IS\" BASIS,\n    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n    See the License for the specific language governing permissions and\n    limitations under the License.\n\n*/\n\npragma solidity ^0.5.7;\npragma experimental ABIEncoderV2;\n\nimport { Account } from \"./lib/Account.sol\";\nimport { Actions } from \"./lib/Actions.sol\";\n\n\n/**\n * @title Operation\n * @author dYdX\n *\n * Primary public function for allowing users and contracts to manage accounts within Solo\n */\ncontract Operation {\n    /**\n     * The main entry-point to Solo that allows users and contracts to manage accounts.\n     * Take one or more actions on one or more accounts. The msg.sender must be the owner or\n     * operator of all accounts except for those being liquidated, vaporized, or traded with.\n     * One call to operate() is considered a singular \"operation\". Account collateralization is\n     * ensured only after the completion of the entire operation.\n     *\n     * @param  accounts  A list of all accounts that will be used in this operation. Cannot contain\n     *                   duplicates. In each action, the relevant account will be referred-to by its\n     *                   index in the list.\n     * @param  actions   An ordered list of all actions that will be taken in this operation. The\n     *                   actions will be processed in order.\n     */\n    function operate(\n        Account.Info[] memory accounts,\n        Actions.ActionArgs[] memory actions\n    )\n        public;\n}\n",
+  "sourcePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Operation.sol",
+  "ast": {
+    "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Operation.sol",
+    "exportedSymbols": {
+      "Operation": [
+        3348
+      ]
+    },
+    "id": 3349,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3333,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".7"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "603:23:10"
+      },
+      {
+        "id": 3334,
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "627:33:10"
+      },
+      {
+        "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Account.sol",
+        "file": "./lib/Account.sol",
+        "id": 3336,
+        "nodeType": "ImportDirective",
+        "scope": 3349,
+        "sourceUnit": 3370,
+        "src": "662:44:10",
+        "symbolAliases": [
+          {
+            "foreign": 3335,
+            "local": null
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Actions.sol",
+        "file": "./lib/Actions.sol",
+        "id": 3338,
+        "nodeType": "ImportDirective",
+        "scope": 3349,
+        "sourceUnit": 3403,
+        "src": "707:44:10",
+        "symbolAliases": [
+          {
+            "foreign": 3337,
+            "local": null
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": "@title Operation\n@author dYdX\n * Primary public function for allowing users and contracts to manage accounts within Solo",
+        "fullyImplemented": false,
+        "id": 3348,
+        "linearizedBaseContracts": [
+          3348
+        ],
+        "name": "Operation",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": "The main entry-point to Solo that allows users and contracts to manage accounts.\nTake one or more actions on one or more accounts. The msg.sender must be the owner or\noperator of all accounts except for those being liquidated, vaporized, or traded with.\nOne call to operate() is considered a singular \"operation\". Account collateralization is\nensured only after the completion of the entire operation.\n     * @param  accounts  A list of all accounts that will be used in this operation. Cannot contain\n                  duplicates. In each action, the relevant account will be referred-to by its\n                  index in the list.\n@param  actions   An ordered list of all actions that will be taken in this operation. The\n                  actions will be processed in order.",
+            "id": 3347,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "operate",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3345,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3341,
+                  "name": "accounts",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3347,
+                  "src": "1807:30:10",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_Info_$3368_memory_$dyn_memory_ptr",
+                    "typeString": "struct Account.Info[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "contractScope": null,
+                      "id": 3339,
+                      "name": "Account.Info",
+                      "nodeType": "UserDefinedTypeName",
+                      "referencedDeclaration": 3368,
+                      "src": "1807:12:10",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_Info_$3368_storage_ptr",
+                        "typeString": "struct Account.Info"
+                      }
+                    },
+                    "id": 3340,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1807:14:10",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_struct$_Info_$3368_storage_$dyn_storage_ptr",
+                      "typeString": "struct Account.Info[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3344,
+                  "name": "actions",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3347,
+                  "src": "1847:35:10",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3401_memory_$dyn_memory_ptr",
+                    "typeString": "struct Actions.ActionArgs[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "contractScope": null,
+                      "id": 3342,
+                      "name": "Actions.ActionArgs",
+                      "nodeType": "UserDefinedTypeName",
+                      "referencedDeclaration": 3401,
+                      "src": "1847:18:10",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_ActionArgs_$3401_storage_ptr",
+                        "typeString": "struct Actions.ActionArgs"
+                      }
+                    },
+                    "id": 3343,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1847:20:10",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3401_storage_$dyn_storage_ptr",
+                      "typeString": "struct Actions.ActionArgs[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1797:91:10"
+            },
+            "returnParameters": {
+              "id": 3346,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1903:0:10"
+            },
+            "scope": 3348,
+            "src": "1781:123:10",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 3349,
+        "src": "892:1014:10"
+      }
+    ],
+    "src": "603:1304:10"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Operation.sol",
+    "exportedSymbols": {
+      "Operation": [
+        3348
+      ]
+    },
+    "id": 3349,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3333,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".7"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "603:23:10"
+      },
+      {
+        "id": 3334,
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "627:33:10"
+      },
+      {
+        "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Account.sol",
+        "file": "./lib/Account.sol",
+        "id": 3336,
+        "nodeType": "ImportDirective",
+        "scope": 3349,
+        "sourceUnit": 3370,
+        "src": "662:44:10",
+        "symbolAliases": [
+          {
+            "foreign": 3335,
+            "local": null
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Actions.sol",
+        "file": "./lib/Actions.sol",
+        "id": 3338,
+        "nodeType": "ImportDirective",
+        "scope": 3349,
+        "sourceUnit": 3403,
+        "src": "707:44:10",
+        "symbolAliases": [
+          {
+            "foreign": 3337,
+            "local": null
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": "@title Operation\n@author dYdX\n * Primary public function for allowing users and contracts to manage accounts within Solo",
+        "fullyImplemented": false,
+        "id": 3348,
+        "linearizedBaseContracts": [
+          3348
+        ],
+        "name": "Operation",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": "The main entry-point to Solo that allows users and contracts to manage accounts.\nTake one or more actions on one or more accounts. The msg.sender must be the owner or\noperator of all accounts except for those being liquidated, vaporized, or traded with.\nOne call to operate() is considered a singular \"operation\". Account collateralization is\nensured only after the completion of the entire operation.\n     * @param  accounts  A list of all accounts that will be used in this operation. Cannot contain\n                  duplicates. In each action, the relevant account will be referred-to by its\n                  index in the list.\n@param  actions   An ordered list of all actions that will be taken in this operation. The\n                  actions will be processed in order.",
+            "id": 3347,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "operate",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 3345,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3341,
+                  "name": "accounts",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3347,
+                  "src": "1807:30:10",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_Info_$3368_memory_$dyn_memory_ptr",
+                    "typeString": "struct Account.Info[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "contractScope": null,
+                      "id": 3339,
+                      "name": "Account.Info",
+                      "nodeType": "UserDefinedTypeName",
+                      "referencedDeclaration": 3368,
+                      "src": "1807:12:10",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_Info_$3368_storage_ptr",
+                        "typeString": "struct Account.Info"
+                      }
+                    },
+                    "id": 3340,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1807:14:10",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_struct$_Info_$3368_storage_$dyn_storage_ptr",
+                      "typeString": "struct Account.Info[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3344,
+                  "name": "actions",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3347,
+                  "src": "1847:35:10",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3401_memory_$dyn_memory_ptr",
+                    "typeString": "struct Actions.ActionArgs[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "contractScope": null,
+                      "id": 3342,
+                      "name": "Actions.ActionArgs",
+                      "nodeType": "UserDefinedTypeName",
+                      "referencedDeclaration": 3401,
+                      "src": "1847:18:10",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_ActionArgs_$3401_storage_ptr",
+                        "typeString": "struct Actions.ActionArgs"
+                      }
+                    },
+                    "id": 3343,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1847:20:10",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3401_storage_$dyn_storage_ptr",
+                      "typeString": "struct Actions.ActionArgs[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1797:91:10"
+            },
+            "returnParameters": {
+              "id": 3346,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1903:0:10"
+            },
+            "scope": 3348,
+            "src": "1781:123:10",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 3349,
+        "src": "892:1014:10"
+      }
+    ],
+    "src": "603:1304:10"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.17+commit.d19bba13.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.2.3",
+  "updatedAt": "2020-09-19T16:30:04.605Z",
+  "devdoc": {
+    "author": "dYdX * Primary public function for allowing users and contracts to manage accounts within Solo",
+    "methods": {
+      "operate((address,uint256)[],(uint8,uint256,(bool,uint8,uint8,uint256),uint256,uint256,address,uint256,bytes)[])": {
+        "params": {
+          "accounts": "A list of all accounts that will be used in this operation. Cannot contain                  duplicates. In each action, the relevant account will be referred-to by its                  index in the list.",
+          "actions": "An ordered list of all actions that will be taken in this operation. The                  actions will be processed in order."
+        }
+      }
+    },
+    "title": "Operation"
+  },
+  "userdoc": {
+    "methods": {
+      "operate((address,uint256)[],(uint8,uint256,(bool,uint8,uint8,uint256),uint256,uint256,address,uint256,bytes)[])": {
+        "notice": "The main entry-point to Solo that allows users and contracts to manage accounts. Take one or more actions on one or more accounts. The msg.sender must be the owner or operator of all accounts except for those being liquidated, vaporized, or traded with. One call to operate() is considered a singular \"operation\". Account collateralization is ensured only after the completion of the entire operation."
+      }
+    }
+  }
+}
