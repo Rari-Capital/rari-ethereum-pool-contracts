@@ -37,7 +37,7 @@ contract("RariFundManager, RariFundController", accounts => {
     // Check balances
     let initialAccountBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
     let initialFundBalance = await fundManagerInstance.getFundBalance.call();
-    let initialrETHBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
+    let initialReftBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
     
     // Approve tokens to RariFundManager
     // var erc20Contract = new web3.eth.Contract(erc20Abi, currencies[currencyCode].tokenAddress);
@@ -51,8 +51,8 @@ contract("RariFundManager, RariFundController", accounts => {
     assert(postDepositAccountBalance.gte(initialAccountBalance.add(amountBN).mul(web3.utils.toBN(999999)).div(web3.utils.toBN(1000000))));
     let postDepositFundBalance = await fundManagerInstance.getFundBalance.call();
     assert(postDepositFundBalance.gte(initialFundBalance.add(amountBN).mul(web3.utils.toBN(999999)).div(web3.utils.toBN(1000000))));
-    let postDepositrETHBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
-    assert(postDepositrETHBalance.gt(initialrETHBalance));
+    let postDepositReftBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
+    assert(postDepositReftBalance.gt(initialReftBalance));
     let postDepositInterestAccrued = await fundManagerInstance.getInterestAccrued.call();
 
     // Deposit to pool (using Compound as an example)
@@ -69,7 +69,7 @@ contract("RariFundManager, RariFundController", accounts => {
     let preWithdrawalFundBalance = await fundManagerInstance.getFundBalance.call();
     assert(preWithdrawalFundBalance.gt(postDepositFundBalance));
     let preWithdrawalRftBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
-    assert(preWithdrawalRftBalance.eq(postDepositrETHBalance));
+    assert(preWithdrawalRftBalance.eq(postDepositReftBalance));
     let preWithdrawalInterestAccrued = await fundManagerInstance.getInterestAccrued.call();
     assert(preWithdrawalInterestAccrued.gt(postDepositInterestAccrued));
 

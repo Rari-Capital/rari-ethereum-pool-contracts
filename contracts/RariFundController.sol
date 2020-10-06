@@ -25,6 +25,7 @@ import "@0x/contracts-exchange-libs/contracts/src/LibOrder.sol";
 
 import "./lib/pools/DydxPoolController.sol";
 import "./lib/pools/CompoundPoolController.sol";
+import "./lib/pools/KeeperDaoPoolController.sol";
 import "./lib/exchanges/ZeroExExchangeController.sol";
 
 /**
@@ -71,6 +72,7 @@ contract RariFundController is Ownable {
         // Add supported pools
         addPool(0); // dydx
         addPool(1); // compound
+        addPool(2); // keeperdao
     }
 
     /**
@@ -203,6 +205,7 @@ contract RariFundController is Ownable {
     function _getPoolBalance(uint8 pool) public returns (uint256) {
         if (pool == 0) return DydxPoolController.getBalance();
         else if (pool == 1) return CompoundPoolController.getBalance();
+        else if (pool == 2) return KeeperDaoPoolController.getBalance();
         else revert("Invalid pool index.");
     }
 
@@ -266,6 +269,7 @@ contract RariFundController is Ownable {
         require(msg.value > 0, "Amount too small.");
         if (pool == 0) require(DydxPoolController.deposit(msg.value), "Deposit to dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.deposit(msg.value), "Deposit to Compound failed.");
+        else if (pool == 2) require(KeeperDaoPoolController.deposit(msg.value), "Deposit to KeeeperDao failed.");
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = true; 
         return true;
@@ -279,6 +283,7 @@ contract RariFundController is Ownable {
     function _withdrawFromPool(uint8 pool, uint256 amount) internal {
         if (pool == 0) require(DydxPoolController.withdraw(amount), "Withdrawal from dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.withdraw(amount), "Withdrawal from Compound failed.");
+        else if (pool == 2) require(KeeperDaoPoolController.withdraw(amount), "Withdrawal from KeeeperDao failed.");
         else revert("Invalid pool index.");
     }
 
@@ -329,6 +334,7 @@ contract RariFundController is Ownable {
     function withdrawAllFromPool(uint8 pool) external fundEnabled onlyRebalancer returns (bool) {
         if (pool == 0) require(DydxPoolController.withdrawAll(), "Withdrawal from dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.withdrawAll(), "Withdrawal from Compound failed.");
+        else if (pool == 2) require(KeeperDaoPoolController.withdrawAll(), "Withdrawal from KeeperDao failed.");
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = false;
         return true;
@@ -342,6 +348,7 @@ contract RariFundController is Ownable {
     function withdrawAllFromPoolOnUpgrade(uint8 pool) external onlyManager returns (bool) {
         if (pool == 0) require(DydxPoolController.withdrawAll(), "Withdrawal from dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.withdrawAll(), "Withdrawal from Compound failed.");
+        else if (pool == 2) require(KeeperDaoPoolController.withdrawAll(), "Withdrawal from KeeperDao failed.");
         else revert("Invalid pool index.");
         _rariFundManagerContract.transfer(address(this).balance); // Transfer all ETH to RariFundManager for further processing
         _poolsWithFunds[pool] = false;

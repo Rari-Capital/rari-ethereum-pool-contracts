@@ -9,7 +9,6 @@
   "scripts": {
     "compile": "truffle compile --all",
     "test": "truffle test --network development",
-    "build": "babel src/js/app.js --out-file src/js/app-compiled.js",
     "dev": "lite-server"
   },
   "author": "",

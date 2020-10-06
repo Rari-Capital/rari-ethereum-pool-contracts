@@ -12,14 +12,14 @@
     "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Actions.sol",
     "exportedSymbols": {
       "Actions": [
-        3402
+        3461
       ]
     },
-    "id": 3403,
+    "id": 3462,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3371,
+        "id": 3430,
         "literals": [
           "solidity",
           "^",
@@ -30,7 +30,7 @@
         "src": "603:23:13"
       },
       {
-        "id": 3372,
+        "id": 3431,
         "literals": [
           "experimental",
           "ABIEncoderV2"
@@ -41,14 +41,14 @@
       {
         "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Types.sol",
         "file": "./Types.sol",
-        "id": 3374,
+        "id": 3433,
         "nodeType": "ImportDirective",
-        "scope": 3403,
-        "sourceUnit": 3432,
+        "scope": 3462,
+        "sourceUnit": 3491,
         "src": "662:36:13",
         "symbolAliases": [
           {
-            "foreign": 3373,
+            "foreign": 3432,
             "local": null
           }
         ],
@@ -60,67 +60,67 @@
         "contractKind": "library",
         "documentation": "@title Actions\n@author dYdX\n * Library that defines and parses valid Actions",
         "fullyImplemented": true,
-        "id": 3402,
+        "id": 3461,
         "linearizedBaseContracts": [
-          3402
+          3461
         ],
         "name": "Actions",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "Actions.ActionType",
-            "id": 3384,
+            "id": 3443,
             "members": [
               {
-                "id": 3375,
+                "id": 3434,
                 "name": "Deposit",
                 "nodeType": "EnumValue",
                 "src": "883:7:13"
               },
               {
-                "id": 3376,
+                "id": 3435,
                 "name": "Withdraw",
                 "nodeType": "EnumValue",
                 "src": "919:8:13"
               },
               {
-                "id": 3377,
+                "id": 3436,
                 "name": "Transfer",
                 "nodeType": "EnumValue",
                 "src": "955:8:13"
               },
               {
-                "id": 3378,
+                "id": 3437,
                 "name": "Buy",
                 "nodeType": "EnumValue",
                 "src": "1011:3:13"
               },
               {
-                "id": 3379,
+                "id": 3438,
                 "name": "Sell",
                 "nodeType": "EnumValue",
                 "src": "1074:4:13"
               },
               {
-                "id": 3380,
+                "id": 3439,
                 "name": "Trade",
                 "nodeType": "EnumValue",
                 "src": "1138:5:13"
               },
               {
-                "id": 3381,
+                "id": 3440,
                 "name": "Liquidate",
                 "nodeType": "EnumValue",
                 "src": "1197:9:13"
               },
               {
-                "id": 3382,
+                "id": 3441,
                 "name": "Vaporize",
                 "nodeType": "EnumValue",
                 "src": "1272:8:13"
               },
               {
-                "id": 3383,
+                "id": 3442,
                 "name": "Call",
                 "nodeType": "EnumValue",
                 "src": "1354:4:13"
@@ -132,30 +132,30 @@
           },
           {
             "canonicalName": "Actions.ActionArgs",
-            "id": 3401,
+            "id": 3460,
             "members": [
               {
                 "constant": false,
-                "id": 3386,
+                "id": 3445,
                 "name": "actionType",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1732:21:13",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_ActionType_$3384",
+                  "typeIdentifier": "t_enum$_ActionType_$3443",
                   "typeString": "enum Actions.ActionType"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 3385,
+                  "id": 3444,
                   "name": "ActionType",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 3384,
+                  "referencedDeclaration": 3443,
                   "src": "1732:10:13",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_ActionType_$3384",
+                    "typeIdentifier": "t_enum$_ActionType_$3443",
                     "typeString": "enum Actions.ActionType"
                   }
                 },
@@ -164,10 +164,10 @@
               },
               {
                 "constant": false,
-                "id": 3388,
+                "id": 3447,
                 "name": "accountId",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1763:17:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -176,7 +176,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3387,
+                  "id": 3446,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1763:7:13",
@@ -190,26 +190,26 @@
               },
               {
                 "constant": false,
-                "id": 3390,
+                "id": 3449,
                 "name": "amount",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1790:24:13",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_AssetAmount_$3420_storage_ptr",
+                  "typeIdentifier": "t_struct$_AssetAmount_$3479_storage_ptr",
                   "typeString": "struct Types.AssetAmount"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 3389,
+                  "id": 3448,
                   "name": "Types.AssetAmount",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 3420,
+                  "referencedDeclaration": 3479,
                   "src": "1790:17:13",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_AssetAmount_$3420_storage_ptr",
+                    "typeIdentifier": "t_struct$_AssetAmount_$3479_storage_ptr",
                     "typeString": "struct Types.AssetAmount"
                   }
                 },
@@ -218,10 +218,10 @@
               },
               {
                 "constant": false,
-                "id": 3392,
+                "id": 3451,
                 "name": "primaryMarketId",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1824:23:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -230,7 +230,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3391,
+                  "id": 3450,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1824:7:13",
@@ -244,10 +244,10 @@
               },
               {
                 "constant": false,
-                "id": 3394,
+                "id": 3453,
                 "name": "secondaryMarketId",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1857:25:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -256,7 +256,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3393,
+                  "id": 3452,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1857:7:13",
@@ -270,10 +270,10 @@
               },
               {
                 "constant": false,
-                "id": 3396,
+                "id": 3455,
                 "name": "otherAddress",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1892:20:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -282,7 +282,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 3395,
+                  "id": 3454,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "1892:7:13",
@@ -297,10 +297,10 @@
               },
               {
                 "constant": false,
-                "id": 3398,
+                "id": 3457,
                 "name": "otherAccountId",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1922:22:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -309,7 +309,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3397,
+                  "id": 3456,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1922:7:13",
@@ -323,10 +323,10 @@
               },
               {
                 "constant": false,
-                "id": 3400,
+                "id": 3459,
                 "name": "data",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1954:10:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -335,7 +335,7 @@
                   "typeString": "bytes"
                 },
                 "typeName": {
-                  "id": 3399,
+                  "id": 3458,
                   "name": "bytes",
                   "nodeType": "ElementaryTypeName",
                   "src": "1954:5:13",
@@ -350,12 +350,12 @@
             ],
             "name": "ActionArgs",
             "nodeType": "StructDefinition",
-            "scope": 3402,
+            "scope": 3461,
             "src": "1704:267:13",
             "visibility": "public"
           }
         ],
-        "scope": 3403,
+        "scope": 3462,
         "src": "795:1178:13"
       }
     ],
@@ -365,14 +365,14 @@
     "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Actions.sol",
     "exportedSymbols": {
       "Actions": [
-        3402
+        3461
       ]
     },
-    "id": 3403,
+    "id": 3462,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3371,
+        "id": 3430,
         "literals": [
           "solidity",
           "^",
@@ -383,7 +383,7 @@
         "src": "603:23:13"
       },
       {
-        "id": 3372,
+        "id": 3431,
         "literals": [
           "experimental",
           "ABIEncoderV2"
@@ -394,14 +394,14 @@
       {
         "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Types.sol",
         "file": "./Types.sol",
-        "id": 3374,
+        "id": 3433,
         "nodeType": "ImportDirective",
-        "scope": 3403,
-        "sourceUnit": 3432,
+        "scope": 3462,
+        "sourceUnit": 3491,
         "src": "662:36:13",
         "symbolAliases": [
           {
-            "foreign": 3373,
+            "foreign": 3432,
             "local": null
           }
         ],
@@ -413,67 +413,67 @@
         "contractKind": "library",
         "documentation": "@title Actions\n@author dYdX\n * Library that defines and parses valid Actions",
         "fullyImplemented": true,
-        "id": 3402,
+        "id": 3461,
         "linearizedBaseContracts": [
-          3402
+          3461
         ],
         "name": "Actions",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "Actions.ActionType",
-            "id": 3384,
+            "id": 3443,
             "members": [
               {
-                "id": 3375,
+                "id": 3434,
                 "name": "Deposit",
                 "nodeType": "EnumValue",
                 "src": "883:7:13"
               },
               {
-                "id": 3376,
+                "id": 3435,
                 "name": "Withdraw",
                 "nodeType": "EnumValue",
                 "src": "919:8:13"
               },
               {
-                "id": 3377,
+                "id": 3436,
                 "name": "Transfer",
                 "nodeType": "EnumValue",
                 "src": "955:8:13"
               },
               {
-                "id": 3378,
+                "id": 3437,
                 "name": "Buy",
                 "nodeType": "EnumValue",
                 "src": "1011:3:13"
               },
               {
-                "id": 3379,
+                "id": 3438,
                 "name": "Sell",
                 "nodeType": "EnumValue",
                 "src": "1074:4:13"
               },
               {
-                "id": 3380,
+                "id": 3439,
                 "name": "Trade",
                 "nodeType": "EnumValue",
                 "src": "1138:5:13"
               },
               {
-                "id": 3381,
+                "id": 3440,
                 "name": "Liquidate",
                 "nodeType": "EnumValue",
                 "src": "1197:9:13"
               },
               {
-                "id": 3382,
+                "id": 3441,
                 "name": "Vaporize",
                 "nodeType": "EnumValue",
                 "src": "1272:8:13"
               },
               {
-                "id": 3383,
+                "id": 3442,
                 "name": "Call",
                 "nodeType": "EnumValue",
                 "src": "1354:4:13"
@@ -485,30 +485,30 @@
           },
           {
             "canonicalName": "Actions.ActionArgs",
-            "id": 3401,
+            "id": 3460,
             "members": [
               {
                 "constant": false,
-                "id": 3386,
+                "id": 3445,
                 "name": "actionType",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1732:21:13",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_ActionType_$3384",
+                  "typeIdentifier": "t_enum$_ActionType_$3443",
                   "typeString": "enum Actions.ActionType"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 3385,
+                  "id": 3444,
                   "name": "ActionType",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 3384,
+                  "referencedDeclaration": 3443,
                   "src": "1732:10:13",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_ActionType_$3384",
+                    "typeIdentifier": "t_enum$_ActionType_$3443",
                     "typeString": "enum Actions.ActionType"
                   }
                 },
@@ -517,10 +517,10 @@
               },
               {
                 "constant": false,
-                "id": 3388,
+                "id": 3447,
                 "name": "accountId",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1763:17:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -529,7 +529,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3387,
+                  "id": 3446,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1763:7:13",
@@ -543,26 +543,26 @@
               },
               {
                 "constant": false,
-                "id": 3390,
+                "id": 3449,
                 "name": "amount",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1790:24:13",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_AssetAmount_$3420_storage_ptr",
+                  "typeIdentifier": "t_struct$_AssetAmount_$3479_storage_ptr",
                   "typeString": "struct Types.AssetAmount"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 3389,
+                  "id": 3448,
                   "name": "Types.AssetAmount",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 3420,
+                  "referencedDeclaration": 3479,
                   "src": "1790:17:13",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_AssetAmount_$3420_storage_ptr",
+                    "typeIdentifier": "t_struct$_AssetAmount_$3479_storage_ptr",
                     "typeString": "struct Types.AssetAmount"
                   }
                 },
@@ -571,10 +571,10 @@
               },
               {
                 "constant": false,
-                "id": 3392,
+                "id": 3451,
                 "name": "primaryMarketId",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1824:23:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -583,7 +583,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3391,
+                  "id": 3450,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1824:7:13",
@@ -597,10 +597,10 @@
               },
               {
                 "constant": false,
-                "id": 3394,
+                "id": 3453,
                 "name": "secondaryMarketId",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1857:25:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -609,7 +609,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3393,
+                  "id": 3452,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1857:7:13",
@@ -623,10 +623,10 @@
               },
               {
                 "constant": false,
-                "id": 3396,
+                "id": 3455,
                 "name": "otherAddress",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1892:20:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -635,7 +635,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 3395,
+                  "id": 3454,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "1892:7:13",
@@ -650,10 +650,10 @@
               },
               {
                 "constant": false,
-                "id": 3398,
+                "id": 3457,
                 "name": "otherAccountId",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1922:22:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -662,7 +662,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3397,
+                  "id": 3456,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1922:7:13",
@@ -676,10 +676,10 @@
               },
               {
                 "constant": false,
-                "id": 3400,
+                "id": 3459,
                 "name": "data",
                 "nodeType": "VariableDeclaration",
-                "scope": 3401,
+                "scope": 3460,
                 "src": "1954:10:13",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -688,7 +688,7 @@
                   "typeString": "bytes"
                 },
                 "typeName": {
-                  "id": 3399,
+                  "id": 3458,
                   "name": "bytes",
                   "nodeType": "ElementaryTypeName",
                   "src": "1954:5:13",
@@ -703,12 +703,12 @@
             ],
             "name": "ActionArgs",
             "nodeType": "StructDefinition",
-            "scope": 3402,
+            "scope": 3461,
             "src": "1704:267:13",
             "visibility": "public"
           }
         ],
-        "scope": 3403,
+        "scope": 3462,
         "src": "795:1178:13"
       }
     ],
@@ -720,7 +720,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.3",
-  "updatedAt": "2020-09-19T16:30:04.607Z",
+  "updatedAt": "2020-09-30T02:14:03.907Z",
   "devdoc": {
     "author": "dYdX * Library that defines and parses valid Actions",
     "methods": {},

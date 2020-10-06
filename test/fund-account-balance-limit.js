@@ -51,7 +51,7 @@ contract("RariFundManager", accounts => {
   
   it("should make deposits until the individual account balance limit is hit", async () => {
     let fundManagerInstance = await RariFundManager.deployed();
-    let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? rETH.at(process.env.UPGRADE_FUND_TOKEN) : rETH.deployed());
+    let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthFundToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthFundToken.deployed());
 
     // Get account balance in the fund and withdraw all before we start
     let accountBalance = await fundManagerInstance.balanceOf.call(accounts[1]);
@@ -97,7 +97,7 @@ contract("RariFundManager", accounts => {
   
   it("should make no deposits due to an individual account balance limit of 0", async () => {
     let fundManagerInstance = await RariFundManager.deployed();
-    let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? rETH.at(process.env.UPGRADE_FUND_TOKEN) : rETH.deployed());
+    let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthFundToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthFundToken.deployed());
 
     // Get account balance in the fund and withdraw all before we start
     let accountBalance = await fundManagerInstance.balanceOf.call(accounts[1]);

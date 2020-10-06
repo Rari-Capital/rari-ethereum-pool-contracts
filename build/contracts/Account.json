@@ -12,14 +12,14 @@
     "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Account.sol",
     "exportedSymbols": {
       "Account": [
-        3369
+        3428
       ]
     },
-    "id": 3370,
+    "id": 3429,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3362,
+        "id": 3421,
         "literals": [
           "solidity",
           "^",
@@ -30,7 +30,7 @@
         "src": "603:23:12"
       },
       {
-        "id": 3363,
+        "id": 3422,
         "literals": [
           "experimental",
           "ABIEncoderV2"
@@ -44,23 +44,23 @@
         "contractKind": "library",
         "documentation": "@title Account\n@author dYdX\n * Library of structs and functions that represent an account",
         "fullyImplemented": true,
-        "id": 3369,
+        "id": 3428,
         "linearizedBaseContracts": [
-          3369
+          3428
         ],
         "name": "Account",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "Account.Info",
-            "id": 3368,
+            "id": 3427,
             "members": [
               {
                 "constant": false,
-                "id": 3365,
+                "id": 3424,
                 "name": "owner",
                 "nodeType": "VariableDeclaration",
-                "scope": 3368,
+                "scope": 3427,
                 "src": "872:13:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -69,7 +69,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 3364,
+                  "id": 3423,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "872:7:12",
@@ -84,10 +84,10 @@
               },
               {
                 "constant": false,
-                "id": 3367,
+                "id": 3426,
                 "name": "number",
                 "nodeType": "VariableDeclaration",
-                "scope": 3368,
+                "scope": 3427,
                 "src": "933:14:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -96,7 +96,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3366,
+                  "id": 3425,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "933:7:12",
@@ -111,12 +111,12 @@
             ],
             "name": "Info",
             "nodeType": "StructDefinition",
-            "scope": 3369,
+            "scope": 3428,
             "src": "850:169:12",
             "visibility": "public"
           }
         ],
-        "scope": 3370,
+        "scope": 3429,
         "src": "769:252:12"
       }
     ],
@@ -126,14 +126,14 @@
     "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Account.sol",
     "exportedSymbols": {
       "Account": [
-        3369
+        3428
       ]
     },
-    "id": 3370,
+    "id": 3429,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3362,
+        "id": 3421,
         "literals": [
           "solidity",
           "^",
@@ -144,7 +144,7 @@
         "src": "603:23:12"
       },
       {
-        "id": 3363,
+        "id": 3422,
         "literals": [
           "experimental",
           "ABIEncoderV2"
@@ -158,23 +158,23 @@
         "contractKind": "library",
         "documentation": "@title Account\n@author dYdX\n * Library of structs and functions that represent an account",
         "fullyImplemented": true,
-        "id": 3369,
+        "id": 3428,
         "linearizedBaseContracts": [
-          3369
+          3428
         ],
         "name": "Account",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "Account.Info",
-            "id": 3368,
+            "id": 3427,
             "members": [
               {
                 "constant": false,
-                "id": 3365,
+                "id": 3424,
                 "name": "owner",
                 "nodeType": "VariableDeclaration",
-                "scope": 3368,
+                "scope": 3427,
                 "src": "872:13:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -183,7 +183,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 3364,
+                  "id": 3423,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "872:7:12",
@@ -198,10 +198,10 @@
               },
               {
                 "constant": false,
-                "id": 3367,
+                "id": 3426,
                 "name": "number",
                 "nodeType": "VariableDeclaration",
-                "scope": 3368,
+                "scope": 3427,
                 "src": "933:14:12",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -210,7 +210,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3366,
+                  "id": 3425,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "933:7:12",
@@ -225,12 +225,12 @@
             ],
             "name": "Info",
             "nodeType": "StructDefinition",
-            "scope": 3369,
+            "scope": 3428,
             "src": "850:169:12",
             "visibility": "public"
           }
         ],
-        "scope": 3370,
+        "scope": 3429,
         "src": "769:252:12"
       }
     ],
@@ -242,7 +242,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.3",
-  "updatedAt": "2020-09-19T16:30:04.607Z",
+  "updatedAt": "2020-09-30T02:14:03.907Z",
   "devdoc": {
     "author": "dYdX * Library of structs and functions that represent an account",
     "methods": {},

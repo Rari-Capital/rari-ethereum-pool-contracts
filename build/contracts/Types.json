@@ -12,14 +12,14 @@
     "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Types.sol",
     "exportedSymbols": {
       "Types": [
-        3431
+        3490
       ]
     },
-    "id": 3432,
+    "id": 3491,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3404,
+        "id": 3463,
         "literals": [
           "solidity",
           "^",
@@ -30,7 +30,7 @@
         "src": "603:23:14"
       },
       {
-        "id": 3405,
+        "id": 3464,
         "literals": [
           "experimental",
           "ABIEncoderV2"
@@ -44,25 +44,25 @@
         "contractKind": "library",
         "documentation": "@title Types\n@author dYdX\n * Library for interacting with the basic structs used in Solo",
         "fullyImplemented": true,
-        "id": 3431,
+        "id": 3490,
         "linearizedBaseContracts": [
-          3431
+          3490
         ],
         "name": "Types",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "Types.AssetDenomination",
-            "id": 3408,
+            "id": 3467,
             "members": [
               {
-                "id": 3406,
+                "id": 3465,
                 "name": "Wei",
                 "nodeType": "EnumValue",
                 "src": "867:3:14"
               },
               {
-                "id": 3407,
+                "id": 3466,
                 "name": "Par",
                 "nodeType": "EnumValue",
                 "src": "916:3:14"
@@ -74,16 +74,16 @@
           },
           {
             "canonicalName": "Types.AssetReference",
-            "id": 3411,
+            "id": 3470,
             "members": [
               {
-                "id": 3409,
+                "id": 3468,
                 "name": "Delta",
                 "nodeType": "EnumValue",
                 "src": "998:5:14"
               },
               {
-                "id": 3410,
+                "id": 3469,
                 "name": "Target",
                 "nodeType": "EnumValue",
                 "src": "1070:6:14"
@@ -95,14 +95,14 @@
           },
           {
             "canonicalName": "Types.AssetAmount",
-            "id": 3420,
+            "id": 3479,
             "members": [
               {
                 "constant": false,
-                "id": 3413,
+                "id": 3472,
                 "name": "sign",
                 "nodeType": "VariableDeclaration",
-                "scope": 3420,
+                "scope": 3479,
                 "src": "1172:9:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -111,7 +111,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 3412,
+                  "id": 3471,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "1172:4:14",
@@ -125,26 +125,26 @@
               },
               {
                 "constant": false,
-                "id": 3415,
+                "id": 3474,
                 "name": "denomination",
                 "nodeType": "VariableDeclaration",
-                "scope": 3420,
+                "scope": 3479,
                 "src": "1211:30:14",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_AssetDenomination_$3408",
+                  "typeIdentifier": "t_enum$_AssetDenomination_$3467",
                   "typeString": "enum Types.AssetDenomination"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 3414,
+                  "id": 3473,
                   "name": "AssetDenomination",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 3408,
+                  "referencedDeclaration": 3467,
                   "src": "1211:17:14",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_AssetDenomination_$3408",
+                    "typeIdentifier": "t_enum$_AssetDenomination_$3467",
                     "typeString": "enum Types.AssetDenomination"
                   }
                 },
@@ -153,26 +153,26 @@
               },
               {
                 "constant": false,
-                "id": 3417,
+                "id": 3476,
                 "name": "ref",
                 "nodeType": "VariableDeclaration",
-                "scope": 3420,
+                "scope": 3479,
                 "src": "1251:18:14",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_AssetReference_$3411",
+                  "typeIdentifier": "t_enum$_AssetReference_$3470",
                   "typeString": "enum Types.AssetReference"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 3416,
+                  "id": 3475,
                   "name": "AssetReference",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 3411,
+                  "referencedDeclaration": 3470,
                   "src": "1251:14:14",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_AssetReference_$3411",
+                    "typeIdentifier": "t_enum$_AssetReference_$3470",
                     "typeString": "enum Types.AssetReference"
                   }
                 },
@@ -181,10 +181,10 @@
               },
               {
                 "constant": false,
-                "id": 3419,
+                "id": 3478,
                 "name": "value",
                 "nodeType": "VariableDeclaration",
-                "scope": 3420,
+                "scope": 3479,
                 "src": "1279:13:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -193,7 +193,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3418,
+                  "id": 3477,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1279:7:14",
@@ -208,20 +208,20 @@
             ],
             "name": "AssetAmount",
             "nodeType": "StructDefinition",
-            "scope": 3431,
+            "scope": 3490,
             "src": "1143:156:14",
             "visibility": "public"
           },
           {
             "canonicalName": "Types.Par",
-            "id": 3425,
+            "id": 3484,
             "members": [
               {
                 "constant": false,
-                "id": 3422,
+                "id": 3481,
                 "name": "sign",
                 "nodeType": "VariableDeclaration",
-                "scope": 3425,
+                "scope": 3484,
                 "src": "1433:9:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -230,7 +230,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 3421,
+                  "id": 3480,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "1433:4:14",
@@ -244,10 +244,10 @@
               },
               {
                 "constant": false,
-                "id": 3424,
+                "id": 3483,
                 "name": "value",
                 "nodeType": "VariableDeclaration",
-                "scope": 3425,
+                "scope": 3484,
                 "src": "1472:13:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -256,7 +256,7 @@
                   "typeString": "uint128"
                 },
                 "typeName": {
-                  "id": 3423,
+                  "id": 3482,
                   "name": "uint128",
                   "nodeType": "ElementaryTypeName",
                   "src": "1472:7:14",
@@ -271,20 +271,20 @@
             ],
             "name": "Par",
             "nodeType": "StructDefinition",
-            "scope": 3431,
+            "scope": 3490,
             "src": "1412:80:14",
             "visibility": "public"
           },
           {
             "canonicalName": "Types.Wei",
-            "id": 3430,
+            "id": 3489,
             "members": [
               {
                 "constant": false,
-                "id": 3427,
+                "id": 3486,
                 "name": "sign",
                 "nodeType": "VariableDeclaration",
-                "scope": 3430,
+                "scope": 3489,
                 "src": "1618:9:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -293,7 +293,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 3426,
+                  "id": 3485,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "1618:4:14",
@@ -307,10 +307,10 @@
               },
               {
                 "constant": false,
-                "id": 3429,
+                "id": 3488,
                 "name": "value",
                 "nodeType": "VariableDeclaration",
-                "scope": 3430,
+                "scope": 3489,
                 "src": "1657:13:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -319,7 +319,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3428,
+                  "id": 3487,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1657:7:14",
@@ -334,12 +334,12 @@
             ],
             "name": "Wei",
             "nodeType": "StructDefinition",
-            "scope": 3431,
+            "scope": 3490,
             "src": "1597:80:14",
             "visibility": "public"
           }
         ],
-        "scope": 3432,
+        "scope": 3491,
         "src": "768:911:14"
       }
     ],
@@ -349,14 +349,14 @@
     "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Types.sol",
     "exportedSymbols": {
       "Types": [
-        3431
+        3490
       ]
     },
-    "id": 3432,
+    "id": 3491,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3404,
+        "id": 3463,
         "literals": [
           "solidity",
           "^",
@@ -367,7 +367,7 @@
         "src": "603:23:14"
       },
       {
-        "id": 3405,
+        "id": 3464,
         "literals": [
           "experimental",
           "ABIEncoderV2"
@@ -381,25 +381,25 @@
         "contractKind": "library",
         "documentation": "@title Types\n@author dYdX\n * Library for interacting with the basic structs used in Solo",
         "fullyImplemented": true,
-        "id": 3431,
+        "id": 3490,
         "linearizedBaseContracts": [
-          3431
+          3490
         ],
         "name": "Types",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "Types.AssetDenomination",
-            "id": 3408,
+            "id": 3467,
             "members": [
               {
-                "id": 3406,
+                "id": 3465,
                 "name": "Wei",
                 "nodeType": "EnumValue",
                 "src": "867:3:14"
               },
               {
-                "id": 3407,
+                "id": 3466,
                 "name": "Par",
                 "nodeType": "EnumValue",
                 "src": "916:3:14"
@@ -411,16 +411,16 @@
           },
           {
             "canonicalName": "Types.AssetReference",
-            "id": 3411,
+            "id": 3470,
             "members": [
               {
-                "id": 3409,
+                "id": 3468,
                 "name": "Delta",
                 "nodeType": "EnumValue",
                 "src": "998:5:14"
               },
               {
-                "id": 3410,
+                "id": 3469,
                 "name": "Target",
                 "nodeType": "EnumValue",
                 "src": "1070:6:14"
@@ -432,14 +432,14 @@
           },
           {
             "canonicalName": "Types.AssetAmount",
-            "id": 3420,
+            "id": 3479,
             "members": [
               {
                 "constant": false,
-                "id": 3413,
+                "id": 3472,
                 "name": "sign",
                 "nodeType": "VariableDeclaration",
-                "scope": 3420,
+                "scope": 3479,
                 "src": "1172:9:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -448,7 +448,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 3412,
+                  "id": 3471,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "1172:4:14",
@@ -462,26 +462,26 @@
               },
               {
                 "constant": false,
-                "id": 3415,
+                "id": 3474,
                 "name": "denomination",
                 "nodeType": "VariableDeclaration",
-                "scope": 3420,
+                "scope": 3479,
                 "src": "1211:30:14",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_AssetDenomination_$3408",
+                  "typeIdentifier": "t_enum$_AssetDenomination_$3467",
                   "typeString": "enum Types.AssetDenomination"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 3414,
+                  "id": 3473,
                   "name": "AssetDenomination",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 3408,
+                  "referencedDeclaration": 3467,
                   "src": "1211:17:14",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_AssetDenomination_$3408",
+                    "typeIdentifier": "t_enum$_AssetDenomination_$3467",
                     "typeString": "enum Types.AssetDenomination"
                   }
                 },
@@ -490,26 +490,26 @@
               },
               {
                 "constant": false,
-                "id": 3417,
+                "id": 3476,
                 "name": "ref",
                 "nodeType": "VariableDeclaration",
-                "scope": 3420,
+                "scope": 3479,
                 "src": "1251:18:14",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_AssetReference_$3411",
+                  "typeIdentifier": "t_enum$_AssetReference_$3470",
                   "typeString": "enum Types.AssetReference"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 3416,
+                  "id": 3475,
                   "name": "AssetReference",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 3411,
+                  "referencedDeclaration": 3470,
                   "src": "1251:14:14",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_AssetReference_$3411",
+                    "typeIdentifier": "t_enum$_AssetReference_$3470",
                     "typeString": "enum Types.AssetReference"
                   }
                 },
@@ -518,10 +518,10 @@
               },
               {
                 "constant": false,
-                "id": 3419,
+                "id": 3478,
                 "name": "value",
                 "nodeType": "VariableDeclaration",
-                "scope": 3420,
+                "scope": 3479,
                 "src": "1279:13:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -530,7 +530,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3418,
+                  "id": 3477,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1279:7:14",
@@ -545,20 +545,20 @@
             ],
             "name": "AssetAmount",
             "nodeType": "StructDefinition",
-            "scope": 3431,
+            "scope": 3490,
             "src": "1143:156:14",
             "visibility": "public"
           },
           {
             "canonicalName": "Types.Par",
-            "id": 3425,
+            "id": 3484,
             "members": [
               {
                 "constant": false,
-                "id": 3422,
+                "id": 3481,
                 "name": "sign",
                 "nodeType": "VariableDeclaration",
-                "scope": 3425,
+                "scope": 3484,
                 "src": "1433:9:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -567,7 +567,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 3421,
+                  "id": 3480,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "1433:4:14",
@@ -581,10 +581,10 @@
               },
               {
                 "constant": false,
-                "id": 3424,
+                "id": 3483,
                 "name": "value",
                 "nodeType": "VariableDeclaration",
-                "scope": 3425,
+                "scope": 3484,
                 "src": "1472:13:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -593,7 +593,7 @@
                   "typeString": "uint128"
                 },
                 "typeName": {
-                  "id": 3423,
+                  "id": 3482,
                   "name": "uint128",
                   "nodeType": "ElementaryTypeName",
                   "src": "1472:7:14",
@@ -608,20 +608,20 @@
             ],
             "name": "Par",
             "nodeType": "StructDefinition",
-            "scope": 3431,
+            "scope": 3490,
             "src": "1412:80:14",
             "visibility": "public"
           },
           {
             "canonicalName": "Types.Wei",
-            "id": 3430,
+            "id": 3489,
             "members": [
               {
                 "constant": false,
-                "id": 3427,
+                "id": 3486,
                 "name": "sign",
                 "nodeType": "VariableDeclaration",
-                "scope": 3430,
+                "scope": 3489,
                 "src": "1618:9:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -630,7 +630,7 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 3426,
+                  "id": 3485,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
                   "src": "1618:4:14",
@@ -644,10 +644,10 @@
               },
               {
                 "constant": false,
-                "id": 3429,
+                "id": 3488,
                 "name": "value",
                 "nodeType": "VariableDeclaration",
-                "scope": 3430,
+                "scope": 3489,
                 "src": "1657:13:14",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -656,7 +656,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 3428,
+                  "id": 3487,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "1657:7:14",
@@ -671,12 +671,12 @@
             ],
             "name": "Wei",
             "nodeType": "StructDefinition",
-            "scope": 3431,
+            "scope": 3490,
             "src": "1597:80:14",
             "visibility": "public"
           }
         ],
-        "scope": 3432,
+        "scope": 3491,
         "src": "768:911:14"
       }
     ],
@@ -688,7 +688,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.3",
-  "updatedAt": "2020-09-19T16:30:04.608Z",
+  "updatedAt": "2020-09-30T02:14:03.908Z",
   "devdoc": {
     "author": "dYdX * Library for interacting with the basic structs used in Solo",
     "methods": {},

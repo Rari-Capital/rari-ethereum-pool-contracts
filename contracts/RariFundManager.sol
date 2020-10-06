@@ -89,6 +89,7 @@ contract RariFundManager is Ownable {
         // Add supported currencies
         addPool(0); // dYdX
         addPool(1); // Compound
+        addPool(2); // KeeperDAO
     }
 
 
@@ -725,7 +726,7 @@ contract RariFundManager is Ownable {
 
     /**
      * @dev Internal function to deposit all accrued fees on interest back into the fund on behalf of the master beneficiary.
-     * @return Integer indicating success (0), no fees to claim (1), or no RFT to mint (2).
+     * @return Integer indicating success (0), no fees to claim (1), or no REFT to mint (2).
      */
     function _depositFees() internal fundEnabled cacheRawFundBalance returns (uint8) {
         require(_interestFeeMasterBeneficiary != address(0), "Master beneficiary cannot be the zero address.");
