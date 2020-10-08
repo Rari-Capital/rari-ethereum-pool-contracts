@@ -283,7 +283,7 @@ contract RariFundController is Ownable {
         if (pool == 0) require(DydxPoolController.deposit(msg.value), "Deposit to dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.deposit(msg.value), "Deposit to Compound failed.");
         else if (pool == 2) require(KeeperDaoPoolController.deposit(msg.value), "Deposit to KeeeperDao failed.");
-        else if (pool == 3) require(AavePoolController.deposit(msg.value, _aaveReferralCode), "Deposit to Aave failed.");
+        else if (pool == 3) AavePoolController.deposit(msg.value, _aaveReferralCode);
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = true; 
         return true;
@@ -298,7 +298,7 @@ contract RariFundController is Ownable {
         if (pool == 0) require(DydxPoolController.withdraw(amount), "Withdrawal from dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.withdraw(amount), "Withdrawal from Compound failed.");
         else if (pool == 2) require(KeeperDaoPoolController.withdraw(amount), "Withdrawal from KeeeperDao failed.");
-        else if (pool == 3) require(AavePoolController.withdraw(amount), "Withdrawal from Aave failed.");
+        else if (pool == 3) AavePoolController.withdraw(amount);
         else revert("Invalid pool index.");
     }
 

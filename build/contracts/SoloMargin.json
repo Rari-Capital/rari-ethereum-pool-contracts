@@ -176,14 +176,14 @@
     "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/SoloMargin.sol",
     "exportedSymbols": {
       "SoloMargin": [
-        3419
+        3521
       ]
     },
-    "id": 3420,
+    "id": 3522,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3409,
+        "id": 3511,
         "literals": [
           "solidity",
           "^",
@@ -191,28 +191,28 @@
           ".7"
         ],
         "nodeType": "PragmaDirective",
-        "src": "603:23:11"
+        "src": "603:23:13"
       },
       {
-        "id": 3410,
+        "id": 3512,
         "literals": [
           "experimental",
           "ABIEncoderV2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "627:33:11"
+        "src": "627:33:13"
       },
       {
         "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Getters.sol",
         "file": "./Getters.sol",
-        "id": 3412,
+        "id": 3514,
         "nodeType": "ImportDirective",
-        "scope": 3420,
-        "sourceUnit": 3391,
-        "src": "662:40:11",
+        "scope": 3522,
+        "sourceUnit": 3493,
+        "src": "662:40:13",
         "symbolAliases": [
           {
-            "foreign": 3411,
+            "foreign": 3513,
             "local": null
           }
         ],
@@ -221,14 +221,14 @@
       {
         "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Operation.sol",
         "file": "./Operation.sol",
-        "id": 3414,
+        "id": 3516,
         "nodeType": "ImportDirective",
-        "scope": 3420,
-        "sourceUnit": 3408,
-        "src": "703:44:11",
+        "scope": 3522,
+        "sourceUnit": 3510,
+        "src": "703:44:13",
         "symbolAliases": [
           {
-            "foreign": 3413,
+            "foreign": 3515,
             "local": null
           }
         ],
@@ -240,73 +240,73 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 3415,
+              "id": 3517,
               "name": "Getters",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3390,
-              "src": "877:7:11",
+              "referencedDeclaration": 3492,
+              "src": "877:7:13",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Getters_$3390",
+                "typeIdentifier": "t_contract$_Getters_$3492",
                 "typeString": "contract Getters"
               }
             },
-            "id": 3416,
+            "id": 3518,
             "nodeType": "InheritanceSpecifier",
-            "src": "877:7:11"
+            "src": "877:7:13"
           },
           {
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 3417,
+              "id": 3519,
               "name": "Operation",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3407,
-              "src": "890:9:11",
+              "referencedDeclaration": 3509,
+              "src": "890:9:13",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Operation_$3407",
+                "typeIdentifier": "t_contract$_Operation_$3509",
                 "typeString": "contract Operation"
               }
             },
-            "id": 3418,
+            "id": 3520,
             "nodeType": "InheritanceSpecifier",
-            "src": "890:9:11"
+            "src": "890:9:13"
           }
         ],
         "contractDependencies": [
-          3390,
-          3407
+          3492,
+          3509
         ],
         "contractKind": "contract",
         "documentation": "@title SoloMargin\n@author dYdX\n * Main contract that inherits from other contracts",
         "fullyImplemented": false,
-        "id": 3419,
+        "id": 3521,
         "linearizedBaseContracts": [
-          3419,
-          3407,
-          3390
+          3521,
+          3509,
+          3492
         ],
         "name": "SoloMargin",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 3420,
-        "src": "850:53:11"
+        "scope": 3522,
+        "src": "850:53:13"
       }
     ],
-    "src": "603:301:11"
+    "src": "603:301:13"
   },
   "legacyAST": {
     "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/SoloMargin.sol",
     "exportedSymbols": {
       "SoloMargin": [
-        3419
+        3521
       ]
     },
-    "id": 3420,
+    "id": 3522,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3409,
+        "id": 3511,
         "literals": [
           "solidity",
           "^",
@@ -314,28 +314,28 @@
           ".7"
         ],
         "nodeType": "PragmaDirective",
-        "src": "603:23:11"
+        "src": "603:23:13"
       },
       {
-        "id": 3410,
+        "id": 3512,
         "literals": [
           "experimental",
           "ABIEncoderV2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "627:33:11"
+        "src": "627:33:13"
       },
       {
         "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Getters.sol",
         "file": "./Getters.sol",
-        "id": 3412,
+        "id": 3514,
         "nodeType": "ImportDirective",
-        "scope": 3420,
-        "sourceUnit": 3391,
-        "src": "662:40:11",
+        "scope": 3522,
+        "sourceUnit": 3493,
+        "src": "662:40:13",
         "symbolAliases": [
           {
-            "foreign": 3411,
+            "foreign": 3513,
             "local": null
           }
         ],
@@ -344,14 +344,14 @@
       {
         "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Operation.sol",
         "file": "./Operation.sol",
-        "id": 3414,
+        "id": 3516,
         "nodeType": "ImportDirective",
-        "scope": 3420,
-        "sourceUnit": 3408,
-        "src": "703:44:11",
+        "scope": 3522,
+        "sourceUnit": 3510,
+        "src": "703:44:13",
         "symbolAliases": [
           {
-            "foreign": 3413,
+            "foreign": 3515,
             "local": null
           }
         ],
@@ -363,60 +363,60 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 3415,
+              "id": 3517,
               "name": "Getters",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3390,
-              "src": "877:7:11",
+              "referencedDeclaration": 3492,
+              "src": "877:7:13",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Getters_$3390",
+                "typeIdentifier": "t_contract$_Getters_$3492",
                 "typeString": "contract Getters"
               }
             },
-            "id": 3416,
+            "id": 3518,
             "nodeType": "InheritanceSpecifier",
-            "src": "877:7:11"
+            "src": "877:7:13"
           },
           {
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 3417,
+              "id": 3519,
               "name": "Operation",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3407,
-              "src": "890:9:11",
+              "referencedDeclaration": 3509,
+              "src": "890:9:13",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Operation_$3407",
+                "typeIdentifier": "t_contract$_Operation_$3509",
                 "typeString": "contract Operation"
               }
             },
-            "id": 3418,
+            "id": 3520,
             "nodeType": "InheritanceSpecifier",
-            "src": "890:9:11"
+            "src": "890:9:13"
           }
         ],
         "contractDependencies": [
-          3390,
-          3407
+          3492,
+          3509
         ],
         "contractKind": "contract",
         "documentation": "@title SoloMargin\n@author dYdX\n * Main contract that inherits from other contracts",
         "fullyImplemented": false,
-        "id": 3419,
+        "id": 3521,
         "linearizedBaseContracts": [
-          3419,
-          3407,
-          3390
+          3521,
+          3509,
+          3492
         ],
         "name": "SoloMargin",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 3420,
-        "src": "850:53:11"
+        "scope": 3522,
+        "src": "850:53:13"
       }
     ],
-    "src": "603:301:11"
+    "src": "603:301:13"
   },
   "compiler": {
     "name": "solc",
@@ -424,7 +424,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.3",
-  "updatedAt": "2020-09-30T02:14:03.906Z",
+  "updatedAt": "2020-10-08T18:48:19.909Z",
   "devdoc": {
     "author": "dYdX * Main contract that inherits from other contracts",
     "methods": {
