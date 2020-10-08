@@ -26,6 +26,7 @@ import "@0x/contracts-exchange-libs/contracts/src/LibOrder.sol";
 import "./lib/pools/DydxPoolController.sol";
 import "./lib/pools/CompoundPoolController.sol";
 import "./lib/pools/KeeperDaoPoolController.sol";
+import "./lib/pools/AavePoolController.sol";
 import "./lib/exchanges/ZeroExExchangeController.sol";
 
 /**
@@ -73,6 +74,7 @@ contract RariFundController is Ownable {
         addPool(0); // dydx
         addPool(1); // compound
         addPool(2); // keeperdao
+        addPool(3); // aave
     }
 
     /**
@@ -102,7 +104,7 @@ contract RariFundController is Ownable {
      * @dev Payable fallback function called by 0x exchange to refund unspent protocol fee.
      */
     function () external payable {
-        // should deposit here
+        // should deposit here, leave blank for now
     }
 
     /**
@@ -206,6 +208,7 @@ contract RariFundController is Ownable {
         if (pool == 0) return DydxPoolController.getBalance();
         else if (pool == 1) return CompoundPoolController.getBalance();
         else if (pool == 2) return KeeperDaoPoolController.getBalance();
+        else if (pool == 3) return AavePoolController.getBalance();
         else revert("Invalid pool index.");
     }
 
@@ -241,9 +244,6 @@ contract RariFundController is Ownable {
      */
     function approveWethToDydxPool(uint256 amount) external fundEnabled onlyRebalancer returns (bool) {
         require(DydxPoolController.approve(amount), "Approval of WETH to dYdX failed.");
-        // We don't need approval from Compound if we're working with ETH
-        // else if (pool == 1) require(CompoundPoolController.approve(erc20Contract, amount), "Approval of tokens to Compound failed.");
-        // else revert("Invalid pool index.");
         return true;
     }
 
@@ -261,6 +261,19 @@ contract RariFundController is Ownable {
     }
 
     /**
+     * @dev Referral code for Aave deposits.
+     */
+    uint16 _aaveReferralCode;
+
+    /**
+     * @dev Sets the referral code for Aave deposits.
+     * @param referralCode The referral code.
+     */
+    function setAaveReferralCode(uint16 referralCode) external onlyOwner {
+        _aaveReferralCode = referralCode;
+    }
+
+    /**
      * @dev Deposits funds to the specified pool.
      * @param pool The index of the pool.
      * @return Boolean indicating success.
@@ -270,6 +283,7 @@ contract RariFundController is Ownable {
         if (pool == 0) require(DydxPoolController.deposit(msg.value), "Deposit to dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.deposit(msg.value), "Deposit to Compound failed.");
         else if (pool == 2) require(KeeperDaoPoolController.deposit(msg.value), "Deposit to KeeeperDao failed.");
+        else if (pool == 3) require(AavePoolController.deposit(msg.value, _aaveReferralCode), "Deposit to Aave failed.");
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = true; 
         return true;
@@ -284,6 +298,7 @@ contract RariFundController is Ownable {
         if (pool == 0) require(DydxPoolController.withdraw(amount), "Withdrawal from dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.withdraw(amount), "Withdrawal from Compound failed.");
         else if (pool == 2) require(KeeperDaoPoolController.withdraw(amount), "Withdrawal from KeeeperDao failed.");
+        else if (pool == 3) require(AavePoolController.withdraw(amount), "Withdrawal from Aave failed.");
         else revert("Invalid pool index.");
     }
 
@@ -335,6 +350,7 @@ contract RariFundController is Ownable {
         if (pool == 0) require(DydxPoolController.withdrawAll(), "Withdrawal from dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.withdrawAll(), "Withdrawal from Compound failed.");
         else if (pool == 2) require(KeeperDaoPoolController.withdrawAll(), "Withdrawal from KeeperDao failed.");
+        else if (pool == 3) require(AavePoolController.withdrawAll(), "Withdrawal from Aave failed.");
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = false;
         return true;
@@ -349,6 +365,7 @@ contract RariFundController is Ownable {
         if (pool == 0) require(DydxPoolController.withdrawAll(), "Withdrawal from dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.withdrawAll(), "Withdrawal from Compound failed.");
         else if (pool == 2) require(KeeperDaoPoolController.withdrawAll(), "Withdrawal from KeeperDao failed.");
+        else if (pool == 3) require(AavePoolController.withdrawAll(), "Withdrawal from Aave failed.");
         else revert("Invalid pool index.");
         _rariFundManagerContract.transfer(address(this).balance); // Transfer all ETH to RariFundManager for further processing
         _poolsWithFunds[pool] = false;

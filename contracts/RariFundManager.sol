@@ -90,6 +90,7 @@ contract RariFundManager is Ownable {
         addPool(0); // dYdX
         addPool(1); // Compound
         addPool(2); // KeeperDAO
+        addPool(3); // Aave
     }
 
 
@@ -132,7 +133,7 @@ contract RariFundManager is Ownable {
 
         RariFundManager(newContract).setFundManagerData(data);
 
-        // Update rETH minter
+        // Update REFT minter
         if (_rariEthFundTokenContract != address(0)) {
             _rariEthFundToken.addMinter(newContract);
             _rariEthFundToken.renounceMinter();
