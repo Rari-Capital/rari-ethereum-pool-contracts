@@ -15,8 +15,8 @@
 pragma solidity ^0.5.7;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
 
 import "../../external/keeperdao/ILiquidityPool.sol";
 import "../../external/keeperdao/IKToken.sol";
@@ -42,22 +42,6 @@ library KeeperDaoPoolController {
      */
     function getBalance() internal view returns (uint256) {
         return _liquidityPool.underlyingBalance(ETHEREUM_ADDRESS, address(this));
-    }
-
-    /**
-     * @dev Approves tokens to Keeper without spending gas on every deposit.
-     * @param amount Amount of the specified kToken to approve to Keeper.
-     * @return Boolean indicating success.
-     */
-    function approve(uint256 amount) internal returns (bool) {
-        IKToken kEther = _liquidityPool.kToken(ETHEREUM_ADDRESS);
-
-        uint256 allowance = kEther.allowance(address(this), KEEPERDAO_CONTRACT);
-        if (allowance == amount) return true;
-        if (amount > 0 && allowance > 0) kEther.approve(KEEPERDAO_CONTRACT, 0);
-        kEther.approve(KEEPERDAO_CONTRACT, amount);
-
-        return true;
     }
 
     /**
@@ -105,9 +89,8 @@ library KeeperDaoPoolController {
      * @dev Calculates an amount of kEther to withdraw equivalent to amount parameter in ETH.
      * @return amount to withdraw in kEther.
      */
-    function calculatekEtherWithdrawAmount(uint256 amount) internal returns (uint256) {
+    function calculatekEtherWithdrawAmount(uint256 amount) internal view returns (uint256) {
         IKToken kEther = _liquidityPool.kToken(ETHEREUM_ADDRESS);
-
         return amount.mul(kEther.totalSupply()).div(_liquidityPool.borrowableBalance(ETHEREUM_ADDRESS));    
     }
 }

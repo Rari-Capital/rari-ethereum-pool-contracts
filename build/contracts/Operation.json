@@ -109,14 +109,14 @@
     "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Operation.sol",
     "exportedSymbols": {
       "Operation": [
-        3509
+        3455
       ]
     },
-    "id": 3510,
+    "id": 3456,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3494,
+        "id": 3440,
         "literals": [
           "solidity",
           "^",
@@ -124,28 +124,28 @@
           ".7"
         ],
         "nodeType": "PragmaDirective",
-        "src": "603:23:12"
+        "src": "603:23:9"
       },
       {
-        "id": 3495,
+        "id": 3441,
         "literals": [
           "experimental",
           "ABIEncoderV2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "627:33:12"
+        "src": "627:33:9"
       },
       {
         "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Account.sol",
         "file": "./lib/Account.sol",
-        "id": 3497,
+        "id": 3443,
         "nodeType": "ImportDirective",
-        "scope": 3510,
-        "sourceUnit": 3531,
-        "src": "662:44:12",
+        "scope": 3456,
+        "sourceUnit": 3477,
+        "src": "662:44:9",
         "symbolAliases": [
           {
-            "foreign": 3496,
+            "foreign": 3442,
             "local": null
           }
         ],
@@ -154,14 +154,14 @@
       {
         "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Actions.sol",
         "file": "./lib/Actions.sol",
-        "id": 3499,
+        "id": 3445,
         "nodeType": "ImportDirective",
-        "scope": 3510,
-        "sourceUnit": 3564,
-        "src": "707:44:12",
+        "scope": 3456,
+        "sourceUnit": 3510,
+        "src": "707:44:9",
         "symbolAliases": [
           {
-            "foreign": 3498,
+            "foreign": 3444,
             "local": null
           }
         ],
@@ -173,9 +173,9 @@
         "contractKind": "contract",
         "documentation": "@title Operation\n@author dYdX\n * Primary public function for allowing users and contracts to manage accounts within Solo",
         "fullyImplemented": false,
-        "id": 3509,
+        "id": 3455,
         "linearizedBaseContracts": [
-          3509
+          3455
         ],
         "name": "Operation",
         "nodeType": "ContractDefinition",
@@ -183,48 +183,48 @@
           {
             "body": null,
             "documentation": "The main entry-point to Solo that allows users and contracts to manage accounts.\nTake one or more actions on one or more accounts. The msg.sender must be the owner or\noperator of all accounts except for those being liquidated, vaporized, or traded with.\nOne call to operate() is considered a singular \"operation\". Account collateralization is\nensured only after the completion of the entire operation.\n     * @param  accounts  A list of all accounts that will be used in this operation. Cannot contain\n                  duplicates. In each action, the relevant account will be referred-to by its\n                  index in the list.\n@param  actions   An ordered list of all actions that will be taken in this operation. The\n                  actions will be processed in order.",
-            "id": 3508,
+            "id": 3454,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "operate",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3506,
+              "id": 3452,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3502,
+                  "id": 3448,
                   "name": "accounts",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3508,
-                  "src": "1807:30:12",
+                  "scope": 3454,
+                  "src": "1807:30:9",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_Info_$3529_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_Info_$3475_memory_$dyn_memory_ptr",
                     "typeString": "struct Account.Info[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 3500,
+                      "id": 3446,
                       "name": "Account.Info",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 3529,
-                      "src": "1807:12:12",
+                      "referencedDeclaration": 3475,
+                      "src": "1807:12:9",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Info_$3529_storage_ptr",
+                        "typeIdentifier": "t_struct$_Info_$3475_storage_ptr",
                         "typeString": "struct Account.Info"
                       }
                     },
-                    "id": 3501,
+                    "id": 3447,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1807:14:12",
+                    "src": "1807:14:9",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_Info_$3529_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_Info_$3475_storage_$dyn_storage_ptr",
                       "typeString": "struct Account.Info[]"
                     }
                   },
@@ -233,36 +233,36 @@
                 },
                 {
                   "constant": false,
-                  "id": 3505,
+                  "id": 3451,
                   "name": "actions",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3508,
-                  "src": "1847:35:12",
+                  "scope": 3454,
+                  "src": "1847:35:9",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3562_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3508_memory_$dyn_memory_ptr",
                     "typeString": "struct Actions.ActionArgs[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 3503,
+                      "id": 3449,
                       "name": "Actions.ActionArgs",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 3562,
-                      "src": "1847:18:12",
+                      "referencedDeclaration": 3508,
+                      "src": "1847:18:9",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ActionArgs_$3562_storage_ptr",
+                        "typeIdentifier": "t_struct$_ActionArgs_$3508_storage_ptr",
                         "typeString": "struct Actions.ActionArgs"
                       }
                     },
-                    "id": 3504,
+                    "id": 3450,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1847:20:12",
+                    "src": "1847:20:9",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3562_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3508_storage_$dyn_storage_ptr",
                       "typeString": "struct Actions.ActionArgs[]"
                     }
                   },
@@ -270,39 +270,39 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1797:91:12"
+              "src": "1797:91:9"
             },
             "returnParameters": {
-              "id": 3507,
+              "id": 3453,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1903:0:12"
+              "src": "1903:0:9"
             },
-            "scope": 3509,
-            "src": "1781:123:12",
+            "scope": 3455,
+            "src": "1781:123:9",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 3510,
-        "src": "892:1014:12"
+        "scope": 3456,
+        "src": "892:1014:9"
       }
     ],
-    "src": "603:1304:12"
+    "src": "603:1304:9"
   },
   "legacyAST": {
     "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/Operation.sol",
     "exportedSymbols": {
       "Operation": [
-        3509
+        3455
       ]
     },
-    "id": 3510,
+    "id": 3456,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3494,
+        "id": 3440,
         "literals": [
           "solidity",
           "^",
@@ -310,28 +310,28 @@
           ".7"
         ],
         "nodeType": "PragmaDirective",
-        "src": "603:23:12"
+        "src": "603:23:9"
       },
       {
-        "id": 3495,
+        "id": 3441,
         "literals": [
           "experimental",
           "ABIEncoderV2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "627:33:12"
+        "src": "627:33:9"
       },
       {
         "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Account.sol",
         "file": "./lib/Account.sol",
-        "id": 3497,
+        "id": 3443,
         "nodeType": "ImportDirective",
-        "scope": 3510,
-        "sourceUnit": 3531,
-        "src": "662:44:12",
+        "scope": 3456,
+        "sourceUnit": 3477,
+        "src": "662:44:9",
         "symbolAliases": [
           {
-            "foreign": 3496,
+            "foreign": 3442,
             "local": null
           }
         ],
@@ -340,14 +340,14 @@
       {
         "absolutePath": "/Users/richter/Projects/Cloud/rari-work/rari-eth-contracts/contracts/external/dydx/lib/Actions.sol",
         "file": "./lib/Actions.sol",
-        "id": 3499,
+        "id": 3445,
         "nodeType": "ImportDirective",
-        "scope": 3510,
-        "sourceUnit": 3564,
-        "src": "707:44:12",
+        "scope": 3456,
+        "sourceUnit": 3510,
+        "src": "707:44:9",
         "symbolAliases": [
           {
-            "foreign": 3498,
+            "foreign": 3444,
             "local": null
           }
         ],
@@ -359,9 +359,9 @@
         "contractKind": "contract",
         "documentation": "@title Operation\n@author dYdX\n * Primary public function for allowing users and contracts to manage accounts within Solo",
         "fullyImplemented": false,
-        "id": 3509,
+        "id": 3455,
         "linearizedBaseContracts": [
-          3509
+          3455
         ],
         "name": "Operation",
         "nodeType": "ContractDefinition",
@@ -369,48 +369,48 @@
           {
             "body": null,
             "documentation": "The main entry-point to Solo that allows users and contracts to manage accounts.\nTake one or more actions on one or more accounts. The msg.sender must be the owner or\noperator of all accounts except for those being liquidated, vaporized, or traded with.\nOne call to operate() is considered a singular \"operation\". Account collateralization is\nensured only after the completion of the entire operation.\n     * @param  accounts  A list of all accounts that will be used in this operation. Cannot contain\n                  duplicates. In each action, the relevant account will be referred-to by its\n                  index in the list.\n@param  actions   An ordered list of all actions that will be taken in this operation. The\n                  actions will be processed in order.",
-            "id": 3508,
+            "id": 3454,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "operate",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3506,
+              "id": 3452,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3502,
+                  "id": 3448,
                   "name": "accounts",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3508,
-                  "src": "1807:30:12",
+                  "scope": 3454,
+                  "src": "1807:30:9",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_Info_$3529_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_Info_$3475_memory_$dyn_memory_ptr",
                     "typeString": "struct Account.Info[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 3500,
+                      "id": 3446,
                       "name": "Account.Info",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 3529,
-                      "src": "1807:12:12",
+                      "referencedDeclaration": 3475,
+                      "src": "1807:12:9",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Info_$3529_storage_ptr",
+                        "typeIdentifier": "t_struct$_Info_$3475_storage_ptr",
                         "typeString": "struct Account.Info"
                       }
                     },
-                    "id": 3501,
+                    "id": 3447,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1807:14:12",
+                    "src": "1807:14:9",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_Info_$3529_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_Info_$3475_storage_$dyn_storage_ptr",
                       "typeString": "struct Account.Info[]"
                     }
                   },
@@ -419,36 +419,36 @@
                 },
                 {
                   "constant": false,
-                  "id": 3505,
+                  "id": 3451,
                   "name": "actions",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3508,
-                  "src": "1847:35:12",
+                  "scope": 3454,
+                  "src": "1847:35:9",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3562_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3508_memory_$dyn_memory_ptr",
                     "typeString": "struct Actions.ActionArgs[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 3503,
+                      "id": 3449,
                       "name": "Actions.ActionArgs",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 3562,
-                      "src": "1847:18:12",
+                      "referencedDeclaration": 3508,
+                      "src": "1847:18:9",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ActionArgs_$3562_storage_ptr",
+                        "typeIdentifier": "t_struct$_ActionArgs_$3508_storage_ptr",
                         "typeString": "struct Actions.ActionArgs"
                       }
                     },
-                    "id": 3504,
+                    "id": 3450,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1847:20:12",
+                    "src": "1847:20:9",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3562_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_ActionArgs_$3508_storage_$dyn_storage_ptr",
                       "typeString": "struct Actions.ActionArgs[]"
                     }
                   },
@@ -456,26 +456,26 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1797:91:12"
+              "src": "1797:91:9"
             },
             "returnParameters": {
-              "id": 3507,
+              "id": 3453,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1903:0:12"
+              "src": "1903:0:9"
             },
-            "scope": 3509,
-            "src": "1781:123:12",
+            "scope": 3455,
+            "src": "1781:123:9",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 3510,
-        "src": "892:1014:12"
+        "scope": 3456,
+        "src": "892:1014:9"
       }
     ],
-    "src": "603:1304:12"
+    "src": "603:1304:9"
   },
   "compiler": {
     "name": "solc",
@@ -483,7 +483,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.3",
-  "updatedAt": "2020-10-08T18:48:19.907Z",
+  "updatedAt": "2020-10-09T05:26:08.031Z",
   "devdoc": {
     "author": "dYdX * Primary public function for allowing users and contracts to manage accounts within Solo",
     "methods": {

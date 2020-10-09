@@ -17,13 +17,16 @@
     "@babel/cli": "^7.10.3",
     "@babel/core": "^7.10.3",
     "@babel/preset-env": "^7.10.3",
-    "lite-server": "^2.5.4"
+    "lite-server": "^2.5.4",
+    "@openzeppelin/truffle-upgrades": "^1.1.1",
+    "@truffle/hdwallet-provider": "^1.0.36",
+    "dotenv": "^8.2.0",
+    "ganache-core": "^2.12.1"
   },
   "dependencies": {
     "@0x/contracts-exchange": "^3.2.5",
     "@0x/contracts-exchange-libs": "^4.3.5",
-    "@openzeppelin/contracts": "^2.5.0",
-    "@truffle/hdwallet-provider": "^1.0.36",
-    "dotenv": "^8.2.0"
+    "@openzeppelin/contracts-ethereum-package": "^2.5.0",
+    "@openzeppelin/upgrades": "^2.8.0"
   }
 }

@@ -1037,14 +1037,14 @@
     "absolutePath": "@0x/contracts-exchange/contracts/src/interfaces/IMatchOrders.sol",
     "exportedSymbols": {
       "IMatchOrders": [
-        6431
+        6260
       ]
     },
-    "id": 6432,
+    "id": 6261,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6367,
+        "id": 6196,
         "literals": [
           "solidity",
           "^",
@@ -1052,36 +1052,36 @@
           ".9"
         ],
         "nodeType": "PragmaDirective",
-        "src": "580:23:34"
+        "src": "580:23:31"
       },
       {
-        "id": 6368,
+        "id": 6197,
         "literals": [
           "experimental",
           "ABIEncoderV2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "604:33:34"
+        "src": "604:33:31"
       },
       {
         "absolutePath": "@0x/contracts-exchange-libs/contracts/src/LibOrder.sol",
         "file": "@0x/contracts-exchange-libs/contracts/src/LibOrder.sol",
-        "id": 6369,
+        "id": 6198,
         "nodeType": "ImportDirective",
-        "scope": 6432,
-        "sourceUnit": 6147,
-        "src": "639:64:34",
+        "scope": 6261,
+        "sourceUnit": 5976,
+        "src": "639:64:31",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "@0x/contracts-exchange-libs/contracts/src/LibFillResults.sol",
         "file": "@0x/contracts-exchange-libs/contracts/src/LibFillResults.sol",
-        "id": 6370,
+        "id": 6199,
         "nodeType": "ImportDirective",
-        "scope": 6432,
-        "sourceUnit": 5721,
-        "src": "704:70:34",
+        "scope": 6261,
+        "sourceUnit": 5550,
+        "src": "704:70:31",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -1091,9 +1091,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 6431,
+        "id": 6260,
         "linearizedBaseContracts": [
-          6431
+          6260
         ],
         "name": "IMatchOrders",
         "nodeType": "ContractDefinition",
@@ -1101,48 +1101,48 @@
           {
             "body": null,
             "documentation": "@dev Match complementary orders that have a profitable spread.\n      Each order is filled at their respective price point, and\n      the matcher receives a profit denominated in the left maker asset.\n @param leftOrders Set of orders with the same maker / taker asset.\n @param rightOrders Set of orders to match against `leftOrders`\n @param leftSignatures Proof that left orders were created by the left makers.\n @param rightSignatures Proof that right orders were created by the right makers.\n @return batchMatchedFillResults Amounts filled and profit generated.",
-            "id": 6387,
+            "id": 6216,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "batchMatchOrders",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6383,
+              "id": 6212,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6373,
+                  "id": 6202,
                   "name": "leftOrders",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6387,
-                  "src": "1461:34:34",
+                  "scope": 6216,
+                  "src": "1461:34:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_Order_$6081_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_Order_$5910_memory_$dyn_memory_ptr",
                     "typeString": "struct LibOrder.Order[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 6371,
+                      "id": 6200,
                       "name": "LibOrder.Order",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 6081,
-                      "src": "1461:14:34",
+                      "referencedDeclaration": 5910,
+                      "src": "1461:14:31",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                        "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                         "typeString": "struct LibOrder.Order"
                       }
                     },
-                    "id": 6372,
+                    "id": 6201,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1461:16:34",
+                    "src": "1461:16:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_Order_$6081_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_Order_$5910_storage_$dyn_storage_ptr",
                       "typeString": "struct LibOrder.Order[]"
                     }
                   },
@@ -1151,36 +1151,36 @@
                 },
                 {
                   "constant": false,
-                  "id": 6376,
+                  "id": 6205,
                   "name": "rightOrders",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6387,
-                  "src": "1505:35:34",
+                  "scope": 6216,
+                  "src": "1505:35:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_Order_$6081_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_Order_$5910_memory_$dyn_memory_ptr",
                     "typeString": "struct LibOrder.Order[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 6374,
+                      "id": 6203,
                       "name": "LibOrder.Order",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 6081,
-                      "src": "1505:14:34",
+                      "referencedDeclaration": 5910,
+                      "src": "1505:14:31",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                        "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                         "typeString": "struct LibOrder.Order"
                       }
                     },
-                    "id": 6375,
+                    "id": 6204,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1505:16:34",
+                    "src": "1505:16:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_Order_$6081_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_Order_$5910_storage_$dyn_storage_ptr",
                       "typeString": "struct LibOrder.Order[]"
                     }
                   },
@@ -1189,11 +1189,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6379,
+                  "id": 6208,
                   "name": "leftSignatures",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6387,
-                  "src": "1550:29:34",
+                  "scope": 6216,
+                  "src": "1550:29:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1202,19 +1202,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6377,
+                      "id": 6206,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
-                      "src": "1550:5:34",
+                      "src": "1550:5:31",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes_storage_ptr",
                         "typeString": "bytes"
                       }
                     },
-                    "id": 6378,
+                    "id": 6207,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1550:7:34",
+                    "src": "1550:7:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
                       "typeString": "bytes[]"
@@ -1225,11 +1225,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6382,
+                  "id": 6211,
                   "name": "rightSignatures",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6387,
-                  "src": "1589:30:34",
+                  "scope": 6216,
+                  "src": "1589:30:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1238,19 +1238,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6380,
+                      "id": 6209,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
-                      "src": "1589:5:34",
+                      "src": "1589:5:31",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes_storage_ptr",
                         "typeString": "bytes"
                       }
                     },
-                    "id": 6381,
+                    "id": 6210,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1589:7:34",
+                    "src": "1589:7:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
                       "typeString": "bytes[]"
@@ -1260,34 +1260,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1451:174:34"
+              "src": "1451:174:31"
             },
             "returnParameters": {
-              "id": 6386,
+              "id": 6215,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6385,
+                  "id": 6214,
                   "name": "batchMatchedFillResults",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6387,
-                  "src": "1674:69:34",
+                  "scope": 6216,
+                  "src": "1674:69:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_BatchMatchedFillResults_$5053_memory_ptr",
+                    "typeIdentifier": "t_struct$_BatchMatchedFillResults_$4882_memory_ptr",
                     "typeString": "struct LibFillResults.BatchMatchedFillResults"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6384,
+                    "id": 6213,
                     "name": "LibFillResults.BatchMatchedFillResults",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5053,
-                    "src": "1674:38:34",
+                    "referencedDeclaration": 4882,
+                    "src": "1674:38:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_BatchMatchedFillResults_$5053_storage_ptr",
+                      "typeIdentifier": "t_struct$_BatchMatchedFillResults_$4882_storage_ptr",
                       "typeString": "struct LibFillResults.BatchMatchedFillResults"
                     }
                   },
@@ -1295,10 +1295,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1673:71:34"
+              "src": "1673:71:31"
             },
-            "scope": 6431,
-            "src": "1426:319:34",
+            "scope": 6260,
+            "src": "1426:319:31",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
@@ -1306,48 +1306,48 @@
           {
             "body": null,
             "documentation": "@dev Match complementary orders that have a profitable spread.\n      Each order is maximally filled at their respective price point, and\n      the matcher receives a profit denominated in either the left maker asset,\n      right maker asset, or a combination of both.\n @param leftOrders Set of orders with the same maker / taker asset.\n @param rightOrders Set of orders to match against `leftOrders`\n @param leftSignatures Proof that left orders were created by the left makers.\n @param rightSignatures Proof that right orders were created by the right makers.\n @return batchMatchedFillResults Amounts filled and profit generated.",
-            "id": 6404,
+            "id": 6233,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "batchMatchOrdersWithMaximalFill",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6400,
+              "id": 6229,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6390,
+                  "id": 6219,
                   "name": "leftOrders",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6404,
-                  "src": "2496:34:34",
+                  "scope": 6233,
+                  "src": "2496:34:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_Order_$6081_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_Order_$5910_memory_$dyn_memory_ptr",
                     "typeString": "struct LibOrder.Order[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 6388,
+                      "id": 6217,
                       "name": "LibOrder.Order",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 6081,
-                      "src": "2496:14:34",
+                      "referencedDeclaration": 5910,
+                      "src": "2496:14:31",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                        "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                         "typeString": "struct LibOrder.Order"
                       }
                     },
-                    "id": 6389,
+                    "id": 6218,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "2496:16:34",
+                    "src": "2496:16:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_Order_$6081_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_Order_$5910_storage_$dyn_storage_ptr",
                       "typeString": "struct LibOrder.Order[]"
                     }
                   },
@@ -1356,36 +1356,36 @@
                 },
                 {
                   "constant": false,
-                  "id": 6393,
+                  "id": 6222,
                   "name": "rightOrders",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6404,
-                  "src": "2540:35:34",
+                  "scope": 6233,
+                  "src": "2540:35:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_Order_$6081_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_Order_$5910_memory_$dyn_memory_ptr",
                     "typeString": "struct LibOrder.Order[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 6391,
+                      "id": 6220,
                       "name": "LibOrder.Order",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 6081,
-                      "src": "2540:14:34",
+                      "referencedDeclaration": 5910,
+                      "src": "2540:14:31",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                        "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                         "typeString": "struct LibOrder.Order"
                       }
                     },
-                    "id": 6392,
+                    "id": 6221,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "2540:16:34",
+                    "src": "2540:16:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_Order_$6081_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_Order_$5910_storage_$dyn_storage_ptr",
                       "typeString": "struct LibOrder.Order[]"
                     }
                   },
@@ -1394,11 +1394,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6396,
+                  "id": 6225,
                   "name": "leftSignatures",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6404,
-                  "src": "2585:29:34",
+                  "scope": 6233,
+                  "src": "2585:29:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1407,19 +1407,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6394,
+                      "id": 6223,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2585:5:34",
+                      "src": "2585:5:31",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes_storage_ptr",
                         "typeString": "bytes"
                       }
                     },
-                    "id": 6395,
+                    "id": 6224,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "2585:7:34",
+                    "src": "2585:7:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
                       "typeString": "bytes[]"
@@ -1430,11 +1430,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6399,
+                  "id": 6228,
                   "name": "rightSignatures",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6404,
-                  "src": "2624:30:34",
+                  "scope": 6233,
+                  "src": "2624:30:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1443,19 +1443,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6397,
+                      "id": 6226,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2624:5:34",
+                      "src": "2624:5:31",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes_storage_ptr",
                         "typeString": "bytes"
                       }
                     },
-                    "id": 6398,
+                    "id": 6227,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "2624:7:34",
+                    "src": "2624:7:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
                       "typeString": "bytes[]"
@@ -1465,34 +1465,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2486:174:34"
+              "src": "2486:174:31"
             },
             "returnParameters": {
-              "id": 6403,
+              "id": 6232,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6402,
+                  "id": 6231,
                   "name": "batchMatchedFillResults",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6404,
-                  "src": "2709:69:34",
+                  "scope": 6233,
+                  "src": "2709:69:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_BatchMatchedFillResults_$5053_memory_ptr",
+                    "typeIdentifier": "t_struct$_BatchMatchedFillResults_$4882_memory_ptr",
                     "typeString": "struct LibFillResults.BatchMatchedFillResults"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6401,
+                    "id": 6230,
                     "name": "LibFillResults.BatchMatchedFillResults",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5053,
-                    "src": "2709:38:34",
+                    "referencedDeclaration": 4882,
+                    "src": "2709:38:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_BatchMatchedFillResults_$5053_storage_ptr",
+                      "typeIdentifier": "t_struct$_BatchMatchedFillResults_$4882_storage_ptr",
                       "typeString": "struct LibFillResults.BatchMatchedFillResults"
                     }
                   },
@@ -1500,10 +1500,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2708:71:34"
+              "src": "2708:71:31"
             },
-            "scope": 6431,
-            "src": "2446:334:34",
+            "scope": 6260,
+            "src": "2446:334:31",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
@@ -1511,38 +1511,38 @@
           {
             "body": null,
             "documentation": "@dev Match two complementary orders that have a profitable spread.\n      Each order is filled at their respective price point. However, the calculations are\n      carried out as though the orders are both being filled at the right order's price point.\n      The profit made by the left order goes to the taker (who matched the two orders).\n @param leftOrder First order to match.\n @param rightOrder Second order to match.\n @param leftSignature Proof that order was created by the left maker.\n @param rightSignature Proof that order was created by the right maker.\n @return matchedFillResults Amounts filled and fees paid by maker and taker of matched orders.",
-            "id": 6417,
+            "id": 6246,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "matchOrders",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6413,
+              "id": 6242,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6406,
+                  "id": 6235,
                   "name": "leftOrder",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6417,
-                  "src": "3539:31:34",
+                  "scope": 6246,
+                  "src": "3539:31:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$6081_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$5910_memory_ptr",
                     "typeString": "struct LibOrder.Order"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6405,
+                    "id": 6234,
                     "name": "LibOrder.Order",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6081,
-                    "src": "3539:14:34",
+                    "referencedDeclaration": 5910,
+                    "src": "3539:14:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                       "typeString": "struct LibOrder.Order"
                     }
                   },
@@ -1551,26 +1551,26 @@
                 },
                 {
                   "constant": false,
-                  "id": 6408,
+                  "id": 6237,
                   "name": "rightOrder",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6417,
-                  "src": "3580:32:34",
+                  "scope": 6246,
+                  "src": "3580:32:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$6081_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$5910_memory_ptr",
                     "typeString": "struct LibOrder.Order"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6407,
+                    "id": 6236,
                     "name": "LibOrder.Order",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6081,
-                    "src": "3580:14:34",
+                    "referencedDeclaration": 5910,
+                    "src": "3580:14:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                       "typeString": "struct LibOrder.Order"
                     }
                   },
@@ -1579,11 +1579,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6410,
+                  "id": 6239,
                   "name": "leftSignature",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6417,
-                  "src": "3622:26:34",
+                  "scope": 6246,
+                  "src": "3622:26:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1591,10 +1591,10 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 6409,
+                    "id": 6238,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3622:5:34",
+                    "src": "3622:5:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -1605,11 +1605,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6412,
+                  "id": 6241,
                   "name": "rightSignature",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6417,
-                  "src": "3658:27:34",
+                  "scope": 6246,
+                  "src": "3658:27:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1617,10 +1617,10 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 6411,
+                    "id": 6240,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3658:5:34",
+                    "src": "3658:5:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -1630,34 +1630,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3529:162:34"
+              "src": "3529:162:31"
             },
             "returnParameters": {
-              "id": 6416,
+              "id": 6245,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6415,
+                  "id": 6244,
                   "name": "matchedFillResults",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6417,
-                  "src": "3740:59:34",
+                  "scope": 6246,
+                  "src": "3740:59:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_MatchedFillResults_$5073_memory_ptr",
+                    "typeIdentifier": "t_struct$_MatchedFillResults_$4902_memory_ptr",
                     "typeString": "struct LibFillResults.MatchedFillResults"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6414,
+                    "id": 6243,
                     "name": "LibFillResults.MatchedFillResults",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5073,
-                    "src": "3740:33:34",
+                    "referencedDeclaration": 4902,
+                    "src": "3740:33:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_MatchedFillResults_$5073_storage_ptr",
+                      "typeIdentifier": "t_struct$_MatchedFillResults_$4902_storage_ptr",
                       "typeString": "struct LibFillResults.MatchedFillResults"
                     }
                   },
@@ -1665,10 +1665,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3739:61:34"
+              "src": "3739:61:31"
             },
-            "scope": 6431,
-            "src": "3509:292:34",
+            "scope": 6260,
+            "src": "3509:292:31",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
@@ -1676,38 +1676,38 @@
           {
             "body": null,
             "documentation": "@dev Match two complementary orders that have a profitable spread.\n      Each order is maximally filled at their respective price point, and\n      the matcher receives a profit denominated in either the left maker asset,\n      right maker asset, or a combination of both.\n @param leftOrder First order to match.\n @param rightOrder Second order to match.\n @param leftSignature Proof that order was created by the left maker.\n @param rightSignature Proof that order was created by the right maker.\n @return matchedFillResults Amounts filled by maker and taker of matched orders.",
-            "id": 6430,
+            "id": 6259,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "matchOrdersWithMaximalFill",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6426,
+              "id": 6255,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6419,
+                  "id": 6248,
                   "name": "leftOrder",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6430,
-                  "src": "4493:31:34",
+                  "scope": 6259,
+                  "src": "4493:31:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$6081_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$5910_memory_ptr",
                     "typeString": "struct LibOrder.Order"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6418,
+                    "id": 6247,
                     "name": "LibOrder.Order",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6081,
-                    "src": "4493:14:34",
+                    "referencedDeclaration": 5910,
+                    "src": "4493:14:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                       "typeString": "struct LibOrder.Order"
                     }
                   },
@@ -1716,26 +1716,26 @@
                 },
                 {
                   "constant": false,
-                  "id": 6421,
+                  "id": 6250,
                   "name": "rightOrder",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6430,
-                  "src": "4534:32:34",
+                  "scope": 6259,
+                  "src": "4534:32:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$6081_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$5910_memory_ptr",
                     "typeString": "struct LibOrder.Order"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6420,
+                    "id": 6249,
                     "name": "LibOrder.Order",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6081,
-                    "src": "4534:14:34",
+                    "referencedDeclaration": 5910,
+                    "src": "4534:14:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                       "typeString": "struct LibOrder.Order"
                     }
                   },
@@ -1744,11 +1744,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6423,
+                  "id": 6252,
                   "name": "leftSignature",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6430,
-                  "src": "4576:26:34",
+                  "scope": 6259,
+                  "src": "4576:26:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1756,10 +1756,10 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 6422,
+                    "id": 6251,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4576:5:34",
+                    "src": "4576:5:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -1770,11 +1770,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6425,
+                  "id": 6254,
                   "name": "rightSignature",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6430,
-                  "src": "4612:27:34",
+                  "scope": 6259,
+                  "src": "4612:27:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -1782,10 +1782,10 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 6424,
+                    "id": 6253,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4612:5:34",
+                    "src": "4612:5:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -1795,34 +1795,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4483:162:34"
+              "src": "4483:162:31"
             },
             "returnParameters": {
-              "id": 6429,
+              "id": 6258,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6428,
+                  "id": 6257,
                   "name": "matchedFillResults",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6430,
-                  "src": "4694:59:34",
+                  "scope": 6259,
+                  "src": "4694:59:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_MatchedFillResults_$5073_memory_ptr",
+                    "typeIdentifier": "t_struct$_MatchedFillResults_$4902_memory_ptr",
                     "typeString": "struct LibFillResults.MatchedFillResults"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6427,
+                    "id": 6256,
                     "name": "LibFillResults.MatchedFillResults",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5073,
-                    "src": "4694:33:34",
+                    "referencedDeclaration": 4902,
+                    "src": "4694:33:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_MatchedFillResults_$5073_storage_ptr",
+                      "typeIdentifier": "t_struct$_MatchedFillResults_$4902_storage_ptr",
                       "typeString": "struct LibFillResults.MatchedFillResults"
                     }
                   },
@@ -1830,33 +1830,33 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4693:61:34"
+              "src": "4693:61:31"
             },
-            "scope": 6431,
-            "src": "4448:307:34",
+            "scope": 6260,
+            "src": "4448:307:31",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 6432,
-        "src": "777:3980:34"
+        "scope": 6261,
+        "src": "777:3980:31"
       }
     ],
-    "src": "580:4178:34"
+    "src": "580:4178:31"
   },
   "legacyAST": {
     "absolutePath": "@0x/contracts-exchange/contracts/src/interfaces/IMatchOrders.sol",
     "exportedSymbols": {
       "IMatchOrders": [
-        6431
+        6260
       ]
     },
-    "id": 6432,
+    "id": 6261,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6367,
+        "id": 6196,
         "literals": [
           "solidity",
           "^",
@@ -1864,36 +1864,36 @@
           ".9"
         ],
         "nodeType": "PragmaDirective",
-        "src": "580:23:34"
+        "src": "580:23:31"
       },
       {
-        "id": 6368,
+        "id": 6197,
         "literals": [
           "experimental",
           "ABIEncoderV2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "604:33:34"
+        "src": "604:33:31"
       },
       {
         "absolutePath": "@0x/contracts-exchange-libs/contracts/src/LibOrder.sol",
         "file": "@0x/contracts-exchange-libs/contracts/src/LibOrder.sol",
-        "id": 6369,
+        "id": 6198,
         "nodeType": "ImportDirective",
-        "scope": 6432,
-        "sourceUnit": 6147,
-        "src": "639:64:34",
+        "scope": 6261,
+        "sourceUnit": 5976,
+        "src": "639:64:31",
         "symbolAliases": [],
         "unitAlias": ""
       },
       {
         "absolutePath": "@0x/contracts-exchange-libs/contracts/src/LibFillResults.sol",
         "file": "@0x/contracts-exchange-libs/contracts/src/LibFillResults.sol",
-        "id": 6370,
+        "id": 6199,
         "nodeType": "ImportDirective",
-        "scope": 6432,
-        "sourceUnit": 5721,
-        "src": "704:70:34",
+        "scope": 6261,
+        "sourceUnit": 5550,
+        "src": "704:70:31",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -1903,9 +1903,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 6431,
+        "id": 6260,
         "linearizedBaseContracts": [
-          6431
+          6260
         ],
         "name": "IMatchOrders",
         "nodeType": "ContractDefinition",
@@ -1913,48 +1913,48 @@
           {
             "body": null,
             "documentation": "@dev Match complementary orders that have a profitable spread.\n      Each order is filled at their respective price point, and\n      the matcher receives a profit denominated in the left maker asset.\n @param leftOrders Set of orders with the same maker / taker asset.\n @param rightOrders Set of orders to match against `leftOrders`\n @param leftSignatures Proof that left orders were created by the left makers.\n @param rightSignatures Proof that right orders were created by the right makers.\n @return batchMatchedFillResults Amounts filled and profit generated.",
-            "id": 6387,
+            "id": 6216,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "batchMatchOrders",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6383,
+              "id": 6212,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6373,
+                  "id": 6202,
                   "name": "leftOrders",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6387,
-                  "src": "1461:34:34",
+                  "scope": 6216,
+                  "src": "1461:34:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_Order_$6081_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_Order_$5910_memory_$dyn_memory_ptr",
                     "typeString": "struct LibOrder.Order[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 6371,
+                      "id": 6200,
                       "name": "LibOrder.Order",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 6081,
-                      "src": "1461:14:34",
+                      "referencedDeclaration": 5910,
+                      "src": "1461:14:31",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                        "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                         "typeString": "struct LibOrder.Order"
                       }
                     },
-                    "id": 6372,
+                    "id": 6201,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1461:16:34",
+                    "src": "1461:16:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_Order_$6081_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_Order_$5910_storage_$dyn_storage_ptr",
                       "typeString": "struct LibOrder.Order[]"
                     }
                   },
@@ -1963,36 +1963,36 @@
                 },
                 {
                   "constant": false,
-                  "id": 6376,
+                  "id": 6205,
                   "name": "rightOrders",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6387,
-                  "src": "1505:35:34",
+                  "scope": 6216,
+                  "src": "1505:35:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_Order_$6081_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_Order_$5910_memory_$dyn_memory_ptr",
                     "typeString": "struct LibOrder.Order[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 6374,
+                      "id": 6203,
                       "name": "LibOrder.Order",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 6081,
-                      "src": "1505:14:34",
+                      "referencedDeclaration": 5910,
+                      "src": "1505:14:31",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                        "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                         "typeString": "struct LibOrder.Order"
                       }
                     },
-                    "id": 6375,
+                    "id": 6204,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1505:16:34",
+                    "src": "1505:16:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_Order_$6081_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_Order_$5910_storage_$dyn_storage_ptr",
                       "typeString": "struct LibOrder.Order[]"
                     }
                   },
@@ -2001,11 +2001,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6379,
+                  "id": 6208,
                   "name": "leftSignatures",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6387,
-                  "src": "1550:29:34",
+                  "scope": 6216,
+                  "src": "1550:29:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2014,19 +2014,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6377,
+                      "id": 6206,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
-                      "src": "1550:5:34",
+                      "src": "1550:5:31",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes_storage_ptr",
                         "typeString": "bytes"
                       }
                     },
-                    "id": 6378,
+                    "id": 6207,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1550:7:34",
+                    "src": "1550:7:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
                       "typeString": "bytes[]"
@@ -2037,11 +2037,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6382,
+                  "id": 6211,
                   "name": "rightSignatures",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6387,
-                  "src": "1589:30:34",
+                  "scope": 6216,
+                  "src": "1589:30:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2050,19 +2050,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6380,
+                      "id": 6209,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
-                      "src": "1589:5:34",
+                      "src": "1589:5:31",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes_storage_ptr",
                         "typeString": "bytes"
                       }
                     },
-                    "id": 6381,
+                    "id": 6210,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "1589:7:34",
+                    "src": "1589:7:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
                       "typeString": "bytes[]"
@@ -2072,34 +2072,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1451:174:34"
+              "src": "1451:174:31"
             },
             "returnParameters": {
-              "id": 6386,
+              "id": 6215,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6385,
+                  "id": 6214,
                   "name": "batchMatchedFillResults",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6387,
-                  "src": "1674:69:34",
+                  "scope": 6216,
+                  "src": "1674:69:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_BatchMatchedFillResults_$5053_memory_ptr",
+                    "typeIdentifier": "t_struct$_BatchMatchedFillResults_$4882_memory_ptr",
                     "typeString": "struct LibFillResults.BatchMatchedFillResults"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6384,
+                    "id": 6213,
                     "name": "LibFillResults.BatchMatchedFillResults",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5053,
-                    "src": "1674:38:34",
+                    "referencedDeclaration": 4882,
+                    "src": "1674:38:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_BatchMatchedFillResults_$5053_storage_ptr",
+                      "typeIdentifier": "t_struct$_BatchMatchedFillResults_$4882_storage_ptr",
                       "typeString": "struct LibFillResults.BatchMatchedFillResults"
                     }
                   },
@@ -2107,10 +2107,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1673:71:34"
+              "src": "1673:71:31"
             },
-            "scope": 6431,
-            "src": "1426:319:34",
+            "scope": 6260,
+            "src": "1426:319:31",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
@@ -2118,48 +2118,48 @@
           {
             "body": null,
             "documentation": "@dev Match complementary orders that have a profitable spread.\n      Each order is maximally filled at their respective price point, and\n      the matcher receives a profit denominated in either the left maker asset,\n      right maker asset, or a combination of both.\n @param leftOrders Set of orders with the same maker / taker asset.\n @param rightOrders Set of orders to match against `leftOrders`\n @param leftSignatures Proof that left orders were created by the left makers.\n @param rightSignatures Proof that right orders were created by the right makers.\n @return batchMatchedFillResults Amounts filled and profit generated.",
-            "id": 6404,
+            "id": 6233,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "batchMatchOrdersWithMaximalFill",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6400,
+              "id": 6229,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6390,
+                  "id": 6219,
                   "name": "leftOrders",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6404,
-                  "src": "2496:34:34",
+                  "scope": 6233,
+                  "src": "2496:34:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_Order_$6081_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_Order_$5910_memory_$dyn_memory_ptr",
                     "typeString": "struct LibOrder.Order[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 6388,
+                      "id": 6217,
                       "name": "LibOrder.Order",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 6081,
-                      "src": "2496:14:34",
+                      "referencedDeclaration": 5910,
+                      "src": "2496:14:31",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                        "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                         "typeString": "struct LibOrder.Order"
                       }
                     },
-                    "id": 6389,
+                    "id": 6218,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "2496:16:34",
+                    "src": "2496:16:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_Order_$6081_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_Order_$5910_storage_$dyn_storage_ptr",
                       "typeString": "struct LibOrder.Order[]"
                     }
                   },
@@ -2168,36 +2168,36 @@
                 },
                 {
                   "constant": false,
-                  "id": 6393,
+                  "id": 6222,
                   "name": "rightOrders",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6404,
-                  "src": "2540:35:34",
+                  "scope": 6233,
+                  "src": "2540:35:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_Order_$6081_memory_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_Order_$5910_memory_$dyn_memory_ptr",
                     "typeString": "struct LibOrder.Order[]"
                   },
                   "typeName": {
                     "baseType": {
                       "contractScope": null,
-                      "id": 6391,
+                      "id": 6220,
                       "name": "LibOrder.Order",
                       "nodeType": "UserDefinedTypeName",
-                      "referencedDeclaration": 6081,
-                      "src": "2540:14:34",
+                      "referencedDeclaration": 5910,
+                      "src": "2540:14:31",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                        "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                         "typeString": "struct LibOrder.Order"
                       }
                     },
-                    "id": 6392,
+                    "id": 6221,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "2540:16:34",
+                    "src": "2540:16:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_Order_$6081_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_Order_$5910_storage_$dyn_storage_ptr",
                       "typeString": "struct LibOrder.Order[]"
                     }
                   },
@@ -2206,11 +2206,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6396,
+                  "id": 6225,
                   "name": "leftSignatures",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6404,
-                  "src": "2585:29:34",
+                  "scope": 6233,
+                  "src": "2585:29:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2219,19 +2219,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6394,
+                      "id": 6223,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2585:5:34",
+                      "src": "2585:5:31",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes_storage_ptr",
                         "typeString": "bytes"
                       }
                     },
-                    "id": 6395,
+                    "id": 6224,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "2585:7:34",
+                    "src": "2585:7:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
                       "typeString": "bytes[]"
@@ -2242,11 +2242,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6399,
+                  "id": 6228,
                   "name": "rightSignatures",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6404,
-                  "src": "2624:30:34",
+                  "scope": 6233,
+                  "src": "2624:30:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2255,19 +2255,19 @@
                   },
                   "typeName": {
                     "baseType": {
-                      "id": 6397,
+                      "id": 6226,
                       "name": "bytes",
                       "nodeType": "ElementaryTypeName",
-                      "src": "2624:5:34",
+                      "src": "2624:5:31",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes_storage_ptr",
                         "typeString": "bytes"
                       }
                     },
-                    "id": 6398,
+                    "id": 6227,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "2624:7:34",
+                    "src": "2624:7:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
                       "typeString": "bytes[]"
@@ -2277,34 +2277,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2486:174:34"
+              "src": "2486:174:31"
             },
             "returnParameters": {
-              "id": 6403,
+              "id": 6232,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6402,
+                  "id": 6231,
                   "name": "batchMatchedFillResults",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6404,
-                  "src": "2709:69:34",
+                  "scope": 6233,
+                  "src": "2709:69:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_BatchMatchedFillResults_$5053_memory_ptr",
+                    "typeIdentifier": "t_struct$_BatchMatchedFillResults_$4882_memory_ptr",
                     "typeString": "struct LibFillResults.BatchMatchedFillResults"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6401,
+                    "id": 6230,
                     "name": "LibFillResults.BatchMatchedFillResults",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5053,
-                    "src": "2709:38:34",
+                    "referencedDeclaration": 4882,
+                    "src": "2709:38:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_BatchMatchedFillResults_$5053_storage_ptr",
+                      "typeIdentifier": "t_struct$_BatchMatchedFillResults_$4882_storage_ptr",
                       "typeString": "struct LibFillResults.BatchMatchedFillResults"
                     }
                   },
@@ -2312,10 +2312,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2708:71:34"
+              "src": "2708:71:31"
             },
-            "scope": 6431,
-            "src": "2446:334:34",
+            "scope": 6260,
+            "src": "2446:334:31",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
@@ -2323,38 +2323,38 @@
           {
             "body": null,
             "documentation": "@dev Match two complementary orders that have a profitable spread.\n      Each order is filled at their respective price point. However, the calculations are\n      carried out as though the orders are both being filled at the right order's price point.\n      The profit made by the left order goes to the taker (who matched the two orders).\n @param leftOrder First order to match.\n @param rightOrder Second order to match.\n @param leftSignature Proof that order was created by the left maker.\n @param rightSignature Proof that order was created by the right maker.\n @return matchedFillResults Amounts filled and fees paid by maker and taker of matched orders.",
-            "id": 6417,
+            "id": 6246,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "matchOrders",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6413,
+              "id": 6242,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6406,
+                  "id": 6235,
                   "name": "leftOrder",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6417,
-                  "src": "3539:31:34",
+                  "scope": 6246,
+                  "src": "3539:31:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$6081_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$5910_memory_ptr",
                     "typeString": "struct LibOrder.Order"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6405,
+                    "id": 6234,
                     "name": "LibOrder.Order",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6081,
-                    "src": "3539:14:34",
+                    "referencedDeclaration": 5910,
+                    "src": "3539:14:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                       "typeString": "struct LibOrder.Order"
                     }
                   },
@@ -2363,26 +2363,26 @@
                 },
                 {
                   "constant": false,
-                  "id": 6408,
+                  "id": 6237,
                   "name": "rightOrder",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6417,
-                  "src": "3580:32:34",
+                  "scope": 6246,
+                  "src": "3580:32:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$6081_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$5910_memory_ptr",
                     "typeString": "struct LibOrder.Order"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6407,
+                    "id": 6236,
                     "name": "LibOrder.Order",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6081,
-                    "src": "3580:14:34",
+                    "referencedDeclaration": 5910,
+                    "src": "3580:14:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                       "typeString": "struct LibOrder.Order"
                     }
                   },
@@ -2391,11 +2391,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6410,
+                  "id": 6239,
                   "name": "leftSignature",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6417,
-                  "src": "3622:26:34",
+                  "scope": 6246,
+                  "src": "3622:26:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2403,10 +2403,10 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 6409,
+                    "id": 6238,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3622:5:34",
+                    "src": "3622:5:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -2417,11 +2417,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6412,
+                  "id": 6241,
                   "name": "rightSignature",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6417,
-                  "src": "3658:27:34",
+                  "scope": 6246,
+                  "src": "3658:27:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2429,10 +2429,10 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 6411,
+                    "id": 6240,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3658:5:34",
+                    "src": "3658:5:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -2442,34 +2442,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3529:162:34"
+              "src": "3529:162:31"
             },
             "returnParameters": {
-              "id": 6416,
+              "id": 6245,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6415,
+                  "id": 6244,
                   "name": "matchedFillResults",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6417,
-                  "src": "3740:59:34",
+                  "scope": 6246,
+                  "src": "3740:59:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_MatchedFillResults_$5073_memory_ptr",
+                    "typeIdentifier": "t_struct$_MatchedFillResults_$4902_memory_ptr",
                     "typeString": "struct LibFillResults.MatchedFillResults"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6414,
+                    "id": 6243,
                     "name": "LibFillResults.MatchedFillResults",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5073,
-                    "src": "3740:33:34",
+                    "referencedDeclaration": 4902,
+                    "src": "3740:33:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_MatchedFillResults_$5073_storage_ptr",
+                      "typeIdentifier": "t_struct$_MatchedFillResults_$4902_storage_ptr",
                       "typeString": "struct LibFillResults.MatchedFillResults"
                     }
                   },
@@ -2477,10 +2477,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3739:61:34"
+              "src": "3739:61:31"
             },
-            "scope": 6431,
-            "src": "3509:292:34",
+            "scope": 6260,
+            "src": "3509:292:31",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
@@ -2488,38 +2488,38 @@
           {
             "body": null,
             "documentation": "@dev Match two complementary orders that have a profitable spread.\n      Each order is maximally filled at their respective price point, and\n      the matcher receives a profit denominated in either the left maker asset,\n      right maker asset, or a combination of both.\n @param leftOrder First order to match.\n @param rightOrder Second order to match.\n @param leftSignature Proof that order was created by the left maker.\n @param rightSignature Proof that order was created by the right maker.\n @return matchedFillResults Amounts filled by maker and taker of matched orders.",
-            "id": 6430,
+            "id": 6259,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "matchOrdersWithMaximalFill",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6426,
+              "id": 6255,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6419,
+                  "id": 6248,
                   "name": "leftOrder",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6430,
-                  "src": "4493:31:34",
+                  "scope": 6259,
+                  "src": "4493:31:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$6081_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$5910_memory_ptr",
                     "typeString": "struct LibOrder.Order"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6418,
+                    "id": 6247,
                     "name": "LibOrder.Order",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6081,
-                    "src": "4493:14:34",
+                    "referencedDeclaration": 5910,
+                    "src": "4493:14:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                       "typeString": "struct LibOrder.Order"
                     }
                   },
@@ -2528,26 +2528,26 @@
                 },
                 {
                   "constant": false,
-                  "id": 6421,
+                  "id": 6250,
                   "name": "rightOrder",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6430,
-                  "src": "4534:32:34",
+                  "scope": 6259,
+                  "src": "4534:32:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Order_$6081_memory_ptr",
+                    "typeIdentifier": "t_struct$_Order_$5910_memory_ptr",
                     "typeString": "struct LibOrder.Order"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6420,
+                    "id": 6249,
                     "name": "LibOrder.Order",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6081,
-                    "src": "4534:14:34",
+                    "referencedDeclaration": 5910,
+                    "src": "4534:14:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Order_$6081_storage_ptr",
+                      "typeIdentifier": "t_struct$_Order_$5910_storage_ptr",
                       "typeString": "struct LibOrder.Order"
                     }
                   },
@@ -2556,11 +2556,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6423,
+                  "id": 6252,
                   "name": "leftSignature",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6430,
-                  "src": "4576:26:34",
+                  "scope": 6259,
+                  "src": "4576:26:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2568,10 +2568,10 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 6422,
+                    "id": 6251,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4576:5:34",
+                    "src": "4576:5:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -2582,11 +2582,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6425,
+                  "id": 6254,
                   "name": "rightSignature",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6430,
-                  "src": "4612:27:34",
+                  "scope": 6259,
+                  "src": "4612:27:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -2594,10 +2594,10 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 6424,
+                    "id": 6253,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4612:5:34",
+                    "src": "4612:5:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -2607,34 +2607,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4483:162:34"
+              "src": "4483:162:31"
             },
             "returnParameters": {
-              "id": 6429,
+              "id": 6258,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6428,
+                  "id": 6257,
                   "name": "matchedFillResults",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6430,
-                  "src": "4694:59:34",
+                  "scope": 6259,
+                  "src": "4694:59:31",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_MatchedFillResults_$5073_memory_ptr",
+                    "typeIdentifier": "t_struct$_MatchedFillResults_$4902_memory_ptr",
                     "typeString": "struct LibFillResults.MatchedFillResults"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6427,
+                    "id": 6256,
                     "name": "LibFillResults.MatchedFillResults",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5073,
-                    "src": "4694:33:34",
+                    "referencedDeclaration": 4902,
+                    "src": "4694:33:31",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_MatchedFillResults_$5073_storage_ptr",
+                      "typeIdentifier": "t_struct$_MatchedFillResults_$4902_storage_ptr",
                       "typeString": "struct LibFillResults.MatchedFillResults"
                     }
                   },
@@ -2642,20 +2642,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4693:61:34"
+              "src": "4693:61:31"
             },
-            "scope": 6431,
-            "src": "4448:307:34",
+            "scope": 6260,
+            "src": "4448:307:31",
             "stateMutability": "payable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 6432,
-        "src": "777:3980:34"
+        "scope": 6261,
+        "src": "777:3980:31"
       }
     ],
-    "src": "580:4178:34"
+    "src": "580:4178:31"
   },
   "compiler": {
     "name": "solc",
@@ -2663,7 +2663,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.3",
-  "updatedAt": "2020-10-08T18:48:19.990Z",
+  "updatedAt": "2020-10-09T05:26:08.095Z",
   "devdoc": {
     "methods": {
       "batchMatchOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[],(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[],bytes[],bytes[])": {

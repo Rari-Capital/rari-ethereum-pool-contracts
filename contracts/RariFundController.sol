@@ -15,11 +15,11 @@
 pragma solidity ^0.5.7;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/drafts/SignedSafeMath.sol";
-import "@openzeppelin/contracts/ownership/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/drafts/SignedSafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
 
 import "@0x/contracts-exchange-libs/contracts/src/LibOrder.sol";
 
@@ -60,6 +60,10 @@ contract RariFundController is Ownable {
 
 
     address constant private WETH_CONTRACT = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+
+
+    address constant private COMP_TOKEN = 0xc00e94Cb662C3520282E6f5717214004A7f26888;
+
 
     /**
      * @dev Caches the balances for each pool, with the sum cached at the end
@@ -232,7 +236,6 @@ contract RariFundController is Ownable {
         for (uint256 i = 0; i < _supportedPools.length; i++) {
             sum = getPoolBalance(_supportedPools[i]).add(sum);
         }
-        // if (cache) cachedTotalBalance = sum;
         return sum;
     }
 
@@ -405,14 +408,12 @@ contract RariFundController is Ownable {
 
     /**
      * @dev Approves tokens to 0x without spending gas on every deposit.
-     * @param erc20Contract The ERC20 contract address of the token to be approved.
      * @param amount The amount of tokens to be approved.
      * @return Boolean indicating success.
      */
-    function approveTo0x(address erc20Contract, uint256 amount) external fundEnabled onlyRebalancer returns (bool) {
+    function approveCompTo0x(uint256 amount) external fundEnabled onlyRebalancer returns (bool) {
         // COMP only
-        // require(erc20Contract == )
-        require(ZeroExExchangeController.approve(erc20Contract, amount), "Approval of tokens to 0x failed.");
+        require(ZeroExExchangeController.approve(COMP_TOKEN, amount), "Approval of tokens to 0x failed.");
         return true;
     }
 

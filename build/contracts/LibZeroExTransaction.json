@@ -4,22 +4,22 @@
   "metadata": "{\"compiler\":{\"version\":\"0.5.17+commit.d19bba13\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"@0x/contracts-exchange-libs/contracts/src/LibZeroExTransaction.sol\":\"LibZeroExTransaction\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@0x/contracts-exchange-libs/contracts/src/LibZeroExTransaction.sol\":{\"keccak256\":\"0x15e9dddfeb5b17b6d44a6be19b3f5f2cf2a2af24174cd623fcd731fb5204635a\",\"urls\":[\"bzz-raw://9014066b0fcf65ba9ecec88fc41e3413ef27c039159abd1203f0a48bb61e498d\",\"dweb:/ipfs/QmRAF6q5XrQV7pPZM1aaahRHAMba9hh6iUeRgW2fzFgn87\"]},\"@0x/contracts-utils/contracts/src/LibEIP712.sol\":{\"keccak256\":\"0xe19c3cbc71fbea0fdb45c1763306550015d940bea9dbec5f3fd2edfe2165d673\",\"urls\":[\"bzz-raw://267d263f0453352a1ac8d8085a13c4976fb8c964eff8d3aab0a84173d1438efb\",\"dweb:/ipfs/QmbaRw85MYYP3KTmQ68gYdEnFyMqD7frwjxxwsj4j4JCr1\"]}},\"version\":1}",
   "bytecode": "0x60636023600b82828239805160001a607314601657fe5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea365627a7a723158202b087d423680846963baf4b4e1058de456f805002350c32bfb3dc511787228f96c6578706572696d656e74616cf564736f6c63430005110040",
   "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea365627a7a723158202b087d423680846963baf4b4e1058de456f805002350c32bfb3dc511787228f96c6578706572696d656e74616cf564736f6c63430005110040",
-  "sourceMap": "699:3631:30:-;;132:2:-1;166:7;155:9;146:7;137:37;255:7;249:14;246:1;241:23;235:4;232:33;222:2;;269:9;222:2;293:9;290:1;283:20;323:4;314:7;306:22;347:7;338;331:24",
-  "deployedSourceMap": "699:3631:30:-;;;;;;;;",
+  "sourceMap": "699:3631:27:-;;132:2:-1;166:7;155:9;146:7;137:37;255:7;249:14;246:1;241:23;235:4;232:33;222:2;;269:9;222:2;293:9;290:1;283:20;323:4;314:7;306:22;347:7;338;331:24",
+  "deployedSourceMap": "699:3631:27:-;;;;;;;;",
   "source": "/*\n\n  Copyright 2019 ZeroEx Intl.\n\n  Licensed under the Apache License, Version 2.0 (the \"License\");\n  you may not use this file except in compliance with the License.\n  You may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\n  Unless required by applicable law or agreed to in writing, software\n  distributed under the License is distributed on an \"AS IS\" BASIS,\n  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  See the License for the specific language governing permissions and\n  limitations under the License.\n\n*/\n\npragma solidity ^0.5.9;\npragma experimental ABIEncoderV2;\n\nimport \"@0x/contracts-utils/contracts/src/LibEIP712.sol\";\n\n\nlibrary LibZeroExTransaction {\n\n    using LibZeroExTransaction for ZeroExTransaction;\n\n    // Hash for the EIP712 0x transaction schema\n    // keccak256(abi.encodePacked(\n    //    \"ZeroExTransaction(\",\n    //    \"uint256 salt,\",\n    //    \"uint256 expirationTimeSeconds,\",\n    //    \"uint256 gasPrice,\",\n    //    \"address signerAddress,\",\n    //    \"bytes data\",\n    //    \")\"\n    // ));\n    bytes32 constant internal _EIP712_ZEROEX_TRANSACTION_SCHEMA_HASH = 0xec69816980a3a3ca4554410e60253953e9ff375ba4536a98adfa15cc71541508;\n\n    struct ZeroExTransaction {\n        uint256 salt;                   // Arbitrary number to ensure uniqueness of transaction hash.\n        uint256 expirationTimeSeconds;  // Timestamp in seconds at which transaction expires.\n        uint256 gasPrice;               // gasPrice that transaction is required to be executed with.\n        address signerAddress;          // Address of transaction signer.\n        bytes data;                     // AbiV2 encoded calldata.\n    }\n\n    /// @dev Calculates the EIP712 typed data hash of a transaction with a given domain separator.\n    /// @param transaction 0x transaction structure.\n    /// @return EIP712 typed data hash of the transaction.\n    function getTypedDataHash(ZeroExTransaction memory transaction, bytes32 eip712ExchangeDomainHash)\n        internal\n        pure\n        returns (bytes32 transactionHash)\n    {\n        // Hash the transaction with the domain separator of the Exchange contract.\n        transactionHash = LibEIP712.hashEIP712Message(\n            eip712ExchangeDomainHash,\n            transaction.getStructHash()\n        );\n        return transactionHash;\n    }\n\n    /// @dev Calculates EIP712 hash of the 0x transaction struct.\n    /// @param transaction 0x transaction structure.\n    /// @return EIP712 hash of the transaction struct.\n    function getStructHash(ZeroExTransaction memory transaction)\n        internal\n        pure\n        returns (bytes32 result)\n    {\n        bytes32 schemaHash = _EIP712_ZEROEX_TRANSACTION_SCHEMA_HASH;\n        bytes memory data = transaction.data;\n        uint256 salt = transaction.salt;\n        uint256 expirationTimeSeconds = transaction.expirationTimeSeconds;\n        uint256 gasPrice = transaction.gasPrice;\n        address signerAddress = transaction.signerAddress;\n\n        // Assembly for more efficiently computing:\n        // result = keccak256(abi.encodePacked(\n        //     schemaHash,\n        //     salt,\n        //     expirationTimeSeconds,\n        //     gasPrice,\n        //     uint256(signerAddress),\n        //     keccak256(data)\n        // ));\n\n        assembly {\n            // Compute hash of data\n            let dataHash := keccak256(add(data, 32), mload(data))\n\n            // Load free memory pointer\n            let memPtr := mload(64)\n\n            mstore(memPtr, schemaHash)                                                                // hash of schema\n            mstore(add(memPtr, 32), salt)                                                             // salt\n            mstore(add(memPtr, 64), expirationTimeSeconds)                                            // expirationTimeSeconds\n            mstore(add(memPtr, 96), gasPrice)                                                         // gasPrice\n            mstore(add(memPtr, 128), and(signerAddress, 0xffffffffffffffffffffffffffffffffffffffff))  // signerAddress\n            mstore(add(memPtr, 160), dataHash)                                                        // hash of data\n\n            // Compute hash\n            result := keccak256(memPtr, 192)\n        }\n        return result;\n    }\n}\n",
   "sourcePath": "@0x/contracts-exchange-libs/contracts/src/LibZeroExTransaction.sol",
   "ast": {
     "absolutePath": "@0x/contracts-exchange-libs/contracts/src/LibZeroExTransaction.sol",
     "exportedSymbols": {
       "LibZeroExTransaction": [
-        6230
+        6059
       ]
     },
-    "id": 6231,
+    "id": 6060,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6148,
+        "id": 5977,
         "literals": [
           "solidity",
           "^",
@@ -27,25 +27,25 @@
           ".9"
         ],
         "nodeType": "PragmaDirective",
-        "src": "580:23:30"
+        "src": "580:23:27"
       },
       {
-        "id": 6149,
+        "id": 5978,
         "literals": [
           "experimental",
           "ABIEncoderV2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "604:33:30"
+        "src": "604:33:27"
       },
       {
         "absolutePath": "@0x/contracts-utils/contracts/src/LibEIP712.sol",
         "file": "@0x/contracts-utils/contracts/src/LibEIP712.sol",
-        "id": 6150,
+        "id": 5979,
         "nodeType": "ImportDirective",
-        "scope": 6231,
-        "sourceUnit": 6768,
-        "src": "639:57:30",
+        "scope": 6060,
+        "sourceUnit": 6597,
+        "src": "639:57:27",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -55,49 +55,49 @@
         "contractKind": "library",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 6230,
+        "id": 6059,
         "linearizedBaseContracts": [
-          6230
+          6059
         ],
         "name": "LibZeroExTransaction",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
-            "id": 6153,
+            "id": 5982,
             "libraryName": {
               "contractScope": null,
-              "id": 6151,
+              "id": 5980,
               "name": "LibZeroExTransaction",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 6230,
-              "src": "741:20:30",
+              "referencedDeclaration": 6059,
+              "src": "741:20:27",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_LibZeroExTransaction_$6230",
+                "typeIdentifier": "t_contract$_LibZeroExTransaction_$6059",
                 "typeString": "library LibZeroExTransaction"
               }
             },
             "nodeType": "UsingForDirective",
-            "src": "735:49:30",
+            "src": "735:49:27",
             "typeName": {
               "contractScope": null,
-              "id": 6152,
+              "id": 5981,
               "name": "ZeroExTransaction",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 6167,
-              "src": "766:17:30",
+              "referencedDeclaration": 5996,
+              "src": "766:17:27",
               "typeDescriptions": {
-                "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_storage_ptr",
+                "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_storage_ptr",
                 "typeString": "struct LibZeroExTransaction.ZeroExTransaction"
               }
             }
           },
           {
             "constant": true,
-            "id": 6156,
+            "id": 5985,
             "name": "_EIP712_ZEROEX_TRANSACTION_SCHEMA_HASH",
             "nodeType": "VariableDeclaration",
-            "scope": 6230,
-            "src": "1093:133:30",
+            "scope": 6059,
+            "src": "1093:133:27",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -105,10 +105,10 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 6154,
+              "id": 5983,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
-              "src": "1093:7:30",
+              "src": "1093:7:27",
               "typeDescriptions": {
                 "typeIdentifier": "t_bytes32",
                 "typeString": "bytes32"
@@ -117,14 +117,14 @@
             "value": {
               "argumentTypes": null,
               "hexValue": "307865633639383136393830613361336361343535343431306536303235333935336539666633373562613435333661393861646661313563633731353431353038",
-              "id": 6155,
+              "id": 5984,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
               "kind": "number",
               "lValueRequested": false,
               "nodeType": "Literal",
-              "src": "1160:66:30",
+              "src": "1160:66:27",
               "subdenomination": null,
               "typeDescriptions": {
                 "typeIdentifier": "t_rational_106932244377073024889118374392183388102606682592814568813348457896092663813384_by_1",
@@ -136,15 +136,15 @@
           },
           {
             "canonicalName": "LibZeroExTransaction.ZeroExTransaction",
-            "id": 6167,
+            "id": 5996,
             "members": [
               {
                 "constant": false,
-                "id": 6158,
+                "id": 5987,
                 "name": "salt",
                 "nodeType": "VariableDeclaration",
-                "scope": 6167,
-                "src": "1268:12:30",
+                "scope": 5996,
+                "src": "1268:12:27",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -152,10 +152,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 6157,
+                  "id": 5986,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1268:7:30",
+                  "src": "1268:7:27",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -166,11 +166,11 @@
               },
               {
                 "constant": false,
-                "id": 6160,
+                "id": 5989,
                 "name": "expirationTimeSeconds",
                 "nodeType": "VariableDeclaration",
-                "scope": 6167,
-                "src": "1370:29:30",
+                "scope": 5996,
+                "src": "1370:29:27",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -178,10 +178,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 6159,
+                  "id": 5988,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1370:7:30",
+                  "src": "1370:7:27",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -192,11 +192,11 @@
               },
               {
                 "constant": false,
-                "id": 6162,
+                "id": 5991,
                 "name": "gasPrice",
                 "nodeType": "VariableDeclaration",
-                "scope": 6167,
-                "src": "1464:16:30",
+                "scope": 5996,
+                "src": "1464:16:27",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -204,10 +204,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 6161,
+                  "id": 5990,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1464:7:30",
+                  "src": "1464:7:27",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -218,11 +218,11 @@
               },
               {
                 "constant": false,
-                "id": 6164,
+                "id": 5993,
                 "name": "signerAddress",
                 "nodeType": "VariableDeclaration",
-                "scope": 6167,
-                "src": "1566:21:30",
+                "scope": 5996,
+                "src": "1566:21:27",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -230,10 +230,10 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 6163,
+                  "id": 5992,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1566:7:30",
+                  "src": "1566:7:27",
                   "stateMutability": "nonpayable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address",
@@ -245,11 +245,11 @@
               },
               {
                 "constant": false,
-                "id": 6166,
+                "id": 5995,
                 "name": "data",
                 "nodeType": "VariableDeclaration",
-                "scope": 6167,
-                "src": "1640:10:30",
+                "scope": 5996,
+                "src": "1640:10:27",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -257,10 +257,10 @@
                   "typeString": "bytes"
                 },
                 "typeName": {
-                  "id": 6165,
+                  "id": 5994,
                   "name": "bytes",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1640:5:30",
+                  "src": "1640:5:27",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bytes_storage_ptr",
                     "typeString": "bytes"
@@ -272,32 +272,32 @@
             ],
             "name": "ZeroExTransaction",
             "nodeType": "StructDefinition",
-            "scope": 6230,
-            "src": "1233:471:30",
+            "scope": 6059,
+            "src": "1233:471:27",
             "visibility": "public"
           },
           {
             "body": {
-              "id": 6188,
+              "id": 6017,
               "nodeType": "Block",
-              "src": "2095:267:30",
+              "src": "2095:267:27",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 6184,
+                    "id": 6013,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 6176,
+                      "id": 6005,
                       "name": "transactionHash",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6174,
-                      "src": "2189:15:30",
+                      "referencedDeclaration": 6003,
+                      "src": "2189:15:27",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
@@ -310,12 +310,12 @@
                       "arguments": [
                         {
                           "argumentTypes": null,
-                          "id": 6179,
+                          "id": 6008,
                           "name": "eip712ExchangeDomainHash",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 6171,
-                          "src": "2248:24:30",
+                          "referencedDeclaration": 6000,
+                          "src": "2248:24:27",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes32",
                             "typeString": "bytes32"
@@ -328,32 +328,32 @@
                             "argumentTypes": [],
                             "expression": {
                               "argumentTypes": null,
-                              "id": 6180,
+                              "id": 6009,
                               "name": "transaction",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6169,
-                              "src": "2286:11:30",
+                              "referencedDeclaration": 5998,
+                              "src": "2286:11:27",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                                "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                                 "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                               }
                             },
-                            "id": 6181,
+                            "id": 6010,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "getStructHash",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 6229,
-                            "src": "2286:25:30",
+                            "referencedDeclaration": 6058,
+                            "src": "2286:25:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_function_internal_pure$_t_struct$_ZeroExTransaction_$6167_memory_ptr_$returns$_t_bytes32_$bound_to$_t_struct$_ZeroExTransaction_$6167_memory_ptr_$",
+                              "typeIdentifier": "t_function_internal_pure$_t_struct$_ZeroExTransaction_$5996_memory_ptr_$returns$_t_bytes32_$bound_to$_t_struct$_ZeroExTransaction_$5996_memory_ptr_$",
                               "typeString": "function (struct LibZeroExTransaction.ZeroExTransaction memory) pure returns (bytes32)"
                             }
                           },
-                          "id": 6182,
+                          "id": 6011,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -361,7 +361,7 @@
                           "lValueRequested": false,
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "2286:27:30",
+                          "src": "2286:27:27",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes32",
                             "typeString": "bytes32"
@@ -381,32 +381,32 @@
                         ],
                         "expression": {
                           "argumentTypes": null,
-                          "id": 6177,
+                          "id": 6006,
                           "name": "LibEIP712",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 6767,
-                          "src": "2207:9:30",
+                          "referencedDeclaration": 6596,
+                          "src": "2207:9:27",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_LibEIP712_$6767_$",
+                            "typeIdentifier": "t_type$_t_contract$_LibEIP712_$6596_$",
                             "typeString": "type(library LibEIP712)"
                           }
                         },
-                        "id": 6178,
+                        "id": 6007,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "hashEIP712Message",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 6766,
-                        "src": "2207:27:30",
+                        "referencedDeclaration": 6595,
+                        "src": "2207:27:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_bytes32_$_t_bytes32_$returns$_t_bytes32_$",
                           "typeString": "function (bytes32,bytes32) pure returns (bytes32)"
                         }
                       },
-                      "id": 6183,
+                      "id": 6012,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -414,76 +414,76 @@
                       "lValueRequested": false,
                       "names": [],
                       "nodeType": "FunctionCall",
-                      "src": "2207:116:30",
+                      "src": "2207:116:27",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
                       }
                     },
-                    "src": "2189:134:30",
+                    "src": "2189:134:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
                     }
                   },
-                  "id": 6185,
+                  "id": 6014,
                   "nodeType": "ExpressionStatement",
-                  "src": "2189:134:30"
+                  "src": "2189:134:27"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 6186,
+                    "id": 6015,
                     "name": "transactionHash",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 6174,
-                    "src": "2340:15:30",
+                    "referencedDeclaration": 6003,
+                    "src": "2340:15:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
                     }
                   },
-                  "functionReturnParameters": 6175,
-                  "id": 6187,
+                  "functionReturnParameters": 6004,
+                  "id": 6016,
                   "nodeType": "Return",
-                  "src": "2333:22:30"
+                  "src": "2333:22:27"
                 }
               ]
             },
             "documentation": "@dev Calculates the EIP712 typed data hash of a transaction with a given domain separator.\n @param transaction 0x transaction structure.\n @return EIP712 typed data hash of the transaction.",
-            "id": 6189,
+            "id": 6018,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getTypedDataHash",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6172,
+              "id": 6001,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6169,
+                  "id": 5998,
                   "name": "transaction",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6189,
-                  "src": "1947:36:30",
+                  "scope": 6018,
+                  "src": "1947:36:27",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                    "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                     "typeString": "struct LibZeroExTransaction.ZeroExTransaction"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6168,
+                    "id": 5997,
                     "name": "ZeroExTransaction",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6167,
-                    "src": "1947:17:30",
+                    "referencedDeclaration": 5996,
+                    "src": "1947:17:27",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_storage_ptr",
+                      "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_storage_ptr",
                       "typeString": "struct LibZeroExTransaction.ZeroExTransaction"
                     }
                   },
@@ -492,11 +492,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6171,
+                  "id": 6000,
                   "name": "eip712ExchangeDomainHash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6189,
-                  "src": "1985:32:30",
+                  "scope": 6018,
+                  "src": "1985:32:27",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -504,10 +504,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 6170,
+                    "id": 5999,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1985:7:30",
+                    "src": "1985:7:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -517,19 +517,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1946:72:30"
+              "src": "1946:72:27"
             },
             "returnParameters": {
-              "id": 6175,
+              "id": 6004,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6174,
+                  "id": 6003,
                   "name": "transactionHash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6189,
-                  "src": "2066:23:30",
+                  "scope": 6018,
+                  "src": "2066:23:27",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -537,10 +537,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 6173,
+                    "id": 6002,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2066:7:30",
+                    "src": "2066:7:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -550,32 +550,32 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2065:25:30"
+              "src": "2065:25:27"
             },
-            "scope": 6230,
-            "src": "1921:441:30",
+            "scope": 6059,
+            "src": "1921:441:27",
             "stateMutability": "pure",
             "superFunction": null,
             "visibility": "internal"
           },
           {
             "body": {
-              "id": 6228,
+              "id": 6057,
               "nodeType": "Block",
-              "src": "2670:1658:30",
+              "src": "2670:1658:27",
               "statements": [
                 {
                   "assignments": [
-                    6197
+                    6026
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6197,
+                      "id": 6026,
                       "name": "schemaHash",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2680:18:30",
+                      "scope": 6057,
+                      "src": "2680:18:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -583,10 +583,10 @@
                         "typeString": "bytes32"
                       },
                       "typeName": {
-                        "id": 6196,
+                        "id": 6025,
                         "name": "bytes32",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2680:7:30",
+                        "src": "2680:7:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
                           "typeString": "bytes32"
@@ -596,35 +596,35 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6199,
+                  "id": 6028,
                   "initialValue": {
                     "argumentTypes": null,
-                    "id": 6198,
+                    "id": 6027,
                     "name": "_EIP712_ZEROEX_TRANSACTION_SCHEMA_HASH",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 6156,
-                    "src": "2701:38:30",
+                    "referencedDeclaration": 5985,
+                    "src": "2701:38:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2680:59:30"
+                  "src": "2680:59:27"
                 },
                 {
                   "assignments": [
-                    6201
+                    6030
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6201,
+                      "id": 6030,
                       "name": "data",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2749:17:30",
+                      "scope": 6057,
+                      "src": "2749:17:27",
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "typeDescriptions": {
@@ -632,10 +632,10 @@
                         "typeString": "bytes"
                       },
                       "typeName": {
-                        "id": 6200,
+                        "id": 6029,
                         "name": "bytes",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2749:5:30",
+                        "src": "2749:5:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes_storage_ptr",
                           "typeString": "bytes"
@@ -645,51 +645,51 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6204,
+                  "id": 6033,
                   "initialValue": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
-                      "id": 6202,
+                      "id": 6031,
                       "name": "transaction",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6191,
-                      "src": "2769:11:30",
+                      "referencedDeclaration": 6020,
+                      "src": "2769:11:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                        "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                         "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                       }
                     },
-                    "id": 6203,
+                    "id": 6032,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "data",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 6166,
-                    "src": "2769:16:30",
+                    "referencedDeclaration": 5995,
+                    "src": "2769:16:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_memory",
                       "typeString": "bytes memory"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2749:36:30"
+                  "src": "2749:36:27"
                 },
                 {
                   "assignments": [
-                    6206
+                    6035
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6206,
+                      "id": 6035,
                       "name": "salt",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2795:12:30",
+                      "scope": 6057,
+                      "src": "2795:12:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -697,10 +697,10 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 6205,
+                        "id": 6034,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2795:7:30",
+                        "src": "2795:7:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -710,51 +710,51 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6209,
+                  "id": 6038,
                   "initialValue": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
-                      "id": 6207,
+                      "id": 6036,
                       "name": "transaction",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6191,
-                      "src": "2810:11:30",
+                      "referencedDeclaration": 6020,
+                      "src": "2810:11:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                        "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                         "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                       }
                     },
-                    "id": 6208,
+                    "id": 6037,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "salt",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 6158,
-                    "src": "2810:16:30",
+                    "referencedDeclaration": 5987,
+                    "src": "2810:16:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2795:31:30"
+                  "src": "2795:31:27"
                 },
                 {
                   "assignments": [
-                    6211
+                    6040
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6211,
+                      "id": 6040,
                       "name": "expirationTimeSeconds",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2836:29:30",
+                      "scope": 6057,
+                      "src": "2836:29:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -762,10 +762,10 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 6210,
+                        "id": 6039,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2836:7:30",
+                        "src": "2836:7:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -775,51 +775,51 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6214,
+                  "id": 6043,
                   "initialValue": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
-                      "id": 6212,
+                      "id": 6041,
                       "name": "transaction",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6191,
-                      "src": "2868:11:30",
+                      "referencedDeclaration": 6020,
+                      "src": "2868:11:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                        "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                         "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                       }
                     },
-                    "id": 6213,
+                    "id": 6042,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "expirationTimeSeconds",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 6160,
-                    "src": "2868:33:30",
+                    "referencedDeclaration": 5989,
+                    "src": "2868:33:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2836:65:30"
+                  "src": "2836:65:27"
                 },
                 {
                   "assignments": [
-                    6216
+                    6045
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6216,
+                      "id": 6045,
                       "name": "gasPrice",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2911:16:30",
+                      "scope": 6057,
+                      "src": "2911:16:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -827,10 +827,10 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 6215,
+                        "id": 6044,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2911:7:30",
+                        "src": "2911:7:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -840,51 +840,51 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6219,
+                  "id": 6048,
                   "initialValue": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
-                      "id": 6217,
+                      "id": 6046,
                       "name": "transaction",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6191,
-                      "src": "2930:11:30",
+                      "referencedDeclaration": 6020,
+                      "src": "2930:11:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                        "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                         "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                       }
                     },
-                    "id": 6218,
+                    "id": 6047,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "gasPrice",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 6162,
-                    "src": "2930:20:30",
+                    "referencedDeclaration": 5991,
+                    "src": "2930:20:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2911:39:30"
+                  "src": "2911:39:27"
                 },
                 {
                   "assignments": [
-                    6221
+                    6050
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6221,
+                      "id": 6050,
                       "name": "signerAddress",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2960:21:30",
+                      "scope": 6057,
+                      "src": "2960:21:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -892,10 +892,10 @@
                         "typeString": "address"
                       },
                       "typeName": {
-                        "id": 6220,
+                        "id": 6049,
                         "name": "address",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2960:7:30",
+                        "src": "2960:7:27",
                         "stateMutability": "nonpayable",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
@@ -906,173 +906,173 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6224,
+                  "id": 6053,
                   "initialValue": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
-                      "id": 6222,
+                      "id": 6051,
                       "name": "transaction",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6191,
-                      "src": "2984:11:30",
+                      "referencedDeclaration": 6020,
+                      "src": "2984:11:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                        "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                         "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                       }
                     },
-                    "id": 6223,
+                    "id": 6052,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "signerAddress",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 6164,
-                    "src": "2984:25:30",
+                    "referencedDeclaration": 5993,
+                    "src": "2984:25:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2960:49:30"
+                  "src": "2960:49:27"
                 },
                 {
                   "externalReferences": [
                     {
                       "data": {
-                        "declaration": 6201,
+                        "declaration": 6030,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3406:4:30",
+                        "src": "3406:4:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "data": {
-                        "declaration": 6201,
+                        "declaration": 6030,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3423:4:30",
+                        "src": "3423:4:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "result": {
-                        "declaration": 6194,
+                        "declaration": 6023,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "4257:6:30",
+                        "src": "4257:6:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "schemaHash": {
-                        "declaration": 6197,
+                        "declaration": 6026,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3535:10:30",
+                        "src": "3535:10:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "gasPrice": {
-                        "declaration": 6216,
+                        "declaration": 6045,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3901:8:30",
+                        "src": "3901:8:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "salt": {
-                        "declaration": 6206,
+                        "declaration": 6035,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3664:4:30",
+                        "src": "3664:4:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "expirationTimeSeconds": {
-                        "declaration": 6211,
+                        "declaration": 6040,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3774:21:30",
+                        "src": "3774:21:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "signerAddress": {
-                        "declaration": 6221,
+                        "declaration": 6050,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "4020:13:30",
+                        "src": "4020:13:27",
                         "valueSize": 1
                       }
                     }
                   ],
-                  "id": 6225,
+                  "id": 6054,
                   "nodeType": "InlineAssembly",
                   "operations": "{\n    let dataHash := keccak256(add(data, 32), mload(data))\n    let memPtr := mload(64)\n    mstore(memPtr, schemaHash)\n    mstore(add(memPtr, 32), salt)\n    mstore(add(memPtr, 64), expirationTimeSeconds)\n    mstore(add(memPtr, 96), gasPrice)\n    mstore(add(memPtr, 128), and(signerAddress, 0xffffffffffffffffffffffffffffffffffffffff))\n    mstore(add(memPtr, 160), dataHash)\n    result := keccak256(memPtr, 192)\n}",
-                  "src": "3317:982:30"
+                  "src": "3317:982:27"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 6226,
+                    "id": 6055,
                     "name": "result",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 6194,
-                    "src": "4315:6:30",
+                    "referencedDeclaration": 6023,
+                    "src": "4315:6:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
                     }
                   },
-                  "functionReturnParameters": 6195,
-                  "id": 6227,
+                  "functionReturnParameters": 6024,
+                  "id": 6056,
                   "nodeType": "Return",
-                  "src": "4308:13:30"
+                  "src": "4308:13:27"
                 }
               ]
             },
             "documentation": "@dev Calculates EIP712 hash of the 0x transaction struct.\n @param transaction 0x transaction structure.\n @return EIP712 hash of the transaction struct.",
-            "id": 6229,
+            "id": 6058,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getStructHash",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6192,
+              "id": 6021,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6191,
+                  "id": 6020,
                   "name": "transaction",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6229,
-                  "src": "2565:36:30",
+                  "scope": 6058,
+                  "src": "2565:36:27",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                    "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                     "typeString": "struct LibZeroExTransaction.ZeroExTransaction"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6190,
+                    "id": 6019,
                     "name": "ZeroExTransaction",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6167,
-                    "src": "2565:17:30",
+                    "referencedDeclaration": 5996,
+                    "src": "2565:17:27",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_storage_ptr",
+                      "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_storage_ptr",
                       "typeString": "struct LibZeroExTransaction.ZeroExTransaction"
                     }
                   },
@@ -1080,19 +1080,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2564:38:30"
+              "src": "2564:38:27"
             },
             "returnParameters": {
-              "id": 6195,
+              "id": 6024,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6194,
+                  "id": 6023,
                   "name": "result",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6229,
-                  "src": "2650:14:30",
+                  "scope": 6058,
+                  "src": "2650:14:27",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1100,10 +1100,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 6193,
+                    "id": 6022,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2650:7:30",
+                    "src": "2650:7:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1113,33 +1113,33 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2649:16:30"
+              "src": "2649:16:27"
             },
-            "scope": 6230,
-            "src": "2542:1786:30",
+            "scope": 6059,
+            "src": "2542:1786:27",
             "stateMutability": "pure",
             "superFunction": null,
             "visibility": "internal"
           }
         ],
-        "scope": 6231,
-        "src": "699:3631:30"
+        "scope": 6060,
+        "src": "699:3631:27"
       }
     ],
-    "src": "580:3751:30"
+    "src": "580:3751:27"
   },
   "legacyAST": {
     "absolutePath": "@0x/contracts-exchange-libs/contracts/src/LibZeroExTransaction.sol",
     "exportedSymbols": {
       "LibZeroExTransaction": [
-        6230
+        6059
       ]
     },
-    "id": 6231,
+    "id": 6060,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6148,
+        "id": 5977,
         "literals": [
           "solidity",
           "^",
@@ -1147,25 +1147,25 @@
           ".9"
         ],
         "nodeType": "PragmaDirective",
-        "src": "580:23:30"
+        "src": "580:23:27"
       },
       {
-        "id": 6149,
+        "id": 5978,
         "literals": [
           "experimental",
           "ABIEncoderV2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "604:33:30"
+        "src": "604:33:27"
       },
       {
         "absolutePath": "@0x/contracts-utils/contracts/src/LibEIP712.sol",
         "file": "@0x/contracts-utils/contracts/src/LibEIP712.sol",
-        "id": 6150,
+        "id": 5979,
         "nodeType": "ImportDirective",
-        "scope": 6231,
-        "sourceUnit": 6768,
-        "src": "639:57:30",
+        "scope": 6060,
+        "sourceUnit": 6597,
+        "src": "639:57:27",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -1175,49 +1175,49 @@
         "contractKind": "library",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 6230,
+        "id": 6059,
         "linearizedBaseContracts": [
-          6230
+          6059
         ],
         "name": "LibZeroExTransaction",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
-            "id": 6153,
+            "id": 5982,
             "libraryName": {
               "contractScope": null,
-              "id": 6151,
+              "id": 5980,
               "name": "LibZeroExTransaction",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 6230,
-              "src": "741:20:30",
+              "referencedDeclaration": 6059,
+              "src": "741:20:27",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_LibZeroExTransaction_$6230",
+                "typeIdentifier": "t_contract$_LibZeroExTransaction_$6059",
                 "typeString": "library LibZeroExTransaction"
               }
             },
             "nodeType": "UsingForDirective",
-            "src": "735:49:30",
+            "src": "735:49:27",
             "typeName": {
               "contractScope": null,
-              "id": 6152,
+              "id": 5981,
               "name": "ZeroExTransaction",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 6167,
-              "src": "766:17:30",
+              "referencedDeclaration": 5996,
+              "src": "766:17:27",
               "typeDescriptions": {
-                "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_storage_ptr",
+                "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_storage_ptr",
                 "typeString": "struct LibZeroExTransaction.ZeroExTransaction"
               }
             }
           },
           {
             "constant": true,
-            "id": 6156,
+            "id": 5985,
             "name": "_EIP712_ZEROEX_TRANSACTION_SCHEMA_HASH",
             "nodeType": "VariableDeclaration",
-            "scope": 6230,
-            "src": "1093:133:30",
+            "scope": 6059,
+            "src": "1093:133:27",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -1225,10 +1225,10 @@
               "typeString": "bytes32"
             },
             "typeName": {
-              "id": 6154,
+              "id": 5983,
               "name": "bytes32",
               "nodeType": "ElementaryTypeName",
-              "src": "1093:7:30",
+              "src": "1093:7:27",
               "typeDescriptions": {
                 "typeIdentifier": "t_bytes32",
                 "typeString": "bytes32"
@@ -1237,14 +1237,14 @@
             "value": {
               "argumentTypes": null,
               "hexValue": "307865633639383136393830613361336361343535343431306536303235333935336539666633373562613435333661393861646661313563633731353431353038",
-              "id": 6155,
+              "id": 5984,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
               "kind": "number",
               "lValueRequested": false,
               "nodeType": "Literal",
-              "src": "1160:66:30",
+              "src": "1160:66:27",
               "subdenomination": null,
               "typeDescriptions": {
                 "typeIdentifier": "t_rational_106932244377073024889118374392183388102606682592814568813348457896092663813384_by_1",
@@ -1256,15 +1256,15 @@
           },
           {
             "canonicalName": "LibZeroExTransaction.ZeroExTransaction",
-            "id": 6167,
+            "id": 5996,
             "members": [
               {
                 "constant": false,
-                "id": 6158,
+                "id": 5987,
                 "name": "salt",
                 "nodeType": "VariableDeclaration",
-                "scope": 6167,
-                "src": "1268:12:30",
+                "scope": 5996,
+                "src": "1268:12:27",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1272,10 +1272,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 6157,
+                  "id": 5986,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1268:7:30",
+                  "src": "1268:7:27",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -1286,11 +1286,11 @@
               },
               {
                 "constant": false,
-                "id": 6160,
+                "id": 5989,
                 "name": "expirationTimeSeconds",
                 "nodeType": "VariableDeclaration",
-                "scope": 6167,
-                "src": "1370:29:30",
+                "scope": 5996,
+                "src": "1370:29:27",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1298,10 +1298,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 6159,
+                  "id": 5988,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1370:7:30",
+                  "src": "1370:7:27",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -1312,11 +1312,11 @@
               },
               {
                 "constant": false,
-                "id": 6162,
+                "id": 5991,
                 "name": "gasPrice",
                 "nodeType": "VariableDeclaration",
-                "scope": 6167,
-                "src": "1464:16:30",
+                "scope": 5996,
+                "src": "1464:16:27",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1324,10 +1324,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 6161,
+                  "id": 5990,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1464:7:30",
+                  "src": "1464:7:27",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -1338,11 +1338,11 @@
               },
               {
                 "constant": false,
-                "id": 6164,
+                "id": 5993,
                 "name": "signerAddress",
                 "nodeType": "VariableDeclaration",
-                "scope": 6167,
-                "src": "1566:21:30",
+                "scope": 5996,
+                "src": "1566:21:27",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1350,10 +1350,10 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 6163,
+                  "id": 5992,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1566:7:30",
+                  "src": "1566:7:27",
                   "stateMutability": "nonpayable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address",
@@ -1365,11 +1365,11 @@
               },
               {
                 "constant": false,
-                "id": 6166,
+                "id": 5995,
                 "name": "data",
                 "nodeType": "VariableDeclaration",
-                "scope": 6167,
-                "src": "1640:10:30",
+                "scope": 5996,
+                "src": "1640:10:27",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1377,10 +1377,10 @@
                   "typeString": "bytes"
                 },
                 "typeName": {
-                  "id": 6165,
+                  "id": 5994,
                   "name": "bytes",
                   "nodeType": "ElementaryTypeName",
-                  "src": "1640:5:30",
+                  "src": "1640:5:27",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bytes_storage_ptr",
                     "typeString": "bytes"
@@ -1392,32 +1392,32 @@
             ],
             "name": "ZeroExTransaction",
             "nodeType": "StructDefinition",
-            "scope": 6230,
-            "src": "1233:471:30",
+            "scope": 6059,
+            "src": "1233:471:27",
             "visibility": "public"
           },
           {
             "body": {
-              "id": 6188,
+              "id": 6017,
               "nodeType": "Block",
-              "src": "2095:267:30",
+              "src": "2095:267:27",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 6184,
+                    "id": 6013,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 6176,
+                      "id": 6005,
                       "name": "transactionHash",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6174,
-                      "src": "2189:15:30",
+                      "referencedDeclaration": 6003,
+                      "src": "2189:15:27",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
@@ -1430,12 +1430,12 @@
                       "arguments": [
                         {
                           "argumentTypes": null,
-                          "id": 6179,
+                          "id": 6008,
                           "name": "eip712ExchangeDomainHash",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 6171,
-                          "src": "2248:24:30",
+                          "referencedDeclaration": 6000,
+                          "src": "2248:24:27",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes32",
                             "typeString": "bytes32"
@@ -1448,32 +1448,32 @@
                             "argumentTypes": [],
                             "expression": {
                               "argumentTypes": null,
-                              "id": 6180,
+                              "id": 6009,
                               "name": "transaction",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 6169,
-                              "src": "2286:11:30",
+                              "referencedDeclaration": 5998,
+                              "src": "2286:11:27",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                                "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                                 "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                               }
                             },
-                            "id": 6181,
+                            "id": 6010,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
                             "lValueRequested": false,
                             "memberName": "getStructHash",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 6229,
-                            "src": "2286:25:30",
+                            "referencedDeclaration": 6058,
+                            "src": "2286:25:27",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_function_internal_pure$_t_struct$_ZeroExTransaction_$6167_memory_ptr_$returns$_t_bytes32_$bound_to$_t_struct$_ZeroExTransaction_$6167_memory_ptr_$",
+                              "typeIdentifier": "t_function_internal_pure$_t_struct$_ZeroExTransaction_$5996_memory_ptr_$returns$_t_bytes32_$bound_to$_t_struct$_ZeroExTransaction_$5996_memory_ptr_$",
                               "typeString": "function (struct LibZeroExTransaction.ZeroExTransaction memory) pure returns (bytes32)"
                             }
                           },
-                          "id": 6182,
+                          "id": 6011,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1481,7 +1481,7 @@
                           "lValueRequested": false,
                           "names": [],
                           "nodeType": "FunctionCall",
-                          "src": "2286:27:30",
+                          "src": "2286:27:27",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes32",
                             "typeString": "bytes32"
@@ -1501,32 +1501,32 @@
                         ],
                         "expression": {
                           "argumentTypes": null,
-                          "id": 6177,
+                          "id": 6006,
                           "name": "LibEIP712",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 6767,
-                          "src": "2207:9:30",
+                          "referencedDeclaration": 6596,
+                          "src": "2207:9:27",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_LibEIP712_$6767_$",
+                            "typeIdentifier": "t_type$_t_contract$_LibEIP712_$6596_$",
                             "typeString": "type(library LibEIP712)"
                           }
                         },
-                        "id": 6178,
+                        "id": 6007,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "hashEIP712Message",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 6766,
-                        "src": "2207:27:30",
+                        "referencedDeclaration": 6595,
+                        "src": "2207:27:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_bytes32_$_t_bytes32_$returns$_t_bytes32_$",
                           "typeString": "function (bytes32,bytes32) pure returns (bytes32)"
                         }
                       },
-                      "id": 6183,
+                      "id": 6012,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -1534,76 +1534,76 @@
                       "lValueRequested": false,
                       "names": [],
                       "nodeType": "FunctionCall",
-                      "src": "2207:116:30",
+                      "src": "2207:116:27",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
                       }
                     },
-                    "src": "2189:134:30",
+                    "src": "2189:134:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
                     }
                   },
-                  "id": 6185,
+                  "id": 6014,
                   "nodeType": "ExpressionStatement",
-                  "src": "2189:134:30"
+                  "src": "2189:134:27"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 6186,
+                    "id": 6015,
                     "name": "transactionHash",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 6174,
-                    "src": "2340:15:30",
+                    "referencedDeclaration": 6003,
+                    "src": "2340:15:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
                     }
                   },
-                  "functionReturnParameters": 6175,
-                  "id": 6187,
+                  "functionReturnParameters": 6004,
+                  "id": 6016,
                   "nodeType": "Return",
-                  "src": "2333:22:30"
+                  "src": "2333:22:27"
                 }
               ]
             },
             "documentation": "@dev Calculates the EIP712 typed data hash of a transaction with a given domain separator.\n @param transaction 0x transaction structure.\n @return EIP712 typed data hash of the transaction.",
-            "id": 6189,
+            "id": 6018,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getTypedDataHash",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6172,
+              "id": 6001,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6169,
+                  "id": 5998,
                   "name": "transaction",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6189,
-                  "src": "1947:36:30",
+                  "scope": 6018,
+                  "src": "1947:36:27",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                    "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                     "typeString": "struct LibZeroExTransaction.ZeroExTransaction"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6168,
+                    "id": 5997,
                     "name": "ZeroExTransaction",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6167,
-                    "src": "1947:17:30",
+                    "referencedDeclaration": 5996,
+                    "src": "1947:17:27",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_storage_ptr",
+                      "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_storage_ptr",
                       "typeString": "struct LibZeroExTransaction.ZeroExTransaction"
                     }
                   },
@@ -1612,11 +1612,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6171,
+                  "id": 6000,
                   "name": "eip712ExchangeDomainHash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6189,
-                  "src": "1985:32:30",
+                  "scope": 6018,
+                  "src": "1985:32:27",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1624,10 +1624,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 6170,
+                    "id": 5999,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1985:7:30",
+                    "src": "1985:7:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1637,19 +1637,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1946:72:30"
+              "src": "1946:72:27"
             },
             "returnParameters": {
-              "id": 6175,
+              "id": 6004,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6174,
+                  "id": 6003,
                   "name": "transactionHash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6189,
-                  "src": "2066:23:30",
+                  "scope": 6018,
+                  "src": "2066:23:27",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1657,10 +1657,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 6173,
+                    "id": 6002,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2066:7:30",
+                    "src": "2066:7:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1670,32 +1670,32 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2065:25:30"
+              "src": "2065:25:27"
             },
-            "scope": 6230,
-            "src": "1921:441:30",
+            "scope": 6059,
+            "src": "1921:441:27",
             "stateMutability": "pure",
             "superFunction": null,
             "visibility": "internal"
           },
           {
             "body": {
-              "id": 6228,
+              "id": 6057,
               "nodeType": "Block",
-              "src": "2670:1658:30",
+              "src": "2670:1658:27",
               "statements": [
                 {
                   "assignments": [
-                    6197
+                    6026
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6197,
+                      "id": 6026,
                       "name": "schemaHash",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2680:18:30",
+                      "scope": 6057,
+                      "src": "2680:18:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -1703,10 +1703,10 @@
                         "typeString": "bytes32"
                       },
                       "typeName": {
-                        "id": 6196,
+                        "id": 6025,
                         "name": "bytes32",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2680:7:30",
+                        "src": "2680:7:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
                           "typeString": "bytes32"
@@ -1716,35 +1716,35 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6199,
+                  "id": 6028,
                   "initialValue": {
                     "argumentTypes": null,
-                    "id": 6198,
+                    "id": 6027,
                     "name": "_EIP712_ZEROEX_TRANSACTION_SCHEMA_HASH",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 6156,
-                    "src": "2701:38:30",
+                    "referencedDeclaration": 5985,
+                    "src": "2701:38:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2680:59:30"
+                  "src": "2680:59:27"
                 },
                 {
                   "assignments": [
-                    6201
+                    6030
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6201,
+                      "id": 6030,
                       "name": "data",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2749:17:30",
+                      "scope": 6057,
+                      "src": "2749:17:27",
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "typeDescriptions": {
@@ -1752,10 +1752,10 @@
                         "typeString": "bytes"
                       },
                       "typeName": {
-                        "id": 6200,
+                        "id": 6029,
                         "name": "bytes",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2749:5:30",
+                        "src": "2749:5:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes_storage_ptr",
                           "typeString": "bytes"
@@ -1765,51 +1765,51 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6204,
+                  "id": 6033,
                   "initialValue": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
-                      "id": 6202,
+                      "id": 6031,
                       "name": "transaction",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6191,
-                      "src": "2769:11:30",
+                      "referencedDeclaration": 6020,
+                      "src": "2769:11:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                        "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                         "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                       }
                     },
-                    "id": 6203,
+                    "id": 6032,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "data",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 6166,
-                    "src": "2769:16:30",
+                    "referencedDeclaration": 5995,
+                    "src": "2769:16:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_memory",
                       "typeString": "bytes memory"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2749:36:30"
+                  "src": "2749:36:27"
                 },
                 {
                   "assignments": [
-                    6206
+                    6035
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6206,
+                      "id": 6035,
                       "name": "salt",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2795:12:30",
+                      "scope": 6057,
+                      "src": "2795:12:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -1817,10 +1817,10 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 6205,
+                        "id": 6034,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2795:7:30",
+                        "src": "2795:7:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -1830,51 +1830,51 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6209,
+                  "id": 6038,
                   "initialValue": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
-                      "id": 6207,
+                      "id": 6036,
                       "name": "transaction",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6191,
-                      "src": "2810:11:30",
+                      "referencedDeclaration": 6020,
+                      "src": "2810:11:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                        "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                         "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                       }
                     },
-                    "id": 6208,
+                    "id": 6037,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "salt",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 6158,
-                    "src": "2810:16:30",
+                    "referencedDeclaration": 5987,
+                    "src": "2810:16:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2795:31:30"
+                  "src": "2795:31:27"
                 },
                 {
                   "assignments": [
-                    6211
+                    6040
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6211,
+                      "id": 6040,
                       "name": "expirationTimeSeconds",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2836:29:30",
+                      "scope": 6057,
+                      "src": "2836:29:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -1882,10 +1882,10 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 6210,
+                        "id": 6039,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2836:7:30",
+                        "src": "2836:7:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -1895,51 +1895,51 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6214,
+                  "id": 6043,
                   "initialValue": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
-                      "id": 6212,
+                      "id": 6041,
                       "name": "transaction",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6191,
-                      "src": "2868:11:30",
+                      "referencedDeclaration": 6020,
+                      "src": "2868:11:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                        "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                         "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                       }
                     },
-                    "id": 6213,
+                    "id": 6042,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "expirationTimeSeconds",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 6160,
-                    "src": "2868:33:30",
+                    "referencedDeclaration": 5989,
+                    "src": "2868:33:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2836:65:30"
+                  "src": "2836:65:27"
                 },
                 {
                   "assignments": [
-                    6216
+                    6045
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6216,
+                      "id": 6045,
                       "name": "gasPrice",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2911:16:30",
+                      "scope": 6057,
+                      "src": "2911:16:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -1947,10 +1947,10 @@
                         "typeString": "uint256"
                       },
                       "typeName": {
-                        "id": 6215,
+                        "id": 6044,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2911:7:30",
+                        "src": "2911:7:27",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -1960,51 +1960,51 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6219,
+                  "id": 6048,
                   "initialValue": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
-                      "id": 6217,
+                      "id": 6046,
                       "name": "transaction",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6191,
-                      "src": "2930:11:30",
+                      "referencedDeclaration": 6020,
+                      "src": "2930:11:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                        "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                         "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                       }
                     },
-                    "id": 6218,
+                    "id": 6047,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "gasPrice",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 6162,
-                    "src": "2930:20:30",
+                    "referencedDeclaration": 5991,
+                    "src": "2930:20:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2911:39:30"
+                  "src": "2911:39:27"
                 },
                 {
                   "assignments": [
-                    6221
+                    6050
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 6221,
+                      "id": 6050,
                       "name": "signerAddress",
                       "nodeType": "VariableDeclaration",
-                      "scope": 6228,
-                      "src": "2960:21:30",
+                      "scope": 6057,
+                      "src": "2960:21:27",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -2012,10 +2012,10 @@
                         "typeString": "address"
                       },
                       "typeName": {
-                        "id": 6220,
+                        "id": 6049,
                         "name": "address",
                         "nodeType": "ElementaryTypeName",
-                        "src": "2960:7:30",
+                        "src": "2960:7:27",
                         "stateMutability": "nonpayable",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
@@ -2026,173 +2026,173 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 6224,
+                  "id": 6053,
                   "initialValue": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
-                      "id": 6222,
+                      "id": 6051,
                       "name": "transaction",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6191,
-                      "src": "2984:11:30",
+                      "referencedDeclaration": 6020,
+                      "src": "2984:11:27",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                        "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                         "typeString": "struct LibZeroExTransaction.ZeroExTransaction memory"
                       }
                     },
-                    "id": 6223,
+                    "id": 6052,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "signerAddress",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 6164,
-                    "src": "2984:25:30",
+                    "referencedDeclaration": 5993,
+                    "src": "2984:25:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "2960:49:30"
+                  "src": "2960:49:27"
                 },
                 {
                   "externalReferences": [
                     {
                       "data": {
-                        "declaration": 6201,
+                        "declaration": 6030,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3406:4:30",
+                        "src": "3406:4:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "data": {
-                        "declaration": 6201,
+                        "declaration": 6030,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3423:4:30",
+                        "src": "3423:4:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "result": {
-                        "declaration": 6194,
+                        "declaration": 6023,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "4257:6:30",
+                        "src": "4257:6:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "schemaHash": {
-                        "declaration": 6197,
+                        "declaration": 6026,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3535:10:30",
+                        "src": "3535:10:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "gasPrice": {
-                        "declaration": 6216,
+                        "declaration": 6045,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3901:8:30",
+                        "src": "3901:8:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "salt": {
-                        "declaration": 6206,
+                        "declaration": 6035,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3664:4:30",
+                        "src": "3664:4:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "expirationTimeSeconds": {
-                        "declaration": 6211,
+                        "declaration": 6040,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "3774:21:30",
+                        "src": "3774:21:27",
                         "valueSize": 1
                       }
                     },
                     {
                       "signerAddress": {
-                        "declaration": 6221,
+                        "declaration": 6050,
                         "isOffset": false,
                         "isSlot": false,
-                        "src": "4020:13:30",
+                        "src": "4020:13:27",
                         "valueSize": 1
                       }
                     }
                   ],
-                  "id": 6225,
+                  "id": 6054,
                   "nodeType": "InlineAssembly",
                   "operations": "{\n    let dataHash := keccak256(add(data, 32), mload(data))\n    let memPtr := mload(64)\n    mstore(memPtr, schemaHash)\n    mstore(add(memPtr, 32), salt)\n    mstore(add(memPtr, 64), expirationTimeSeconds)\n    mstore(add(memPtr, 96), gasPrice)\n    mstore(add(memPtr, 128), and(signerAddress, 0xffffffffffffffffffffffffffffffffffffffff))\n    mstore(add(memPtr, 160), dataHash)\n    result := keccak256(memPtr, 192)\n}",
-                  "src": "3317:982:30"
+                  "src": "3317:982:27"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 6226,
+                    "id": 6055,
                     "name": "result",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 6194,
-                    "src": "4315:6:30",
+                    "referencedDeclaration": 6023,
+                    "src": "4315:6:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
                     }
                   },
-                  "functionReturnParameters": 6195,
-                  "id": 6227,
+                  "functionReturnParameters": 6024,
+                  "id": 6056,
                   "nodeType": "Return",
-                  "src": "4308:13:30"
+                  "src": "4308:13:27"
                 }
               ]
             },
             "documentation": "@dev Calculates EIP712 hash of the 0x transaction struct.\n @param transaction 0x transaction structure.\n @return EIP712 hash of the transaction struct.",
-            "id": 6229,
+            "id": 6058,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getStructHash",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6192,
+              "id": 6021,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6191,
+                  "id": 6020,
                   "name": "transaction",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6229,
-                  "src": "2565:36:30",
+                  "scope": 6058,
+                  "src": "2565:36:27",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_memory_ptr",
+                    "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_memory_ptr",
                     "typeString": "struct LibZeroExTransaction.ZeroExTransaction"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6190,
+                    "id": 6019,
                     "name": "ZeroExTransaction",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 6167,
-                    "src": "2565:17:30",
+                    "referencedDeclaration": 5996,
+                    "src": "2565:17:27",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ZeroExTransaction_$6167_storage_ptr",
+                      "typeIdentifier": "t_struct$_ZeroExTransaction_$5996_storage_ptr",
                       "typeString": "struct LibZeroExTransaction.ZeroExTransaction"
                     }
                   },
@@ -2200,19 +2200,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2564:38:30"
+              "src": "2564:38:27"
             },
             "returnParameters": {
-              "id": 6195,
+              "id": 6024,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6194,
+                  "id": 6023,
                   "name": "result",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6229,
-                  "src": "2650:14:30",
+                  "scope": 6058,
+                  "src": "2650:14:27",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2220,10 +2220,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 6193,
+                    "id": 6022,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2650:7:30",
+                    "src": "2650:7:27",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2233,20 +2233,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2649:16:30"
+              "src": "2649:16:27"
             },
-            "scope": 6230,
-            "src": "2542:1786:30",
+            "scope": 6059,
+            "src": "2542:1786:27",
             "stateMutability": "pure",
             "superFunction": null,
             "visibility": "internal"
           }
         ],
-        "scope": 6231,
-        "src": "699:3631:30"
+        "scope": 6060,
+        "src": "699:3631:27"
       }
     ],
-    "src": "580:3751:30"
+    "src": "580:3751:27"
   },
   "compiler": {
     "name": "solc",
@@ -2254,7 +2254,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.3",
-  "updatedAt": "2020-10-08T18:48:19.975Z",
+  "updatedAt": "2020-10-09T05:26:08.087Z",
   "devdoc": {
     "methods": {}
   },

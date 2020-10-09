@@ -1,4 +1,4 @@
-const ganache = require("./ganache-core");
+const ganache = require("ganache-core");
 const server = ganache.server({ fork: "https://mainnet.infura.io/v3/834349d34934494f80797f2f551cb12e" });
 const fs = require('fs');
 

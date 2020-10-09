@@ -15,12 +15,12 @@
 pragma solidity ^0.5.7;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/drafts/SignedSafeMath.sol";
-import "@openzeppelin/contracts/ownership/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
+import "@openzeppelin/upgrades/contracts/Initializable.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/drafts/SignedSafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
 
 import "@0x/contracts-exchange-libs/contracts/src/LibOrder.sol";
 import "@0x/contracts-erc20/contracts/src/interfaces/IEtherToken.sol";
@@ -35,7 +35,7 @@ import "./RariFundProxy.sol";
  * Anyone can deposit to the fund with deposit(uint256 amount).
  * Anyone can withdraw their funds (with interest) from the fund with withdraw(uint256 amount).
  */
-contract RariFundManager is Ownable {
+contract RariFundManager is Initializable, Ownable {
     using SafeMath for uint256;
     using SignedSafeMath for int256;
     using SafeERC20 for IERC20;
@@ -56,14 +56,14 @@ contract RariFundManager is Ownable {
     RariFundController private _rariFundController;
 
     /**
-     * @dev Address of the REFT tokem.
+     * @dev Address of the REPT tokem.
      */
-    address private _rariEthFundTokenContract;
+    address private _rariEthPoolTokenContract;
 
     /**
-     * @dev Contract for the REFT tokem.
+     * @dev Contract for the REPT tokem.
      */
-    RariFundToken private _rariEthFundToken;
+    RariFundToken private _rariEthPoolToken;
 
     /**
      * @dev Address of the RariFundProxy.
@@ -83,14 +83,18 @@ contract RariFundManager is Ownable {
 
 
     /**
-     * @dev Constructor that sets supported ERC20 token contract addresses and supported pools for each supported token.
+     * @dev Initializer that sets supported ETH pools.
      */
-    constructor () public {
+    function initialize() public initializer {
+        // Initialize base contracts
+        Ownable.initialize(msg.sender);
         // Add supported currencies
         addPool(0); // dYdX
         addPool(1); // Compound
         addPool(2); // KeeperDAO
         addPool(3); // Aave
+
+        _rawFundBalanceCache = -1;
     }
 
 
@@ -133,10 +137,10 @@ contract RariFundManager is Ownable {
 
         RariFundManager(newContract).setFundManagerData(data);
 
-        // Update REFT minter
-        if (_rariEthFundTokenContract != address(0)) {
-            _rariEthFundToken.addMinter(newContract);
-            _rariEthFundToken.renounceMinter();
+        // Update REPT minter
+        if (_rariEthPoolTokenContract != address(0)) {
+            _rariEthPoolToken.addMinter(newContract);
+            _rariEthPoolToken.renounceMinter();
         }
 
         emit FundManagerUpgraded(newContract);
@@ -226,8 +230,8 @@ contract RariFundManager is Ownable {
      * @param newContract The address of the new RariFundToken contract.
      */
     function setFundToken(address newContract) external onlyOwner {
-        _rariEthFundTokenContract = newContract;
-        _rariEthFundToken = RariFundToken(_rariEthFundTokenContract);
+        _rariEthPoolTokenContract = newContract;
+        _rariEthPoolToken = RariFundToken(_rariEthPoolTokenContract);
         emit FundTokenSet(newContract);
     }
 
@@ -235,7 +239,7 @@ contract RariFundManager is Ownable {
      * @dev Throws if called by any account other than the RariFundToken.
      */
     modifier onlyToken() {
-        require(_rariEthFundTokenContract == msg.sender, "Caller is not the RariFundToken.");
+        require(_rariEthPoolTokenContract == msg.sender, "Caller is not the RariFundToken.");
         _;
     }
 
@@ -323,7 +327,7 @@ contract RariFundManager is Ownable {
     /**
      * @dev Boolean indicating if return values of `getPoolBalance` are to be cached.
      */
-    bool _cachePoolBalance = false;
+    bool _cachePoolBalance;
 
     /**
      * @dev Maps cached pool balances to pool indexes
@@ -366,7 +370,7 @@ contract RariFundManager is Ownable {
     }
 
     /**
-     * @notice Returns the fund's raw total balance (all REFT holders' funds + all unclaimed fees).
+     * @notice Returns the fund's raw total balance (all REPT holders' funds + all unclaimed fees).
      * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `RariFundController.getPoolBalance`) potentially modifies the state.
      */
     function getRawFundBalance() public returns (uint256) {
@@ -379,9 +383,9 @@ contract RariFundManager is Ownable {
     }
 
     /**
-     * @dev Caches the fund's raw total balance (all REFT holders' funds + all unclaimed fees) of ETH.
+     * @dev Caches the fund's raw total balance (all REPT holders' funds + all unclaimed fees) of ETH.
      */
-    int256 private _rawFundBalanceCache = -1;
+    int256 private _rawFundBalanceCache;
 
 
     /**
@@ -395,7 +399,7 @@ contract RariFundManager is Ownable {
     }
 
     /**
-     * @notice Returns the fund's total investor balance (all REFT holders' funds but not unclaimed fees) of all currencies in USD (scaled by 1e18).
+     * @notice Returns the fund's total investor balance (all REPT holders' funds but not unclaimed fees) of all currencies in USD (scaled by 1e18).
      * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.
      */
     function getFundBalance() public cacheRawFundBalance returns (uint256) {
@@ -408,11 +412,11 @@ contract RariFundManager is Ownable {
      * @param account The account whose balance we are calculating.
      */
     function balanceOf(address account) external returns (uint256) {
-        uint256 reftTotalSupply = _rariEthFundToken.totalSupply();
-        if (reftTotalSupply == 0) return 0;
-        uint256 reftBalance = _rariEthFundToken.balanceOf(account);
+        uint256 reptTotalSupply = _rariEthPoolToken.totalSupply();
+        if (reptTotalSupply == 0) return 0;
+        uint256 reptBalance = _rariEthPoolToken.balanceOf(account);
         uint256 fundBalance = getFundBalance();
-        uint256 accountBalance = reftBalance.mul(fundBalance).div(reftTotalSupply);
+        uint256 accountBalance = reptBalance.mul(fundBalance).div(reptTotalSupply);
         return accountBalance;
     }
 
@@ -455,9 +459,9 @@ contract RariFundManager is Ownable {
     event Withdrawal(address indexed sender, address indexed payee, uint256 amount, uint256 rETHBurned);
 
     /**
-     * @notice Internal function to deposit funds from `msg.sender` to RariFund in exchange for REFT minted to `to`.
+     * @notice Internal function to deposit funds from `msg.sender` to RariFund in exchange for REPT minted to `to`.
      * Please note that you must approve RariFundManager to transfer at least `amount`.
-     * @param to The address that will receieve the minted REFT.
+     * @param to The address that will receieve the minted REPT.
      * @param amount The amount of tokens to be deposited.
      * @return Boolean indicating success.
      */
@@ -465,28 +469,28 @@ contract RariFundManager is Ownable {
         // Input validation
         require(amount > 0, "Deposit amount must be greater than 0.");
 
-        // Calculate REFT to mint
-        uint256 reftTotalSupply = _rariEthFundToken.totalSupply();
-        uint256 fundBalance = reftTotalSupply > 0 ? getFundBalance() : 0; // Only set if used
+        // Calculate REPT to mint
+        uint256 reptTotalSupply = _rariEthPoolToken.totalSupply();
+        uint256 fundBalance = reptTotalSupply > 0 ? getFundBalance() : 0; // Only set if used
         
-        uint256 reftAmount = 0;
+        uint256 reptAmount = 0;
 
-        if (reftTotalSupply > 0 && fundBalance > 0) reftAmount = amount.mul(reftTotalSupply).div(fundBalance);
-        else reftAmount = amount;
+        if (reptTotalSupply > 0 && fundBalance > 0) reptAmount = amount.mul(reptTotalSupply).div(fundBalance);
+        else reptAmount = amount;
 
-        require(reftAmount > 0, "Deposit amount is so small that no REFT would be minted.");
+        require(reptAmount > 0, "Deposit amount is so small that no REPT would be minted.");
         
         // Check account balance limit if `to` is not whitelisted
-        require(checkAccountBalanceLimit(to, amount, reftTotalSupply, fundBalance), "Making this deposit would cause the balance of this account to exceed the maximum.");
+        require(checkAccountBalanceLimit(to, amount, reptTotalSupply, fundBalance), "Making this deposit would cause the balance of this account to exceed the maximum.");
 
-        // Update net deposits, transfer funds from msg.sender, mint RFT, emit event, and return true
+        // Update net deposits, transfer funds from msg.sender, mint REPT, emit event, and return true
         _netDeposits = _netDeposits.add(int256(amount));
 
         _rariFundControllerContract.transfer(amount); // Transfer ETH to RariFundController
 
-        require(_rariEthFundToken.mint(to, reftAmount), "Failed to mint output tokens.");
+        require(_rariEthPoolToken.mint(to, reptAmount), "Failed to mint output tokens.");
 
-        emit Deposit(msg.sender, to, amount, reftAmount);
+        emit Deposit(msg.sender, to, amount, reptAmount);
 
         return true;
     }
@@ -494,16 +498,16 @@ contract RariFundManager is Ownable {
     /**
      * @dev Checks to make sure that, if `to` is not whitelisted, its balance will not exceed the maximum after depositing `amount`.
      * This function was separated from the `_depositTo` function to avoid the stack getting too deep.
-     * @param to The address that will receieve the minted rETH.
+     * @param to The address that will receieve the minted REPT.
      * @param amount The amount of ETH to be deposited.
-     * @param reftTotalSupply The total supply of rETH representing the fund's total investor balance.
+     * @param reptTotalSupply The total supply of REPT representing the fund's total investor balance.
      * @param fundBalance The fund's total investor balance in (wei).
      * @return Boolean indicating success.
      */
-    function checkAccountBalanceLimit(address to, uint256 amount, uint256 reftTotalSupply, uint256 fundBalance) internal view returns (bool) {
+    function checkAccountBalanceLimit(address to, uint256 amount, uint256 reptTotalSupply, uint256 fundBalance) internal view returns (bool) {
         if (to != owner() && to != _interestFeeMasterBeneficiary) {
             if (_accountBalanceLimits[to] < 0) return false;
-            uint256 initialBalance = reftTotalSupply > 0 && fundBalance > 0 ? _rariEthFundToken.balanceOf(to).mul(fundBalance).div(reftTotalSupply) : 0; // double check
+            uint256 initialBalance = reptTotalSupply > 0 && fundBalance > 0 ? _rariEthPoolToken.balanceOf(to).mul(fundBalance).div(reptTotalSupply) : 0; // double check
             uint256 accountBalanceLimit = _accountBalanceLimits[to] > 0 ? uint256(_accountBalanceLimits[to]) : _accountBalanceLimitDefault;
             if (initialBalance.add(amount) > accountBalanceLimit) return false;
         }
@@ -512,9 +516,7 @@ contract RariFundManager is Ownable {
     }
 
     /**
-     * @notice Deposits funds to RariFund in exchange for rETH.
-     * You may only deposit currencies accepted by the fund (see `isCurrencyAccepted(string currencyCode)`).
-     * Please note that you must approve RariFundManager to transfer at least `amount`.
+     * @notice Deposits ETH to RariFund in exchange for REPT.
      * @return Boolean indicating success.
      */
     function deposit() payable external returns (bool) {
@@ -523,37 +525,35 @@ contract RariFundManager is Ownable {
     }
 
     /**
-     * @dev Deposits funds from `msg.sender` (RariFundProxy) to RariFund in exchange for RFT minted to `to`.
-     * You may only deposit currencies accepted by the fund (see `isCurrencyAccepted(string currencyCode)`).
-     * Please note that you must approve RariFundManager to transfer at least `amount`.
-     * @param to The address that will receieve the minted RFT.
+     * @dev Deposits funds from `msg.sender` (RariFundProxy) to RariFund in exchange for REPT minted to `to`.
+     * @param to The address that will receieve the minted REPT.
      * @return Boolean indicating success.
      */
-    function depositTo(address to) payable external onlyProxy returns (bool) {
+    function depositTo(address to) payable external returns (bool) {
         require(_depositTo(to, msg.value), "Deposit failed.");
         return true;
     }
 
 
     /**
-     * @dev Returns the amount of REFT to burn for a withdrawal (used by `_withdrawFrom`).
-     * @param from The address from which REFT will be burned.
+     * @dev Returns the amount of REPT to burn for a withdrawal (used by `_withdrawFrom`).
+     * @param from The address from which REPT will be burned.
      * @param amount The amount of the withdrawal in ETH
      */
-    function getREFTBurnAmount(address from, uint256 amount) internal returns (uint256) {
-        uint256 reftTotalSupply = _rariEthFundToken.totalSupply();
+    function getREPTBurnAmount(address from, uint256 amount) internal returns (uint256) {
+        uint256 reptTotalSupply = _rariEthPoolToken.totalSupply();
         uint256 fundBalance = getFundBalance();
         require(fundBalance > 0, "Fund balance is zero.");
-        uint256 reftAmount = amount.mul(reftTotalSupply).div(fundBalance); // check again
-        require(reftAmount <= _rariEthFundToken.balanceOf(from), "Your REFT balance is too low for a withdrawal of this amount.");
-        require(reftAmount > 0, "Withdrawal amount is so small that no REFT would be burned.");
-        return reftAmount;
+        uint256 reptAmount = amount.mul(reptTotalSupply).div(fundBalance); // check again
+        require(reptAmount <= _rariEthPoolToken.balanceOf(from), "Your REPT balance is too low for a withdrawal of this amount.");
+        require(reptAmount > 0, "Withdrawal amount is so small that no REPT would be burned.");
+        return reptAmount;
     }
 
     /**
-     * @dev Internal function to withdraw funds from RariFund to `msg.sender` in exchange for RFT burned from `from`.
-     * Please note that you must approve RariFundManager to burn of the necessary amount of REFT.
-     * @param from The address from which REFT will be burned.
+     * @dev Internal function to withdraw funds from RariFund to `msg.sender` in exchange for REPT burned from `from`.
+     * Please note that you must approve RariFundManager to burn of the necessary amount of REPT.
+     * @param from The address from which REPT will be burned.
      * @param amount The amount of tokens to be withdrawn.
      * @return Boolean indicating success.
      */
@@ -578,11 +578,11 @@ contract RariFundManager is Ownable {
 
         require(amount <= contractBalance, "Available balance not enough to cover amount even after withdrawing from pools.");
 
-        // Calculate rETH to burn
-        uint256 reftAmount = getREFTBurnAmount(from, amount);
+        // Calculate REPT to burn
+        uint256 reptAmount = getREPTBurnAmount(from, amount);
 
-        // Burn REFT, transfer funds to msg.sender, update net deposits, emit event, and return true
-        _rariEthFundToken.burnFrom(from, reftAmount); // The user must approve the burning of tokens beforehand
+        // Burn REPT, transfer funds to msg.sender, update net deposits, emit event, and return true
+        _rariEthPoolToken.burnFrom(from, reptAmount); // The user must approve the burning of tokens beforehand
         
         // _rariFundControllerContract.withdrawToManager(amount);
 
@@ -590,7 +590,7 @@ contract RariFundManager is Ownable {
 
         _netDeposits = _netDeposits.sub(int256(amount));
 
-        emit Withdrawal(from, msg.sender, amount, reftAmount);
+        emit Withdrawal(from, msg.sender, amount, reptAmount);
 
         return true;
     }
@@ -608,10 +608,9 @@ contract RariFundManager is Ownable {
     }
 
     /**
-     * @dev Withdraws funds from RariFund to `msg.sender` (RariFundProxy) in exchange for RFT burned from `from`.
-     * You may only withdraw currencies held by the fund (see `getRawFundBalance(string currencyCode)`).
-     * Please note that you must approve RariFundManager to burn of the necessary amount of RFT.
-     * @param from The address from which RFT will be burned.
+     * @dev Withdraws funds from RariFund to `msg.sender` (RariFundProxy) in exchange for REPT burned from `from`.
+     * Please note that you must approve RariFundManager to burn of the necessary amount of REPT.
+     * @param from The address from which REPT will be burned.
      * @param amount The amount of tokens to be withdrawn.
      * @return Boolean indicating success.
      */
@@ -635,7 +634,7 @@ contract RariFundManager is Ownable {
     }
     
     /**
-     * @notice Returns the total amount of interest accrued by past and current RFT holders (excluding the fees paid on interest) in USD (scaled by 1e18).
+     * @notice Returns the total amount of interest accrued by past and current REPT holders (excluding the fees paid on interest) in USD (scaled by 1e18).
      * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.
      */
     function getInterestAccrued() public returns (int256) {
@@ -727,7 +726,7 @@ contract RariFundManager is Ownable {
 
     /**
      * @dev Internal function to deposit all accrued fees on interest back into the fund on behalf of the master beneficiary.
-     * @return Integer indicating success (0), no fees to claim (1), or no REFT to mint (2).
+     * @return Integer indicating success (0), no fees to claim (1), or no REPT to mint (2).
      */
     function _depositFees() internal fundEnabled cacheRawFundBalance returns (uint8) {
         require(_interestFeeMasterBeneficiary != address(0), "Master beneficiary cannot be the zero address.");
@@ -735,22 +734,22 @@ contract RariFundManager is Ownable {
         uint256 amount = getInterestFeesUnclaimed();
         if (amount <= 0) return 1;
 
-        uint256 reftTotalSupply = _rariEthFundToken.totalSupply();
-        uint256 reftAmount = 0;
+        uint256 reptTotalSupply = _rariEthPoolToken.totalSupply();
+        uint256 reptAmount = 0;
 
-        if (reftTotalSupply > 0) {
+        if (reptTotalSupply > 0) {
             uint256 fundBalance = getFundBalance();
-            if (fundBalance > 0) reftAmount = amount.mul(reftTotalSupply).div(fundBalance);
-            else reftAmount = amount;
-        } else reftAmount = amount;
+            if (fundBalance > 0) reptAmount = amount.mul(reptTotalSupply).div(fundBalance);
+            else reptAmount = amount;
+        } else reptAmount = amount;
 
-        if (reftAmount <= 0) return 2;
+        if (reptAmount <= 0) return 2;
 
         _interestFeesClaimed = _interestFeesClaimed.add(amount);
         _netDeposits = _netDeposits.add(int256(amount));
 
-        require(_rariEthFundToken.mint(_interestFeeMasterBeneficiary, reftAmount), "Failed to mint output tokens.");
-        emit Deposit(_interestFeeMasterBeneficiary, _interestFeeMasterBeneficiary, amount, reftAmount);
+        require(_rariEthPoolToken.mint(_interestFeeMasterBeneficiary, reptAmount), "Failed to mint output tokens.");
+        emit Deposit(_interestFeeMasterBeneficiary, _interestFeeMasterBeneficiary, amount, reptAmount);
 
         emit InterestFeeDeposit(_interestFeeMasterBeneficiary, amount);
         return 0;
@@ -762,7 +761,7 @@ contract RariFundManager is Ownable {
      */
     function depositFees() external onlyRebalancer returns (bool) {
         uint8 result = _depositFees();
-        require(result == 0, result == 2 ? "Deposit amount is so small that no REFT would be minted." : "No new fees are available to claim.");
+        require(result == 0, result == 2 ? "Deposit amount is so small that no REPT would be minted." : "No new fees are available to claim.");
     }
 
     /**

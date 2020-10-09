@@ -1,6 +1,3 @@
-const erc20Abi = require('./abi/ERC20.json');
-
-const currencies = require('./fixtures/currencies.json');
 const pools = require('./fixtures/pools.json');
 
 const RariFundController = artifacts.require("RariFundController");
@@ -19,21 +16,14 @@ contract("RariFundController", accounts => {
     var totalEthBN = web3.utils.toBN(0);
     
     // For each currency of each pool, deposit to fund and deposit to pool
-    for (const poolName of Object.keys(pools)) {
-      // Deposit ETH
-      var amountBN = web3.utils.toBN(10 ** (18));
+    var amountBN = web3.utils.toBN(10 ** (18));
 
-      totalEthBN.iadd(web3.utils.toBN(1e18));
-      // var erc20Contract = new web3.eth.Contract(erc20Abi, currencies[currencyCode].tokenAddress);
-      // await erc20Contract.methods.approve(RariFundManager.address, amountBN.toString()).send({ from: accounts[0] });
-      await fundManagerInstance.deposit({ from: accounts[0], value: amountBN});
+    totalEthBN.iadd(web3.utils.toBN(4e18));
 
-      // Approve and deposit to pool (using Compound as an example)
-      // await fundControllerInstance.approveToPool(poolName === "Compound" ? 1 : 0, amountBN, { from: accounts[0] });
-      console.log('pool: ' + poolName);
-      var result = await fundControllerInstance.depositToPool(poolName === "Compound" ? 1 : 0, { from: accounts[0], value: amountBN });
-      console.log(result);
-    }
+    await fundControllerInstance.depositToPool(0, { from: accounts[0], value: amountBN }); // dydx
+    await fundControllerInstance.depositToPool(1, { from: accounts[0], value: amountBN }); // comp
+    await fundControllerInstance.depositToPool(2, { from: accounts[0], value: amountBN }); // keeperdao
+    await fundControllerInstance.depositToPool(3, { from: accounts[0], value: amountBN }); // aave
 
     // Disable original FundController and FundManager
     await fundControllerInstance.disableFund({ from: accounts[0] });

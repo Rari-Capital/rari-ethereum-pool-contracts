@@ -14,23 +14,28 @@
 
 pragma solidity ^0.5.7;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20Mintable.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
+import "@openzeppelin/upgrades/contracts/Initializable.sol";
+
+import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20Detailed.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20Mintable.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20Burnable.sol";
 
 // REFT
 
 /**
  * @title RariFundToken (ETH Fund)
- * @dev REFT is the ERC20 token contract accounting for the ownership of Rari Ethereum Fund's funds.
+ * @dev REPT is the ERC20 token contract accounting for the ownership of Rari Ethereum Fund's funds.
  */
-contract RariFundToken is ERC20, ERC20Detailed, ERC20Mintable, ERC20Burnable {
+contract RariFundToken is Initializable, ERC20, ERC20Detailed, ERC20Mintable, ERC20Burnable {
     using SafeMath for uint256;
 
     /**
-     * @dev Constructor for rETH.
+     * @dev Initializer for REPT.
      */
-    constructor () public ERC20Detailed("Rari Ethereum Fund Token", "REFT", 18) { }
+    function initialize() public initializer {
+        ERC20Detailed.initialize("Rari Ethereum Pool Token", "REPT", 18);
+        ERC20Mintable.initialize(msg.sender);
+    }
 }

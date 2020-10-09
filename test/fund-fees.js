@@ -8,16 +8,15 @@ const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
 const RariEthFundToken = artifacts.require("RariFundToken");
 
-async function forceAccrueCompound(currencyCode, account) {
-  var cErc20Contract = new web3.eth.Contract(cErc20DelegatorAbi, pools["Compound"].currencies[currencyCode].cTokenAddress);
-  
+async function forceAccrueCompound(account) {
+  var cErc20Contract = new web3.eth.Contract(cErc20DelegatorAbi, pools["Compound"].currencies["ETH"].cTokenAddress);
   try {
     await cErc20Contract.methods.accrueInterest().send({ from: account, nonce: await web3.eth.getTransactionCount(account) });
   } catch (error) {
     try {
       await cErc20Contract.methods.accrueInterest().send({ from: account, nonce: await web3.eth.getTransactionCount(account) });
     } catch (error) {
-      console.error("Both attempts to force accrue interest on Compound " + currencyCode + " failed. Not trying again!");
+      console.error("Both attempts to force accrue interest on Compound ETH failed. Not trying again!");
     }
   }
 }
@@ -28,16 +27,11 @@ contract("RariFundManager", accounts => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await RariFundManager.deployed();
     let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthFundToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthFundToken.deployed());
-    
-    // Approve and deposit tokens to the fund (using DAI as an example)
-    // var currencyCode = "DAI";
-    var amountBN = web3.utils.toBN(10 ** (18));
-    // var erc20Contract = new web3.eth.Contract(erc20Abi, currencies[currencyCode].tokenAddress);
-    // await erc20Contract.methods.approve(RariFundManager.address, amountBN.toString()).send({ from: accounts[0] });
+
+    var amountBN = web3.utils.toBN(1e18);
     await fundManagerInstance.deposit({ from: accounts[0], value: amountBN });
 
-    // Approve and deposit to pool (using Compound as an example)
-    // await fundControllerInstance.approveToPool(1, currencyCode, amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
+    // deposit to pool (using Compound as an example)
     await fundControllerInstance.depositToPool(1, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]), value: amountBN });
 
     // Set interest fee rate
@@ -53,7 +47,7 @@ contract("RariFundManager", accounts => {
     let initialInterestFeesGenerated = await fundManagerInstance.getInterestFeesGenerated.call();
 
     // Force accrue interest
-    await forceAccrueCompound("ETH", accounts[0]);
+    await forceAccrueCompound(accounts[0]);
     
     // Check raw interest accrued, interest accrued, and interest fees generated
     let nowRawInterestAccrued = await fundManagerInstance.getRawInterestAccrued.call();
@@ -66,12 +60,10 @@ contract("RariFundManager", accounts => {
     // Set the master beneficiary of interest fees
     await fundManagerInstance.setInterestFeeMasterBeneficiary(accounts[1], { from: accounts[0] });
 
-    // TODO: Check _interestFeeMasterBeneficiary (no way to do this as of now)
-
     // Check initial balances
     let initialAccountBalance = await fundManagerInstance.balanceOf.call(accounts[1]);
     let initialFundBalance = await fundManagerInstance.getFundBalance.call();
-    let initialRftBalance = await fundTokenInstance.balanceOf.call(accounts[1]);
+    let initialReftBalance = await fundTokenInstance.balanceOf.call(accounts[1]);
 
     // Deposit fees back into the fund!
     await fundManagerInstance.depositFees({ from: accounts[0] });
@@ -81,8 +73,8 @@ contract("RariFundManager", accounts => {
     assert(postDepositAccountBalance.gte(initialAccountBalance.add(nowInterestFeesGenerated.sub(initialInterestFeesGenerated))));
     let postDepositFundBalance = await fundManagerInstance.getFundBalance.call();
     assert(postDepositFundBalance.gte(initialFundBalance.add(nowInterestFeesGenerated.sub(initialInterestFeesGenerated))));
-    let postDepositRftBalance = await fundTokenInstance.balanceOf.call(accounts[1]);
-    assert(postDepositRftBalance.gt(initialRftBalance));
+    let postDepositReftBalance = await fundTokenInstance.balanceOf.call(accounts[1]);
+    assert(postDepositReftBalance.gt(initialReftBalance));
 
     // Check initial raw interest accrued, interest accrued, and interest fees generated
     initialRawInterestAccrued = await fundManagerInstance.getRawInterestAccrued.call();
@@ -90,7 +82,7 @@ contract("RariFundManager", accounts => {
     initialInterestFeesGenerated = await fundManagerInstance.getInterestFeesGenerated.call();
 
     // Force accrue interest
-    await forceAccrueCompound("ETH", accounts[0]);
+    await forceAccrueCompound(accounts[0]);
 
     // Check raw interest accrued, interest accrued, and interest fees generated
     nowRawInterestAccrued = await fundManagerInstance.getRawInterestAccrued.call();

@@ -8,6 +8,7 @@ interface CEther {
   function repayBorrow() external payable;
   function borrowBalanceCurrent(address account) external returns (uint);
   function exchangeRateCurrent() external returns (uint);
+  function balanceOfUnderlying(address owner) external returns (uint);
 
   function balanceOf(address account) external view returns (uint);
   function decimals() external view returns (uint);

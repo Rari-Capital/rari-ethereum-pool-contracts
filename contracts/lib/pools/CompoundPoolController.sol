@@ -14,8 +14,8 @@
 
 pragma solidity ^0.5.7;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
 
 import "../../external/compound/CEther.sol";
 
@@ -32,25 +32,9 @@ library CompoundPoolController {
 
     /**
      * @dev Returns the fund's balance of the specified currency in the Compound pool.
-     * We would simply be using balanceOfUnderlying, but exchangeRateCurrent is nonReentrant, which causes us issues.
      */
     function getBalance() internal returns (uint256) {
-        // _cETHContract.accrueInterest(); // called when exchangeRateStored is called (see src)
-        return _cETHContract.balanceOf(address(this)).mul(_cETHContract.exchangeRateCurrent()).div(1e18);
-    }
-
-    /**
-     * @dev Approves tokens to Compound without spending gas on every deposit.
-     * @param amount Amount of the specified token to approve to Compound.
-     * @return Boolean indicating success.
-     */
-    function approve(uint256 amount) internal returns (bool) {
-        IERC20 token = IERC20(cETH_CONTACT_ADDRESS);
-        uint256 allowance = token.allowance(address(this), cETH_CONTACT_ADDRESS);
-        if (allowance == amount) return true;
-        if (amount > 0 && allowance > 0) token.safeApprove(cETH_CONTACT_ADDRESS, 0);
-        token.safeApprove(cETH_CONTACT_ADDRESS, amount);
-        return true;
+        return _cETHContract.balanceOfUnderlying(address(this));
     }
 
     /**
