@@ -103,9 +103,7 @@ contract RariFundController is Ownable {
     /**
      * @dev Payable fallback function called by 0x exchange to refund unspent protocol fee.
      */
-    function () external payable {
-        // should deposit here, leave blank for now
-    }
+    function () external payable { }
 
     /**
      * @dev Emitted when the RariFundManager of the RariFundController is set.
@@ -216,6 +214,7 @@ contract RariFundController is Ownable {
                 _withdrawAllFromPool(_supportedPools[i]);
 
         uint256 balance = address(this).balance;
+
         if (balance > 0) {
             (bool success, ) = newContract.call.value(balance)("");
             require(success, "Failed to transfer ETH.");

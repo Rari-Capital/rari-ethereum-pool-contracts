@@ -21,6 +21,16 @@ pragma experimental ABIEncoderV2;
  */
 contract DummyRariFundController {
     /**
+     * @dev Boolean to be checked on `upgradeFundController`.
+     */
+    bool public constant IS_RARI_FUND_CONTROLLER = true;
+
+    /**
+     * @dev Function to receive ETH from old Fund Controller
+     */
+    function () external payable { }
+
+    /**
      * @dev Returns the fund controller's balance of the specified currency in the specified pool.
      * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `CompoundPoolController.getBalance`) potentially modifies the state.
      * @param pool The index of the pool.

@@ -243,14 +243,13 @@ contract("RariFundController", accounts => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await RariFundManager.deployed();
     
-    await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+    // await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
 
     var amountBN = web3.utils.toBN(1e18);
-    
+
     await fundManagerInstance.deposit({ from: accounts[0], value: amountBN });
 
     // Approve and deposit to pool (using Compound as an example)
-    // await fundControllerInstance.approveToPool(1, "DAI", amountBN, { from: accounts[0] });
     await fundControllerInstance.depositToPool(1, amountBN, { from: accounts[0] });
 
     // Check balance of original FundController

@@ -195,8 +195,8 @@
       }
     },
     "2c9af525c5ae18a19cc94474b969c0559bee05ee4594d2553fb830585f938549": {
-      "address": "0x8aB20BB260e1b62d3E952C7aC1FF952Ce61Ab917",
-      "txHash": "0xcf5bf8b314368c771b998c4541ae55ff9e2e892afa75bea62b7bb5cd00dd7327",
+      "address": "0xCAD5CF544F93376a207a540F4eeF01b91D88804D",
+      "txHash": "0xc3235a47a57d95e4c26a95535491492e070064cfa7b24a823f5066f483f608f9",
       "layout": {
         "storage": [
           {
@@ -268,7 +268,7 @@
           {
             "contract": "MinterRole",
             "label": "_minters",
-            "type": "t_struct(Role)7900_storage",
+            "type": "t_struct(Role)7903_storage",
             "src": "../@openzeppelin/contracts-ethereum-package/contracts/access/roles/MinterRole.sol:14"
           },
           {
@@ -294,7 +294,7 @@
           "t_array(t_uint256)50_storage": {
             "label": "uint256[50]"
           },
-          "t_struct(Role)7900_storage": {
+          "t_struct(Role)7903_storage": {
             "label": "struct Roles.Role"
           },
           "t_string_storage": {
@@ -705,8 +705,8 @@
       }
     },
     "12d65e0c38d8c400214808ec3fe996cf198d9c3ae478afb71bac43c6ff672f43": {
-      "address": "0x053F3451449EA827C27C212280D8Ee86D08Cb0AE",
-      "txHash": "0x09d12d01b699148d1e987d30d2cc25b423e59d223fcc1811573473ddcb0e4d3f",
+      "address": "0x194a9e421329CE4F6cF52b9CCe8e57ff20c6D63e",
+      "txHash": "0x78cc128198a6164c4e9091ef7357caefd5e414a6d8ed65506b10fcf5057e8b73",
       "layout": {
         "storage": [
           {
@@ -3263,8 +3263,8 @@
       }
     },
     "e7e7c3efcd03851f642bd663642507448f6cb40276207b28be6a1023518f23df": {
-      "address": "0xa6356AffE0089f25fa0b01fc7ee176203F0F9435",
-      "txHash": "0x4b944532f6254e4a065c2855486cba81bf651e7adabf2b334d55979f86299a4c",
+      "address": "0x1AC6358a9ba024205C7ab05aeFf3547A3Ba95B71",
+      "txHash": "0x261cce11a310f79c6a831a0443e2b6eef38c71fda19c26de3d8acb179558f7bd",
       "layout": {
         "storage": [
           {
@@ -3457,7 +3457,7 @@
     }
   },
   "admin": {
-    "address": "0x4814dCA724A707796a6363d60a0327A570d159db",
-    "txHash": "0x2cfd137593f4614aa2087beb1ce7b85e12ffd8096deba0fca3813f2c5cdb96bd"
+    "address": "0x4A3B4E7Ce1408e7D533166A606d568a428F0ED55",
+    "txHash": "0x2c18bb261dbbe914120e7256068c3708cf85dfed712ee5c8e32f25d493e97d27"
   }
 }
