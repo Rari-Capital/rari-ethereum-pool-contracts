@@ -15,7 +15,6 @@ const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
 const RariFundToken = artifacts.require("RariFundToken");
 
-
 contract("RariFundController, RariFundManager", accounts => {
   it("should deposit to the fund, approve deposits to dYdX with weth, and deposit to pools via RariFundController.depositToPool", async () => {
     let fundControllerInstance = await RariFundController.deployed();

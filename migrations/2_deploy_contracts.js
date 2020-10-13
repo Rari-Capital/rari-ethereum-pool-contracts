@@ -63,9 +63,6 @@ module.exports = async function(deployer, network, accounts) {
   // Connect RariFundToken to RariFundManager
   await rariFundManager.setFundToken(RariFundToken.address);
 
-  // Set maximum default account balance limit
-  await rariFundManager.setDefaultAccountBalanceLimit(web3.utils.toBN(2).pow(web3.utils.toBN(256)).subn(1));
-
   // Set fund rebalancer on controller and manager
   await rariFundController.setFundRebalancer(["live", "live-fork"].indexOf(network) >= 0 ? process.env.LIVE_FUND_REBALANCER : process.env.DEVELOPMENT_ADDRESS);
   await rariFundManager.setFundRebalancer(["live", "live-fork"].indexOf(network) >= 0 ? process.env.LIVE_FUND_REBALANCER : process.env.DEVELOPMENT_ADDRESS);

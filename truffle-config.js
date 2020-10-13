@@ -20,7 +20,7 @@ module.exports = {
       provider: function() {
         var keys = [process.env.LIVE_DEPLOYER_PRIVATE_KEY];
         if (process.env.UPGRADE_FUND_OWNER_PRIVATE_KEY) keys.push(process.env.UPGRADE_FUND_OWNER_PRIVATE_KEY);
-        return new HDWalletProvider(keys, "https://mainnet.infura.io/v3/" + process.env.LIVE_INFURA_PROJECT_ID);
+        return new HDWalletProvider(keys, process.env.LIVE_WEB3_PROVIDER_URL);
       },
       network_id: 1,
       gasPrice: parseInt(process.env.LIVE_GAS_PRICE),

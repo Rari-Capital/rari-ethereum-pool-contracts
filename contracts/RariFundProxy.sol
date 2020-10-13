@@ -1,15 +1,10 @@
 /**
- * @file
- * @author David Lucid <david@rari.capital>
- *
- * @section LICENSE
- *
- * All rights reserved to David Lucid of David Lucid LLC.
- * Any disclosure, reproduction, distribution or other use of this code by any individual or entity other than David Lucid of David Lucid LLC, unless given explicit permission by David Lucid of David Lucid LLC, is prohibited.
- *
- * @section DESCRIPTION
- *
- * This file includes the Ethereum contract code for RariFundProxy, which faciliates pre-deposit exchanges and post-withdrawal exchanges.
+ * COPYRIGHT © 2020 RARI CAPITAL, INC. ALL RIGHTS RESERVED.
+ * Anyone is free to integrate the public (i.e., non-administrative) application programming interfaces (APIs) of the official Ethereum smart contract instances deployed by Rari Capital, Inc. in any application (commercial or noncommercial and under any license), provided that the application does not abuse the APIs or act against the interests of Rari Capital, Inc.
+ * Anyone is free to study, review, and analyze the source code contained in this package.
+ * Reuse (including deployment of smart contracts other than private testing on a private network), modification, redistribution, or sublicensing of any source code contained in this package is not permitted without the explicit permission of David Lucid of Rari Capital, Inc.
+ * No one is permitted to use the software for any purpose other than those allowed by this license.
+ * This license is liable to change at any time at the sole discretion of David Lucid of Rari Capital, Inc.
  */
 
 pragma solidity 0.5.17;
@@ -32,20 +27,15 @@ import "./RariFundManager.sol";
 
 /**
  * @title RariFundProxy
+ * @author David Lucid <david@rari.capital> (https://github.com/davidlucid)
+ * @author Richter Brzeski <richter@rari.capital> (https://github.com/richtermb)
  * @dev This contract faciliates deposits to RariFundManager from exchanges and withdrawals from RariFundManager for exchanges.
  */
-
 contract RariFundProxy is Ownable, GSNRecipient {
     using SafeMath for uint256;
     using SignedSafeMath for int256;
     using ECDSA for bytes32;
     using SafeERC20 for IERC20;
-
-    /**
-     * @notice Package version of `rari-eth-contracts` when this contract was deployed.
-     */
-    string public constant VERSION = "1.0.0";
-
 
     /**
      * @dev Maps ERC20 token contract addresses to supported currency codes.
@@ -68,7 +58,7 @@ contract RariFundProxy is Ownable, GSNRecipient {
     /**
      * @dev Contract of the RariFundManager.
      */
-    RariFundManager private _rariFundManager;
+    RariFundManager public rariFundManager;
 
     /**
      * @dev Address of the trusted GSN signer.
@@ -80,12 +70,15 @@ contract RariFundProxy is Ownable, GSNRecipient {
      */
     event FundManagerSet(address newContract);
 
-
+    /**
+     * @dev WETH token address.
+     */
     address constant private WETH_CONTRACT = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-
+    /**
+     * @dev WETH token contract.
+     */
     IEtherToken constant private _weth = IEtherToken(WETH_CONTRACT);
-
 
     /**
      * @dev Sets or upgrades the RariFundManager of the RariFundProxy.
@@ -98,11 +91,9 @@ contract RariFundProxy is Ownable, GSNRecipient {
         if (newContract != address(0)) _weth.approve(newContract, uint256(-1));
 
         _rariFundManagerContract = newContract;
-        _rariFundManager = RariFundManager(_rariFundManagerContract);
+        rariFundManager = RariFundManager(_rariFundManagerContract);
         emit FundManagerSet(newContract);
     }
-
-    
 
     /**
      * @dev Emitted when the trusted GSN signer of the RariFundProxy is set.
@@ -135,7 +126,6 @@ contract RariFundProxy is Ownable, GSNRecipient {
      */
     event PostWithdrawalExchange(address indexed outputErc20Contract, address indexed payee, uint256 withdrawalAmount, uint256 takerAssetFilledAmount);
 
-    
     /**
      * @notice Exchanges and deposits funds to RariFund in exchange for RFT (via 0x).
      * You can retrieve orders from the 0x swap API (https://0x.org/docs/api#get-swapv0quote). See the web client for implementation.
@@ -184,9 +174,8 @@ contract RariFundProxy is Ownable, GSNRecipient {
         emit PreDepositExchange(inputErc20Contract, msg.sender, filledAmounts[0], filledAmounts[1]);
 
         // Deposit output tokens
-        _rariFundManager.depositTo.value(wethBalance)(msg.sender);
+        rariFundManager.depositTo.value(wethBalance)(msg.sender);
     }
-
 
     /**
      * @notice Withdraws funds from RariFund in exchange for RFT and exchanges to them to the desired currency (if no 0x orders are supplied, exchanges DAI, USDC, USDT, TUSD, and mUSD via mStable).
@@ -209,7 +198,7 @@ contract RariFundProxy is Ownable, GSNRecipient {
         require(_rariFundManagerContract != address(0), "Fund manager contract not set. This may be due to an upgrade of this proxy contract.");
 
         // Withdraw input tokens
-        _rariFundManager.withdrawFrom(msg.sender, inputAmount);
+        rariFundManager.withdrawFrom(msg.sender, inputAmount);
 
         // Wrap ETH for exchanging with 0x
         _weth.deposit.value(inputAmount)();
@@ -236,7 +225,6 @@ contract RariFundProxy is Ownable, GSNRecipient {
         }
     }
 
-
     /**
      * @notice Deposits funds to RariFund in exchange for REFT (with GSN support).
      * You may only deposit ETH.
@@ -245,7 +233,7 @@ contract RariFundProxy is Ownable, GSNRecipient {
      */
     function deposit() payable external returns (bool) {
         require(msg.value > 0, "Must deposit more than 0 eth");
-        return _rariFundManager.depositTo.value(msg.value)(_msgSender());
+        return rariFundManager.depositTo.value(msg.value)(_msgSender());
     }
 
     /**

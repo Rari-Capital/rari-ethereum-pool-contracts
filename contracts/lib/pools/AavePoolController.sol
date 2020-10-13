@@ -18,6 +18,7 @@ import "../../external/aave/AToken.sol";
 /**
  * @title AavePoolController
  * @author David Lucid <david@rari.capital> (https://github.com/davidlucid)
+ * @author Richter Brzeski <richter@rari.capital> (https://github.com/richtermb)
  * @dev This library handles deposits to and withdrawals from Aave liquidity pools.
  */
 library AavePoolController {

@@ -1,15 +1,10 @@
 /**
- * @file
- * @author David Lucid <david@rari.capital>
- *
- * @section LICENSE
- *
- * All rights reserved to David Lucid of David Lucid LLC.
- * Any disclosure, reproduction, distribution or other use of this code by any individual or entity other than David Lucid of David Lucid LLC, unless given explicit permission by David Lucid of David Lucid LLC, is prohibited.
- *
- * @section DESCRIPTION
- *
- * This file includes the Ethereum contract code for RariFundManager, the primary contract powering Rari Capital's RariFund.
+ * COPYRIGHT © 2020 RARI CAPITAL, INC. ALL RIGHTS RESERVED.
+ * Anyone is free to integrate the public (i.e., non-administrative) application programming interfaces (APIs) of the official Ethereum smart contract instances deployed by Rari Capital, Inc. in any application (commercial or noncommercial and under any license), provided that the application does not abuse the APIs or act against the interests of Rari Capital, Inc.
+ * Anyone is free to study, review, and analyze the source code contained in this package.
+ * Reuse (including deployment of smart contracts other than private testing on a private network), modification, redistribution, or sublicensing of any source code contained in this package is not permitted without the explicit permission of David Lucid of Rari Capital, Inc.
+ * No one is permitted to use the software for any purpose other than those allowed by this license.
+ * This license is liable to change at any time at the sole discretion of David Lucid of Rari Capital, Inc.
  */
 
 pragma solidity 0.5.17;
@@ -28,10 +23,13 @@ import "@0x/contracts-erc20/contracts/src/interfaces/IEtherToken.sol";
 import "./RariFundController.sol";
 import "./RariFundToken.sol";
 import "./RariFundProxy.sol";
+import "./interfaces/IRariGovernanceTokenDistributor.sol";
 
 /**
  * @title RariFundManager
- * @dev This contract is the primary contract powering RariFund.
+ * @author David Lucid <david@rari.capital> (https://github.com/davidlucid)
+ * @author Richter Brzeski <richter@rari.capital> (https://github.com/richtermb)
+ * @dev This contract is the primary contract powering the Rari Ethereum Pool.
  * Anyone can deposit to the fund with deposit(uint256 amount).
  * Anyone can withdraw their funds (with interest) from the fund with withdraw(uint256 amount).
  */
@@ -53,17 +51,17 @@ contract RariFundManager is Initializable, Ownable {
     /**
      * @dev Contract of the RariFundController.
      */
-    RariFundController private _rariFundController;
+    RariFundController public rariFundController;
 
     /**
      * @dev Address of the REPT tokem.
      */
-    address private _rariEthPoolTokenContract;
+    address private _rariFundTokenContract;
 
     /**
      * @dev Contract for the REPT tokem.
      */
-    RariFundToken private _rariEthPoolToken;
+    RariFundToken private rariFundToken;
 
     /**
      * @dev Address of the RariFundProxy.
@@ -75,12 +73,10 @@ contract RariFundManager is Initializable, Ownable {
      */
     address private _rariFundRebalancerAddress;
 
-
     /**
-     * @dev Supported pools
+     * @dev Array of supported pools.
      */
     uint8[] private _supportedPools;
-
 
     /**
      * @dev Initializer that sets supported ETH pools.
@@ -88,15 +84,16 @@ contract RariFundManager is Initializable, Ownable {
     function initialize() public initializer {
         // Initialize base contracts
         Ownable.initialize(msg.sender);
+
         // Add supported currencies
         addPool(0); // dYdX
         addPool(1); // Compound
         addPool(2); // KeeperDAO
         addPool(3); // Aave
 
+        // Initialize raw fund balance cache (can't set initial values in field declarations with proxy storage)
         _rawFundBalanceCache = -1;
     }
-
 
     /**
      * @dev Entry into deposit functionality.
@@ -140,9 +137,9 @@ contract RariFundManager is Initializable, Ownable {
         RariFundManager(newContract).setFundManagerData(data);
 
         // Update REPT minter
-        if (_rariEthPoolTokenContract != address(0)) {
-            _rariEthPoolToken.addMinter(newContract);
-            _rariEthPoolToken.renounceMinter();
+        if (_rariFundTokenContract != address(0)) {
+            rariFundToken.addMinter(newContract);
+            rariFundToken.renounceMinter();
         }
 
         emit FundManagerUpgraded(newContract);
@@ -198,10 +195,9 @@ contract RariFundManager is Initializable, Ownable {
      */
     function setFundController(address payable newContract) external onlyOwner {
         _rariFundControllerContract = newContract;
-        _rariFundController = RariFundController(_rariFundControllerContract);
+        rariFundController = RariFundController(_rariFundControllerContract);
         emit FundControllerSet(newContract);
     }
-
 
     /**
      * @dev Emitted when the REPT contract of the RariFundManager is set.
@@ -213,8 +209,8 @@ contract RariFundManager is Initializable, Ownable {
      * @param newContract The address of the new RariFundToken contract.
      */
     function setFundToken(address newContract) external onlyOwner {
-        _rariEthPoolTokenContract = newContract;
-        _rariEthPoolToken = RariFundToken(_rariEthPoolTokenContract);
+        _rariFundTokenContract = newContract;
+        rariFundToken = RariFundToken(_rariFundTokenContract);
         emit FundTokenSet(newContract);
     }
 
@@ -222,10 +218,9 @@ contract RariFundManager is Initializable, Ownable {
      * @dev Throws if called by any account other than the RariFundToken.
      */
     modifier onlyToken() {
-        require(_rariEthPoolTokenContract == msg.sender, "Caller is not the RariFundToken.");
+        require(_rariFundTokenContract == msg.sender, "Caller is not the RariFundToken.");
         _;
     }
-
 
     /**
      * @dev Emitted when the RariFundProxy of the RariFundManager is set.
@@ -324,16 +319,15 @@ contract RariFundManager is Initializable, Ownable {
      * @param pool The index of the pool.
      */
     function getPoolBalance(uint8 pool) internal returns (uint256) {
-        if (!_rariFundController.hasETHInPool(pool)) return 0;
+        if (!rariFundController.hasETHInPool(pool)) return 0;
 
         if (_cachePoolBalance) {
-                if (_poolBalanceCache[pool] == 0) _poolBalanceCache[pool] = _rariFundController._getPoolBalance(pool);
+                if (_poolBalanceCache[pool] == 0) _poolBalanceCache[pool] = rariFundController._getPoolBalance(pool);
                 return _poolBalanceCache[pool];
         }
 
-        return _rariFundController._getPoolBalance(pool);
+        return rariFundController._getPoolBalance(pool);
     }
-
 
     /**
      * @dev Caches return value of `getPoolBalance` for the duration of the function.
@@ -370,7 +364,6 @@ contract RariFundManager is Initializable, Ownable {
      */
     int256 private _rawFundBalanceCache;
 
-
     /**
      * @dev Caches the value of getRawFundBalance() for the duration of the function.
      */
@@ -395,41 +388,13 @@ contract RariFundManager is Initializable, Ownable {
      * @param account The account whose balance we are calculating.
      */
     function balanceOf(address account) external returns (uint256) {
-        uint256 reptTotalSupply = _rariEthPoolToken.totalSupply();
+        uint256 reptTotalSupply = rariFundToken.totalSupply();
         if (reptTotalSupply == 0) return 0;
-        uint256 reptBalance = _rariEthPoolToken.balanceOf(account);
+        uint256 reptBalance = rariFundToken.balanceOf(account);
         uint256 fundBalance = getFundBalance();
         uint256 accountBalance = reptBalance.mul(fundBalance).div(reptTotalSupply);
         return accountBalance;
     }
-
-    /**
-     * @dev Fund balance limit in ETH per Ethereum address.
-     */
-    uint256 private _accountBalanceLimitDefault;
-
-    /**
-     * @dev Sets or upgrades the default account balance limit in ETH.
-     * @param limitEth The default fund balance limit per Ethereum address in ETH.
-     */
-    function setDefaultAccountBalanceLimit(uint256 limitEth) external onlyOwner {
-        _accountBalanceLimitDefault = limitEth;
-    }
-
-    /**
-     * @dev Maps booleans indicating if Ethereum addresses are immune to the account balance limit.
-     */
-    mapping(address => int256) private _accountBalanceLimits;
-
-    /**
-     * @dev Sets the balance limit in ETH of `account`.
-     * @param account The Ethereum address to add or remove.
-     * @param limitEth The fund balance limit of `account` in ETH. Use 0 to unset individual limit (and restore account to global limit). Use -1 to disable deposits from `account`.
-     */
-    function setIndividualAccountBalanceLimit(address account, int256 limitEth) external onlyOwner {
-        _accountBalanceLimits[account] = limitEth;
-    }
-
 
     /**
      * @dev Emitted when funds have been deposited to Rari Eth Pool.
@@ -453,7 +418,7 @@ contract RariFundManager is Initializable, Ownable {
         require(amount > 0, "Deposit amount must be greater than 0.");
 
         // Calculate REPT to mint
-        uint256 reptTotalSupply = _rariEthPoolToken.totalSupply();
+        uint256 reptTotalSupply = rariFundToken.totalSupply();
         uint256 fundBalance = reptTotalSupply > 0 ? getFundBalance() : 0; // Only set if used
         uint256 reptAmount = 0;
 
@@ -461,9 +426,6 @@ contract RariFundManager is Initializable, Ownable {
         else reptAmount = amount;
 
         require(reptAmount > 0, "Deposit amount is so small that no REPT would be minted.");
-        
-        // Check account balance limit if `to` is not whitelisted
-        require(checkAccountBalanceLimit(to, amount, reptTotalSupply, fundBalance), "Making this deposit would cause the balance of this account to exceed the maximum.");
 
         // Update net deposits, transfer funds from msg.sender, mint REPT, emit event, and return true
         _netDeposits = _netDeposits.add(int256(amount));
@@ -471,29 +433,13 @@ contract RariFundManager is Initializable, Ownable {
         (bool success, ) = _rariFundControllerContract.call.value(amount)(""); // Transfer ETH to RariFundController
         require(success, "Failed to transfer ETH.");
 
-        require(_rariEthPoolToken.mint(to, reptAmount), "Failed to mint output tokens.");
+        require(rariFundToken.mint(to, reptAmount), "Failed to mint output tokens.");
 
         emit Deposit(msg.sender, to, amount, reptAmount);
-
-        return true;
-    }
-
-    /**
-     * @dev Checks to make sure that, if `to` is not whitelisted, its balance will not exceed the maximum after depositing `amount`.
-     * This function was separated from the `_depositTo` function to avoid the stack getting too deep.
-     * @param to The address that will receieve the minted REPT.
-     * @param amount The amount of ETH to be deposited.
-     * @param reptTotalSupply The total supply of REPT representing the fund's total investor balance.
-     * @param fundBalance The fund's total investor balance in (wei).
-     * @return Boolean indicating success.
-     */
-    function checkAccountBalanceLimit(address to, uint256 amount, uint256 reptTotalSupply, uint256 fundBalance) internal view returns (bool) {
-        if (to != owner() && to != _interestFeeMasterBeneficiary) {
-            if (_accountBalanceLimits[to] < 0) return false;
-            uint256 initialBalance = reptTotalSupply > 0 && fundBalance > 0 ? _rariEthPoolToken.balanceOf(to).mul(fundBalance).div(reptTotalSupply) : 0; // double check
-            uint256 accountBalanceLimit = _accountBalanceLimits[to] > 0 ? uint256(_accountBalanceLimits[to]) : _accountBalanceLimitDefault;
-            if (initialBalance.add(amount) > accountBalanceLimit) return false;
-        }
+    
+        // Update RGT distribution speeds
+        IRariGovernanceTokenDistributor rariGovernanceTokenDistributor = rariFundToken.rariGovernanceTokenDistributor();
+        if (address(rariGovernanceTokenDistributor) != address(0) && block.number < rariGovernanceTokenDistributor.distributionEndBlock()) rariGovernanceTokenDistributor.refreshDistributionSpeeds(IRariGovernanceTokenDistributor.RariPool.Ethereum, getFundBalance());
 
         return true;
     }
@@ -524,11 +470,11 @@ contract RariFundManager is Initializable, Ownable {
      * @param amount The amount of the withdrawal in ETH
      */
     function getREPTBurnAmount(address from, uint256 amount) internal returns (uint256) {
-        uint256 reptTotalSupply = _rariEthPoolToken.totalSupply();
+        uint256 reptTotalSupply = rariFundToken.totalSupply();
         uint256 fundBalance = getFundBalance() + address(this).balance; // accounts for funds currently inside RariFundManager
         require(fundBalance > 0, "Fund balance is zero.");
         uint256 reptAmount = amount.mul(reptTotalSupply).div(fundBalance); // check again
-        require(reptAmount <= _rariEthPoolToken.balanceOf(from), "Your REPT balance is too low for a withdrawal of this amount.");
+        require(reptAmount <= rariFundToken.balanceOf(from), "Your REPT balance is too low for a withdrawal of this amount.");
         require(reptAmount > 0, "Withdrawal amount is so small that no REPT would be burned.");
         return reptAmount;
     }
@@ -546,7 +492,7 @@ contract RariFundManager is Initializable, Ownable {
 
         // Check contract balance of ETH and withdraw from pools if necessary
         uint256 contractBalance = _rariFundControllerContract.balance;
-        if (contractBalance > 0) _rariFundController.withdrawToManager(contractBalance);
+        if (contractBalance > 0) rariFundController.withdrawToManager(contractBalance);
 
         for (uint256 i = 0; i < _supportedPools.length; i++) {
             if (contractBalance >= amount) break;
@@ -555,7 +501,7 @@ contract RariFundManager is Initializable, Ownable {
             if (poolBalance <= 0) continue;
             uint256 amountLeft = amount.sub(contractBalance);
             uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
-            require(_rariFundController.withdrawFromPoolKnowingBalanceToManager(pool, poolAmount, poolBalance), "Pool withdrawal failed.");
+            require(rariFundController.withdrawFromPoolKnowingBalanceToManager(pool, poolAmount, poolBalance), "Pool withdrawal failed.");
             _poolBalanceCache[pool] = poolBalance.sub(poolAmount);
             contractBalance = contractBalance.add(poolAmount);
         }
@@ -566,7 +512,7 @@ contract RariFundManager is Initializable, Ownable {
         uint256 reptAmount = getREPTBurnAmount(from, amount);
         
         _netDeposits = _netDeposits.sub(int256(amount));
-        _rariEthPoolToken.burnFrom(from, reptAmount); // The user must approve the burning of tokens beforehand
+        rariFundToken.burnFrom(from, reptAmount); // The user must approve the burning of tokens beforehand
         
         (bool senderSuccess, ) = msg.sender.call.value(amount)(""); // Transfer 'amount' in ETH to the sender
         require(senderSuccess, "Failed to transfer ETH to sender.");
@@ -579,6 +525,10 @@ contract RariFundManager is Initializable, Ownable {
         }
         
         emit Withdrawal(from, msg.sender, amount, reptAmount);
+
+        // Update RGT distribution speeds
+        IRariGovernanceTokenDistributor rariGovernanceTokenDistributor = rariFundToken.rariGovernanceTokenDistributor();
+        if (address(rariGovernanceTokenDistributor) != address(0) && block.number < rariGovernanceTokenDistributor.distributionEndBlock()) rariGovernanceTokenDistributor.refreshDistributionSpeeds(IRariGovernanceTokenDistributor.RariPool.Ethereum, getFundBalance());
         
         return true;
     }
@@ -722,7 +672,7 @@ contract RariFundManager is Initializable, Ownable {
         uint256 amount = getInterestFeesUnclaimed();
         if (amount <= 0) return 1;
 
-        uint256 reptTotalSupply = _rariEthPoolToken.totalSupply();
+        uint256 reptTotalSupply = rariFundToken.totalSupply();
         uint256 reptAmount = 0;
 
         if (reptTotalSupply > 0) {
@@ -736,10 +686,15 @@ contract RariFundManager is Initializable, Ownable {
         _interestFeesClaimed = _interestFeesClaimed.add(amount);
         _netDeposits = _netDeposits.add(int256(amount));
 
-        require(_rariEthPoolToken.mint(_interestFeeMasterBeneficiary, reptAmount), "Failed to mint output tokens.");
+        require(rariFundToken.mint(_interestFeeMasterBeneficiary, reptAmount), "Failed to mint output tokens.");
         emit Deposit(_interestFeeMasterBeneficiary, _interestFeeMasterBeneficiary, amount, reptAmount);
 
         emit InterestFeeDeposit(_interestFeeMasterBeneficiary, amount);
+
+        // Update RGT distribution speeds
+        IRariGovernanceTokenDistributor rariGovernanceTokenDistributor = rariFundToken.rariGovernanceTokenDistributor();
+        if (address(rariGovernanceTokenDistributor) != address(0) && block.number < rariGovernanceTokenDistributor.distributionEndBlock()) rariGovernanceTokenDistributor.refreshDistributionSpeeds(IRariGovernanceTokenDistributor.RariPool.Ethereum, getFundBalance());
+
         return 0;
     }
 
@@ -764,7 +719,7 @@ contract RariFundManager is Initializable, Ownable {
         require(amount > 0, "No new fees are available to claim.");
 
         _interestFeesClaimed = _interestFeesClaimed.add(amount);
-        _rariFundController.withdrawToManager(amount);
+        rariFundController.withdrawToManager(amount);
         (bool success, ) = _interestFeeMasterBeneficiary.call.value(amount)("");
         require(success, "Failed to transfer ETH.");
         emit InterestFeeWithdrawal(_interestFeeMasterBeneficiary, amount);
