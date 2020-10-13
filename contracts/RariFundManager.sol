@@ -12,7 +12,7 @@
  * This file includes the Ethereum contract code for RariFundManager, the primary contract powering Rari Capital's RariFund.
  */
 
-pragma solidity ^0.5.7;
+pragma solidity 0.5.17;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
@@ -121,7 +121,7 @@ contract RariFundManager is Initializable, Ownable {
 
     /**
      * @dev Upgrades RariFundManager.
-     * Sends data to the new contract, sets the new rETH minter, and forwards eth from the old to the new.
+     * Sends data to the new contract, sets the new REPT minter, and forwards eth from the old to the new.
      * @param newContract The address of the new RariFundManager contract.
      */
     function upgradeFundManager(address payable newContract) external onlyOwner {
@@ -189,39 +189,20 @@ contract RariFundManager is Initializable, Ownable {
      */
     event FundControllerSet(address newContract);
 
+
     /**
-     * @dev Sets or upgrades RariFundController by forwarding ETH from the old to the new.
+     * @dev Sets or upgrades the RariFundController of the RariFundManager.
      * @param newContract The address of the new RariFundController contract.
      */
     function setFundController(address payable newContract) external onlyOwner {
-        // Forward tokens to new FundController if we are upgrading an existing one
-        if (_rariFundControllerContract != address(0)) {
-            for (uint256 i = 0; i < _supportedPools.length; i++) {
-                if (getPoolBalance(_supportedPools[i]) > 0)
-                    _rariFundController.withdrawAllFromPoolOnUpgrade(_supportedPools[i]); // No need to update the cached dYdX balances as they won't be used again
-
-                uint256 balance = address(this).balance;
-                
-                if (balance > 0) newContract.transfer(balance);
-            }
-        }
-
-        // Set new contract address
         _rariFundControllerContract = newContract;
         _rariFundController = RariFundController(_rariFundControllerContract);
         emit FundControllerSet(newContract);
     }
 
-    /**
-     * @dev Forwards ETH in the fund manager to the fund controller (for upgrading from v1.0.0 and for accidental transfers to the fund manager).
-     */
-    function forwardToFundController() external onlyOwner {
-        uint256 balance = address(this).balance;
-        if (balance > 0) _rariFundControllerContract.transfer(balance);
-    }
 
     /**
-     * @dev Emitted when the rETH contract of the RariFundManager is set.
+     * @dev Emitted when the REPT contract of the RariFundManager is set.
      */
     event FundTokenSet(address newContract);
 
@@ -399,7 +380,7 @@ contract RariFundManager is Initializable, Ownable {
     }
 
     /**
-     * @notice Returns the fund's total investor balance (all REPT holders' funds but not unclaimed fees) of all currencies in USD (scaled by 1e18).
+     * @notice Returns the fund's total investor balance (all REPT holders' funds but not unclaimed fees) of all currencies in EETH (scaled by 1e18).
      * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.
      */
     function getFundBalance() public cacheRawFundBalance returns (uint256) {
@@ -449,17 +430,17 @@ contract RariFundManager is Initializable, Ownable {
 
 
     /**
-     * @dev Emitted when funds have been deposited to RariFund.
+     * @dev Emitted when funds have been deposited to Rari Eth Pool.
      */
-    event Deposit(address indexed sender, address indexed payee, uint256 amount, uint256 rETHMinted);
+    event Deposit(address indexed sender, address indexed payee, uint256 amount, uint256 reptMinted);
 
     /**
-     * @dev Emitted when funds have been withdrawn from RariFund.
+     * @dev Emitted when funds have been withdrawn from Rari Eth Pool.
      */
-    event Withdrawal(address indexed sender, address indexed payee, uint256 amount, uint256 rETHBurned);
+    event Withdrawal(address indexed sender, address indexed payee, uint256 amount, uint256 reptBurned);
 
     /**
-     * @notice Internal function to deposit funds from `msg.sender` to RariFund in exchange for REPT minted to `to`.
+     * @notice Internal function to deposit funds from `msg.sender` to Rari Eth Pool in exchange for REPT minted to `to`.
      * Please note that you must approve RariFundManager to transfer at least `amount`.
      * @param to The address that will receieve the minted REPT.
      * @param amount The amount of tokens to be deposited.
@@ -572,33 +553,25 @@ contract RariFundManager is Initializable, Ownable {
             uint256 amountLeft = amount.sub(contractBalance);
             uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
             require(_rariFundController.withdrawFromPoolKnowingBalanceToManager(pool, poolAmount, poolBalance), "Pool withdrawal failed.");
-            _poolBalanceCache[pool] = poolBalance.sub(amount);
+            _poolBalanceCache[pool] = poolBalance.sub(poolAmount);
             contractBalance = contractBalance.add(poolAmount);
         }
 
         require(amount <= contractBalance, "Available balance not enough to cover amount even after withdrawing from pools.");
-
         // Calculate REPT to burn
         uint256 reptAmount = getREPTBurnAmount(from, amount);
-
-        // Burn REPT, transfer funds to msg.sender, update net deposits, emit event, and return true
-        _rariEthPoolToken.burnFrom(from, reptAmount); // The user must approve the burning of tokens beforehand
-        
-        // _rariFundControllerContract.withdrawToManager(amount);
-
-        msg.sender.transfer(amount);
-
+        // Update net deposits, burn REPT, transfer funds to msg.sender, emit event, and return true
         _netDeposits = _netDeposits.sub(int256(amount));
-
+        _rariEthPoolToken.burnFrom(from, reptAmount); // The user must approve the burning of tokens beforehand
+        msg.sender.transfer(amount);
         emit Withdrawal(from, msg.sender, amount, reptAmount);
-
         return true;
     }
 
     /**
-     * @notice Withdraws funds from RariFund in exchange for rETH.
+     * @notice Withdraws funds from RariFund in exchange for REPT.
      * You may only withdraw currencies held by the fund (see `getRawFundBalance(string currencyCode)`).
-     * Please note that you must approve RariFundManager to burn of the necessary amount of rETH.
+     * Please note that you must approve RariFundManager to burn of the necessary amount of REPY.
      * @param amount The amount of tokens to be withdrawn.
      * @return Boolean indicating success.
      */

@@ -12,7 +12,7 @@
  * This file includes the Ethereum contract code for DydxPoolController, a library handling deposits to and withdrawals from dYdX liquidity pools.
  */
 
-pragma solidity ^0.5.7;
+pragma solidity 0.5.17;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
@@ -40,7 +40,7 @@ library KeeperDaoPoolController {
     /**
      * @dev Returns the fund's balance in the KeeperDAO pool.
      */
-    function getBalance() internal view returns (uint256) {
+    function getBalance() external view returns (uint256) {
         return _liquidityPool.underlyingBalance(ETHEREUM_ADDRESS, address(this));
     }
 
@@ -49,7 +49,7 @@ library KeeperDaoPoolController {
      * @param amount The amount of ETH to be deposited.
      * @return Boolean indicating success.
      */
-    function deposit(uint256 amount) internal returns (bool) {
+    function deposit(uint256 amount) external returns (bool) {
         require(amount > 0, "Amount must be greater than 0.");
 
         _liquidityPool.deposit.value(amount)(ETHEREUM_ADDRESS, amount);
@@ -62,7 +62,7 @@ library KeeperDaoPoolController {
      * @param amount The amount of ETH to be withdrawn.
      * @return Boolean indicating success.
      */
-    function withdraw(uint256 amount) internal returns (bool) {
+    function withdraw(uint256 amount) external returns (bool) {
         require(amount > 0, "Amount must be greater than 0.");
 
         _liquidityPool.withdraw(address(uint160(address(this))), 
@@ -76,7 +76,7 @@ library KeeperDaoPoolController {
      * @dev Withdraws all funds from the KeeperDAO pool.
      * @return Boolean indicating success.
      */
-    function withdrawAll() internal returns (bool) {
+    function withdrawAll() external returns (bool) {
         IKToken kEther = _liquidityPool.kToken(ETHEREUM_ADDRESS);
         uint256 entireBalance = kEther.balanceOf(address(this));
 

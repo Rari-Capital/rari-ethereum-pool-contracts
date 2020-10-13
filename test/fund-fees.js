@@ -1,7 +1,6 @@
 const erc20Abi = require('./abi/ERC20.json');
 const cErc20DelegatorAbi = require('./abi/CErc20Delegator.json');
 
-const currencies = require('./fixtures/currencies.json');
 const pools = require('./fixtures/pools.json');
 
 const RariFundController = artifacts.require("RariFundController");
@@ -29,10 +28,11 @@ contract("RariFundManager", accounts => {
     let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthFundToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthFundToken.deployed());
 
     var amountBN = web3.utils.toBN(1e18);
+    
     await fundManagerInstance.deposit({ from: accounts[0], value: amountBN });
 
     // deposit to pool (using Compound as an example)
-    await fundControllerInstance.depositToPool(1, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]), value: amountBN });
+    await fundControllerInstance.depositToPool(1, amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0])});
 
     // Set interest fee rate
     await fundManagerInstance.setInterestFeeRate(web3.utils.toBN(1e17), { from: accounts[0] });

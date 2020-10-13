@@ -12,7 +12,7 @@
  * This file includes the Ethereum contract code for RariFundController, our library handling deposits to and withdrawals from the liquidity pools that power RariFund as well as currency exchanges via 0x.
  */
 
-pragma solidity ^0.5.7;
+pragma solidity 0.5.17;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
@@ -37,6 +37,11 @@ contract RariFundController is Ownable {
     using SafeMath for uint256;
     using SignedSafeMath for int256;
     using SafeERC20 for IERC20;
+
+    /**
+     * @dev Boolean to be checked on `upgradeFundController`.
+     */
+    bool public constant IS_RARI_FUND_CONTROLLER = true;
 
     /**
      * @dev Boolean that, if true, disables the primary functionality of this RariFundController.
@@ -74,6 +79,7 @@ contract RariFundController is Ownable {
      * @dev Constructor that sets supported ERC20 token contract addresses and supported pools for each supported token.
      */
     constructor () public {
+        Ownable.initialize(msg.sender);
         // Add supported pools
         addPool(0); // dydx
         addPool(1); // compound
@@ -81,20 +87,6 @@ contract RariFundController is Ownable {
         addPool(3); // aave
     }
 
-    /**
-     * @dev Initializes the balance cache, pushing a value for each pool and then the sum of them all.
-     */
-     /*
-    function initBalanceCache() internal {
-        for (uint8 i = 0; i < _supportedPools.length; i++) {
-            _cachedBalances.push(0);
-        }
-
-        _cachedBalances.push(0); // Cached total balance;
-
-        return true;
-    }
-    */
 
     /**
      * @dev Adds a supported pool for a token.
@@ -195,6 +187,33 @@ contract RariFundController is Ownable {
     }
 
     /**
+     * @dev Sets or upgrades RariFundController by forwarding immediate balance of ETH from the old to the new.
+     * @param newContract The address of the new RariFundController contract.
+     */
+    function _upgradeFundController(address payable newContract) external onlyOwner {
+        require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
+        uint256 balance = address(this).balance;
+        if (balance > 0) newContract.transfer(balance);
+    }
+
+
+    /**
+     * @dev Sets or upgrades RariFundController by withdrawing all ETH from all pools and forwarding them from the old to the new.
+     * @param newContract The address of the new RariFundController contract.
+     */
+    function upgradeFundController(address payable newContract) external onlyOwner {
+        require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
+
+        for (uint256 i = 0; i < _supportedPools.length; i++)
+            if (hasETHInPool(_supportedPools[i]))
+                _withdrawAllFromPool(_supportedPools[i]);
+
+        uint256 balance = address(this).balance;
+        if (balance > 0) newContract.transfer(balance);
+    }
+
+
+    /**
      * @dev Returns the balances of all currencies supported by dYdX.
      * @return An array of ERC20 token contract addresses and a corresponding array of balances.
      
@@ -259,7 +278,7 @@ contract RariFundController is Ownable {
      * @dev Return a boolean indicating if the fund controller has funds in `currencyCode` in `pool`.
      * @param pool The index of the pool to check.
      */
-    function hasETHInPool(uint8 pool) external view returns (bool) {
+    function hasETHInPool(uint8 pool) public view returns (bool) {
         return _poolsWithFunds[pool];
     }
 
@@ -281,12 +300,12 @@ contract RariFundController is Ownable {
      * @param pool The index of the pool.
      * @return Boolean indicating success.
      */
-    function depositToPool(uint8 pool) payable external fundEnabled   returns (bool) {
-        require(msg.value > 0, "Amount too small.");
-        if (pool == 0) require(DydxPoolController.deposit(msg.value), "Deposit to dYdX failed.");
-        else if (pool == 1) require(CompoundPoolController.deposit(msg.value), "Deposit to Compound failed.");
-        else if (pool == 2) require(KeeperDaoPoolController.deposit(msg.value), "Deposit to KeeeperDao failed.");
-        else if (pool == 3) AavePoolController.deposit(msg.value, _aaveReferralCode);
+    function depositToPool(uint8 pool, uint256 amount) external fundEnabled onlyRebalancer  returns (bool) {
+        require(amount > 0, "Amount too small.");
+        if (pool == 0) require(DydxPoolController.deposit(amount), "Deposit to dYdX failed.");
+        else if (pool == 1) require(CompoundPoolController.deposit(amount), "Deposit to Compound failed.");
+        else if (pool == 2) require(KeeperDaoPoolController.deposit(amount), "Deposit to KeeeperDao failed.");
+        else if (pool == 3) AavePoolController.deposit(amount, _aaveReferralCode);
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = true; 
         return true;
@@ -345,11 +364,11 @@ contract RariFundController is Ownable {
     }
 
     /**
-     * @dev Withdraws all funds from the specified pool.
+     * @dev Internal function that withdraws all funds from the specified pool.
      * @param pool The index of the pool.
      * @return Boolean indicating success.
      */
-    function withdrawAllFromPool(uint8 pool) external fundEnabled onlyRebalancer returns (bool) {
+    function _withdrawAllFromPool(uint8 pool) internal returns (bool) {
         if (pool == 0) require(DydxPoolController.withdrawAll(), "Withdrawal from dYdX failed.");
         else if (pool == 1) require(CompoundPoolController.withdrawAll(), "Withdrawal from Compound failed.");
         else if (pool == 2) require(KeeperDaoPoolController.withdrawAll(), "Withdrawal from KeeperDao failed.");
@@ -359,20 +378,23 @@ contract RariFundController is Ownable {
         return true;
     }
 
+
+    /**
+     * @dev Withdraws all funds from the specified pool.
+     * @param pool The index of the pool.
+     * @return Boolean indicating success.
+     */
+    function withdrawAllFromPool(uint8 pool) external fundEnabled onlyRebalancer returns (bool) {
+        return _withdrawAllFromPool(pool);
+    }
+
     /**
      * @dev Withdraws all funds from the specified pool (without requiring the fund to be enabled).
      * @param pool The index of the pool.
      * @return Boolean indicating success.
      */
-    function withdrawAllFromPoolOnUpgrade(uint8 pool) external onlyManager returns (bool) {
-        if (pool == 0) require(DydxPoolController.withdrawAll(), "Withdrawal from dYdX failed.");
-        else if (pool == 1) require(CompoundPoolController.withdrawAll(), "Withdrawal from Compound failed.");
-        else if (pool == 2) require(KeeperDaoPoolController.withdrawAll(), "Withdrawal from KeeperDao failed.");
-        else if (pool == 3) require(AavePoolController.withdrawAll(), "Withdrawal from Aave failed.");
-        else revert("Invalid pool index.");
-        _rariFundManagerContract.transfer(address(this).balance); // Transfer all ETH to RariFundManager for further processing
-        _poolsWithFunds[pool] = false;
-        return true;
+    function withdrawAllFromPoolOnUpgrade(uint8 pool) external onlyOwner returns (bool) {
+        return _withdrawAllFromPool(pool);
     }
 
 
@@ -390,13 +412,14 @@ contract RariFundController is Ownable {
             return true;
         }
 
+        uint256 amountLeft = amount.sub(immediateBalance);
+
         for (uint256 i = 0; i < _supportedPools.length; i++) {
             if (immediateBalance >= amount) break;
-
             uint256 poolBalance = _getPoolBalance(_supportedPools[i]);
             if (poolBalance <= 0) continue;
-            uint256 amountLeft = amount.sub(immediateBalance);
             uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
+            amountLeft = amountLeft.sub(poolAmount);
             _withdrawFromPool(_supportedPools[i], poolAmount);
             immediateBalance = immediateBalance.add(poolAmount);
         }

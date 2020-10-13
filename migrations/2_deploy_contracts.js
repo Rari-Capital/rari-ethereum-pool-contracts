@@ -17,7 +17,7 @@ var KeeperDaoPoolController = artifacts.require("./lib/pools/KeeperDaoPoolContro
 var ZeroExExchangeController = artifacts.require("./lib/exchanges/ZeroExExchangeController.sol");
 var RariFundController = artifacts.require("./RariFundController.sol");
 var RariFundManager = artifacts.require("./RariFundManager.sol");
-var RariEthFundToken = artifacts.require("./RariFundToken.sol");
+var RariFundToken = artifacts.require("./RariFundToken.sol");
 var RariFundProxy = artifacts.require("./RariFundProxy.sol");
 
 module.exports = async function(deployer, network, accounts) {

@@ -12,7 +12,7 @@
  * This file includes the Ethereum contract code for CompoundPoolController, a library handling deposits to and withdrawals from dYdX liquidity pools.
  */
 
-pragma solidity ^0.5.7;
+pragma solidity 0.5.17;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
@@ -33,7 +33,7 @@ library CompoundPoolController {
     /**
      * @dev Returns the fund's balance of the specified currency in the Compound pool.
      */
-    function getBalance() internal returns (uint256) {
+    function getBalance() external returns (uint256) {
         return _cETHContract.balanceOfUnderlying(address(this));
     }
 
@@ -42,7 +42,7 @@ library CompoundPoolController {
      * @param amount The amount of tokens to be deposited.
      * @return Boolean indicating success.
      */
-    function deposit(uint256 amount) internal returns (bool) {
+    function deposit(uint256 amount) external returns (bool) {
         require(amount > 0, "Amount must be greater than 0.");
         _cETHContract.mint.value(amount)();
         // require(mintResult == 0, "Error calling mint on Compound cToken: error code not equal to 0");
@@ -54,7 +54,7 @@ library CompoundPoolController {
      * @param amount The amount of tokens to be withdrawn.
      * @return Boolean indicating success.
      */
-    function withdraw(uint256 amount) internal returns (bool) {
+    function withdraw(uint256 amount) external returns (bool) {
         require(amount > 0, "Amount must be greater than to 0.");
         uint256 redeemResult = _cETHContract.redeemUnderlying(amount);
         require(redeemResult == 0, "Error calling redeemUnderlying on Compound cToken: error code not equal to 0");
@@ -65,7 +65,7 @@ library CompoundPoolController {
      * @dev Withdraws all funds from the Compound pool.
      * @return Boolean indicating success.
      */
-    function withdrawAll() internal returns (bool) {
+    function withdrawAll() external returns (bool) {
         uint256 balance = _cETHContract.balanceOf(address(this));
         if (balance <= 0) return false; // TODO: Or revert("No funds available to redeem from Compound cToken.")
         uint256 redeemResult = _cETHContract.redeem(balance);

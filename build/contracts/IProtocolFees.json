@@ -111,14 +111,14 @@
     "absolutePath": "@0x/contracts-exchange/contracts/src/interfaces/IProtocolFees.sol",
     "exportedSymbols": {
       "IProtocolFees": [
-        6295
+        6290
       ]
     },
-    "id": 6296,
+    "id": 6291,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6262,
+        "id": 6257,
         "literals": [
           "solidity",
           "^",
@@ -134,9 +134,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 6295,
+        "id": 6290,
         "linearizedBaseContracts": [
-          6295
+          6290
         ],
         "name": "IProtocolFees",
         "nodeType": "ContractDefinition",
@@ -144,20 +144,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 6268,
+            "id": 6263,
             "name": "ProtocolFeeMultiplier",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 6267,
+              "id": 6262,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6264,
+                  "id": 6259,
                   "indexed": false,
                   "name": "oldProtocolFeeMultiplier",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6268,
+                  "scope": 6263,
                   "src": "716:32:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -166,7 +166,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6263,
+                    "id": 6258,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "716:7:32",
@@ -180,11 +180,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6266,
+                  "id": 6261,
                   "indexed": false,
                   "name": "updatedProtocolFeeMultiplier",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6268,
+                  "scope": 6263,
                   "src": "750:36:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -193,7 +193,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6265,
+                    "id": 6260,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "750:7:32",
@@ -213,20 +213,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 6274,
+            "id": 6269,
             "name": "ProtocolFeeCollectorAddress",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 6273,
+              "id": 6268,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6270,
+                  "id": 6265,
                   "indexed": false,
                   "name": "oldProtocolFeeCollector",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6274,
+                  "scope": 6269,
                   "src": "885:31:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -235,7 +235,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6269,
+                    "id": 6264,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "885:7:32",
@@ -250,11 +250,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6272,
+                  "id": 6267,
                   "indexed": false,
                   "name": "updatedProtocolFeeCollector",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6274,
+                  "scope": 6269,
                   "src": "918:35:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -263,7 +263,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6271,
+                    "id": 6266,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "918:7:32",
@@ -284,22 +284,22 @@
           {
             "body": null,
             "documentation": "@dev Allows the owner to update the protocol fee multiplier.\n @param updatedProtocolFeeMultiplier The updated protocol fee multiplier.",
-            "id": 6279,
+            "id": 6274,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setProtocolFeeMultiplier",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6277,
+              "id": 6272,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6276,
+                  "id": 6271,
                   "name": "updatedProtocolFeeMultiplier",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6279,
+                  "scope": 6274,
                   "src": "1145:36:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -308,7 +308,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6275,
+                    "id": 6270,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1145:7:32",
@@ -324,12 +324,12 @@
               "src": "1144:38:32"
             },
             "returnParameters": {
-              "id": 6278,
+              "id": 6273,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1199:0:32"
             },
-            "scope": 6295,
+            "scope": 6290,
             "src": "1111:89:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -338,22 +338,22 @@
           {
             "body": null,
             "documentation": "@dev Allows the owner to update the protocolFeeCollector address.\n @param updatedProtocolFeeCollector The updated protocolFeeCollector contract address.",
-            "id": 6284,
+            "id": 6279,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setProtocolFeeCollectorAddress",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6282,
+              "id": 6277,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6281,
+                  "id": 6276,
                   "name": "updatedProtocolFeeCollector",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6284,
+                  "scope": 6279,
                   "src": "1414:35:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -362,7 +362,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6280,
+                    "id": 6275,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1414:7:32",
@@ -379,12 +379,12 @@
               "src": "1413:37:32"
             },
             "returnParameters": {
-              "id": 6283,
+              "id": 6278,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1467:0:32"
             },
-            "scope": 6295,
+            "scope": 6290,
             "src": "1374:94:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -393,28 +393,28 @@
           {
             "body": null,
             "documentation": "@dev Returns the protocolFeeMultiplier",
-            "id": 6289,
+            "id": 6284,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "protocolFeeMultiplier",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6285,
+              "id": 6280,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1551:2:32"
             },
             "returnParameters": {
-              "id": 6288,
+              "id": 6283,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6287,
+                  "id": 6282,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6289,
+                  "scope": 6284,
                   "src": "1601:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -423,7 +423,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6286,
+                    "id": 6281,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1601:7:32",
@@ -438,7 +438,7 @@
               ],
               "src": "1600:9:32"
             },
-            "scope": 6295,
+            "scope": 6290,
             "src": "1521:89:32",
             "stateMutability": "view",
             "superFunction": null,
@@ -447,28 +447,28 @@
           {
             "body": null,
             "documentation": "@dev Returns the protocolFeeCollector address",
-            "id": 6294,
+            "id": 6289,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "protocolFeeCollector",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6290,
+              "id": 6285,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1699:2:32"
             },
             "returnParameters": {
-              "id": 6293,
+              "id": 6288,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6292,
+                  "id": 6287,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6294,
+                  "scope": 6289,
                   "src": "1749:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -477,7 +477,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6291,
+                    "id": 6286,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1749:7:32",
@@ -493,14 +493,14 @@
               ],
               "src": "1748:9:32"
             },
-            "scope": 6295,
+            "scope": 6290,
             "src": "1670:88:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 6296,
+        "scope": 6291,
         "src": "606:1154:32"
       }
     ],
@@ -510,14 +510,14 @@
     "absolutePath": "@0x/contracts-exchange/contracts/src/interfaces/IProtocolFees.sol",
     "exportedSymbols": {
       "IProtocolFees": [
-        6295
+        6290
       ]
     },
-    "id": 6296,
+    "id": 6291,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6262,
+        "id": 6257,
         "literals": [
           "solidity",
           "^",
@@ -533,9 +533,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 6295,
+        "id": 6290,
         "linearizedBaseContracts": [
-          6295
+          6290
         ],
         "name": "IProtocolFees",
         "nodeType": "ContractDefinition",
@@ -543,20 +543,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 6268,
+            "id": 6263,
             "name": "ProtocolFeeMultiplier",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 6267,
+              "id": 6262,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6264,
+                  "id": 6259,
                   "indexed": false,
                   "name": "oldProtocolFeeMultiplier",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6268,
+                  "scope": 6263,
                   "src": "716:32:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -565,7 +565,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6263,
+                    "id": 6258,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "716:7:32",
@@ -579,11 +579,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6266,
+                  "id": 6261,
                   "indexed": false,
                   "name": "updatedProtocolFeeMultiplier",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6268,
+                  "scope": 6263,
                   "src": "750:36:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -592,7 +592,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6265,
+                    "id": 6260,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "750:7:32",
@@ -612,20 +612,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 6274,
+            "id": 6269,
             "name": "ProtocolFeeCollectorAddress",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 6273,
+              "id": 6268,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6270,
+                  "id": 6265,
                   "indexed": false,
                   "name": "oldProtocolFeeCollector",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6274,
+                  "scope": 6269,
                   "src": "885:31:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -634,7 +634,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6269,
+                    "id": 6264,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "885:7:32",
@@ -649,11 +649,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 6272,
+                  "id": 6267,
                   "indexed": false,
                   "name": "updatedProtocolFeeCollector",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6274,
+                  "scope": 6269,
                   "src": "918:35:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -662,7 +662,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6271,
+                    "id": 6266,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "918:7:32",
@@ -683,22 +683,22 @@
           {
             "body": null,
             "documentation": "@dev Allows the owner to update the protocol fee multiplier.\n @param updatedProtocolFeeMultiplier The updated protocol fee multiplier.",
-            "id": 6279,
+            "id": 6274,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setProtocolFeeMultiplier",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6277,
+              "id": 6272,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6276,
+                  "id": 6271,
                   "name": "updatedProtocolFeeMultiplier",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6279,
+                  "scope": 6274,
                   "src": "1145:36:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -707,7 +707,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6275,
+                    "id": 6270,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1145:7:32",
@@ -723,12 +723,12 @@
               "src": "1144:38:32"
             },
             "returnParameters": {
-              "id": 6278,
+              "id": 6273,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1199:0:32"
             },
-            "scope": 6295,
+            "scope": 6290,
             "src": "1111:89:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -737,22 +737,22 @@
           {
             "body": null,
             "documentation": "@dev Allows the owner to update the protocolFeeCollector address.\n @param updatedProtocolFeeCollector The updated protocolFeeCollector contract address.",
-            "id": 6284,
+            "id": 6279,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "setProtocolFeeCollectorAddress",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6282,
+              "id": 6277,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6281,
+                  "id": 6276,
                   "name": "updatedProtocolFeeCollector",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6284,
+                  "scope": 6279,
                   "src": "1414:35:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -761,7 +761,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6280,
+                    "id": 6275,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1414:7:32",
@@ -778,12 +778,12 @@
               "src": "1413:37:32"
             },
             "returnParameters": {
-              "id": 6283,
+              "id": 6278,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1467:0:32"
             },
-            "scope": 6295,
+            "scope": 6290,
             "src": "1374:94:32",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -792,28 +792,28 @@
           {
             "body": null,
             "documentation": "@dev Returns the protocolFeeMultiplier",
-            "id": 6289,
+            "id": 6284,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "protocolFeeMultiplier",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6285,
+              "id": 6280,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1551:2:32"
             },
             "returnParameters": {
-              "id": 6288,
+              "id": 6283,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6287,
+                  "id": 6282,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6289,
+                  "scope": 6284,
                   "src": "1601:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -822,7 +822,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6286,
+                    "id": 6281,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1601:7:32",
@@ -837,7 +837,7 @@
               ],
               "src": "1600:9:32"
             },
-            "scope": 6295,
+            "scope": 6290,
             "src": "1521:89:32",
             "stateMutability": "view",
             "superFunction": null,
@@ -846,28 +846,28 @@
           {
             "body": null,
             "documentation": "@dev Returns the protocolFeeCollector address",
-            "id": 6294,
+            "id": 6289,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "protocolFeeCollector",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6290,
+              "id": 6285,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1699:2:32"
             },
             "returnParameters": {
-              "id": 6293,
+              "id": 6288,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6292,
+                  "id": 6287,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6294,
+                  "scope": 6289,
                   "src": "1749:7:32",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -876,7 +876,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6291,
+                    "id": 6286,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1749:7:32",
@@ -892,14 +892,14 @@
               ],
               "src": "1748:9:32"
             },
-            "scope": 6295,
+            "scope": 6290,
             "src": "1670:88:32",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 6296,
+        "scope": 6291,
         "src": "606:1154:32"
       }
     ],
@@ -911,7 +911,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.3",
-  "updatedAt": "2020-10-09T05:26:08.096Z",
+  "updatedAt": "2020-10-13T03:22:42.274Z",
   "devdoc": {
     "methods": {
       "protocolFeeCollector()": {

@@ -1,7 +1,5 @@
 const erc20Abi = require('./abi/ERC20.json');
 
-const currencies = require('./fixtures/currencies.json');
-
 const RariFundManager = artifacts.require("RariFundManager");
 const RariEthFundToken = artifacts.require("RariFundToken");
 
@@ -54,6 +52,8 @@ contract("RariFundManager", accounts => {
     // Get account balance in the fund and withdraw all before we start
     let accountBalance = await fundManagerInstance.balanceOf.call(accounts[1]);
 
+    console.log("Currently have ", accountBalance.toString(10), " ETH. Withdrawing...");
+
     if (accountBalance.gt(web3.utils.toBN(0))) {
       await fundTokenInstance.approve(RariFundManager.address, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)), { from: accounts[1], nonce: await web3.eth.getTransactionCount(accounts[1]) });
       await fundManagerInstance.withdraw(accountBalance, { from: accounts[1], nonce: await web3.eth.getTransactionCount(accounts[1]) });
@@ -76,7 +76,7 @@ contract("RariFundManager", accounts => {
     // Keep depositing until we hit the limit (if we pass the limit, fail)
     while (accountBalance.lte(individualAccountBalanceLimitUsdBN)) {
       try {
-        await fundManagerInstance.deposit(depositAmountBN, { from: accounts[1], nonce: await web3.eth.getTransactionCount(accounts[1]) });
+        await fundManagerInstance.deposit({ from: accounts[1], value: depositAmountBN, nonce: await web3.eth.getTransactionCount(accounts[1]) });
       } catch (error) {
         assert.include(error.message, "Making this deposit would cause the balance of this account to exceed the maximum.");
         assert(accountBalance.add(depositAmountBN).gt(individualAccountBalanceLimitUsdBN));
@@ -98,7 +98,7 @@ contract("RariFundManager", accounts => {
 
     if (accountBalance.gt(web3.utils.toBN(0))) {
       await fundTokenInstance.approve(RariFundManager.address, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)), { from: accounts[1], nonce: await web3.eth.getTransactionCount(accounts[1]) });
-      await fundManagerInstance.withdraw(accountBalance, { from: accounts[1], nonce: await web3.eth.getTransactionCount(accounts[1]) });
+      await debug(fundManagerInstance.withdraw(accountBalance, { from: accounts[1], nonce: await web3.eth.getTransactionCount(accounts[1]) }));
     }
 
     // Set default account balance limit

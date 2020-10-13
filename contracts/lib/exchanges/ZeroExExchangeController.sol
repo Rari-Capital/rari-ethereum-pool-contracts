@@ -12,7 +12,7 @@
  * This file includes the Ethereum contract code for ZeroExExchangeController, a library handling exchanges via 0x.
  */
 
-pragma solidity ^0.5.7;
+pragma solidity 0.5.17;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";

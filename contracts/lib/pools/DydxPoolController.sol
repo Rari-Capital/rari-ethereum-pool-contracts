@@ -12,7 +12,7 @@
  * This file includes the Ethereum contract code for DydxPoolController, a library handling deposits to and withdrawals from dYdX liquidity pools.
  */
 
-pragma solidity ^0.5.7;
+pragma solidity 0.5.17;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
@@ -43,7 +43,7 @@ library DydxPoolController {
     /**
      * @dev Returns the fund's balance of the specified currency in the dYdX pool.
      */
-    function getBalance() internal view returns (uint256) {
+    function getBalance() external view returns (uint256) {
         Account.Info memory account = Account.Info(address(this), 0);
         (, , Types.Wei[] memory weis) = _soloMargin.getAccountBalances(account);
         return weis[WETH_MARKET_ID].sign ? weis[WETH_MARKET_ID].value : 0;
@@ -54,7 +54,7 @@ library DydxPoolController {
      * @param amount Amount of the specified token to approve to dYdX.
      * @return Boolean indicating success.
      */
-    function approve(uint256 amount) internal returns (bool) {
+    function approve(uint256 amount) external returns (bool) {
         uint256 allowance = _weth.allowance(address(this), SOLO_MARGIN_CONTRACT);
         if (allowance == amount) return true;
         if (amount > 0 && allowance > 0) _weth.approve(SOLO_MARGIN_CONTRACT, 0);
@@ -67,7 +67,7 @@ library DydxPoolController {
      * @param amount The amount of tokens to be deposited.
      * @return Boolean indicating success.
      */
-    function deposit(uint256 amount) internal returns (bool) {
+    function deposit(uint256 amount) external returns (bool) {
         require(amount > 0, "Amount must be greater than 0.");
 
         _weth.deposit.value(amount)();
@@ -103,7 +103,7 @@ library DydxPoolController {
      * @param amount The amount of tokens to be withdrawn.
      * @return Boolean indicating success.
      */
-    function withdraw(uint256 amount) internal returns (bool) {
+    function withdraw(uint256 amount) external returns (bool) {
         require(amount > 0, "Amount must be greater than 0.");
 
         Account.Info memory account = Account.Info(address(this), 0);
@@ -138,7 +138,7 @@ library DydxPoolController {
      * @dev Withdraws all funds from the dYdX pool.
      * @return Boolean indicating success.
      */
-    function withdrawAll() internal returns (bool) {
+    function withdrawAll() external returns (bool) {
 
         Account.Info memory account = Account.Info(address(this), 0);
         Account.Info[] memory accounts = new Account.Info[](1);

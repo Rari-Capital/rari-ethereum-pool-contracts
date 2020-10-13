@@ -12,7 +12,7 @@
  * This file includes the Ethereum contract code for DummyRariFundController, a dummy upgrade of RariFundController for testing.
  */
 
-pragma solidity ^0.5.7;
+pragma solidity 0.5.17;
 pragma experimental ABIEncoderV2;
 
 /**

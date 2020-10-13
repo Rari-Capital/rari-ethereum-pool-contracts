@@ -1,15 +1,14 @@
 const erc20Abi = require('./abi/ERC20.json');
 const cErc20DelegatorAbi = require('./abi/CErc20Delegator.json');
 
-const currencies = require('./fixtures/currencies.json');
 const pools = require('./fixtures/pools.json');
 
 const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
 const RariEthFundToken = artifacts.require("RariFundToken");
 
-async function forceAccrueCompound(currencyCode, account) {
-  var cErc20Contract = new web3.eth.Contract(cErc20DelegatorAbi, pools["Compound"].currencies[currencyCode].cTokenAddress);
+async function forceAccrueCompound(account) {
+  var cErc20Contract = new web3.eth.Contract(cErc20DelegatorAbi, pools["Compound"].currencies["ETH"].cTokenAddress);
   
   try {
     await cErc20Contract.methods.accrueInterest().send({ from: account, nonce: await web3.eth.getTransactionCount(account) });
@@ -17,7 +16,7 @@ async function forceAccrueCompound(currencyCode, account) {
     try {
       await cErc20Contract.methods.accrueInterest().send({ from: account, nonce: await web3.eth.getTransactionCount(account) });
     } catch (error) {
-      console.error("Both attempts to force accrue interest on Compound " + currencyCode + " failed. Not trying again!");
+      console.error("Both attempts to force accrue interest on Compound ETH failed. Not trying again!");
     }
   }
 }
@@ -30,21 +29,15 @@ contract("RariFundManager, RariFundController", accounts => {
     let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthFundToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthFundToken.deployed());
 
     // Use Compound as an example
-    // for (const currencyCode of Object.keys(pools["Compound"].currencies)) {
-    var amountBN = web3.utils.toBN(10 ** 18);
-    // var amountUsdBN = 18 >= currencies[currencyCode].decimals ? amountBN.mul(web3.utils.toBN(10 ** (18 - currencies[currencyCode].decimals))) : amountBN.div(web3.utils.toBN(10 ** (currencies[currencyCode].decimals - 18)));
+    var amountBN = web3.utils.toBN(1e18);
     
     // Check balances
     let initialAccountBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
     let initialFundBalance = await fundManagerInstance.getFundBalance.call();
     let initialReftBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
     
-    // Approve tokens to RariFundManager
-    // var erc20Contract = new web3.eth.Contract(erc20Abi, currencies[currencyCode].tokenAddress);
-    // await erc20Contract.methods.approve(RariFundManager.address, amountBN.toString()).send({ from: accounts[0] });
-
     // RariFundManager.deposit
-    await fundManagerInstance.deposit({ from: accounts[0], value: amountBN });
+    await fundManagerInstance.deposit({ from: accounts[0], value: amountBN, nonce: await web3.eth.getTransactionCount(accounts[0]) });
 
     // Check balances and interest
     let postDepositAccountBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
@@ -57,11 +50,10 @@ contract("RariFundManager, RariFundController", accounts => {
 
     // Deposit to pool (using Compound as an example)
     // TODO: Ideally, deposit to pool via rari-fund-rebalancer
-    await fundControllerInstance.approveToPool(1, amountBN, { from: accounts[0] });
     await fundControllerInstance.depositToPool(1, amountBN, { from: accounts[0] });
 
     // Force accrue interest
-    await forceAccrueCompound(currencyCode, accounts[0]);
+    await forceAccrueCompound(accounts[0]);
 
     // Check balances and interest after waiting for interest
     let preWithdrawalAccountBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
@@ -82,8 +74,8 @@ contract("RariFundManager, RariFundController", accounts => {
     assert(finalAccountBalance.lt(preWithdrawalAccountBalance));
     let finalFundBalance = await fundManagerInstance.getFundBalance.call();
     assert(finalFundBalance.lt(preWithdrawalFundBalance));
-    let finalRftBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
-    assert(finalRftBalance.lt(preWithdrawalRftBalance));
+    let finalReptBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
+    assert(finalReptBalance.lt(preWithdrawalRftBalance));
     });
     
 

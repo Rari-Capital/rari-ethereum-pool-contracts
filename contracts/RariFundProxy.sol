@@ -12,7 +12,7 @@
  * This file includes the Ethereum contract code for RariFundProxy, which faciliates pre-deposit exchanges and post-withdrawal exchanges.
  */
 
-pragma solidity ^0.5.7;
+pragma solidity 0.5.17;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
@@ -56,7 +56,8 @@ contract RariFundProxy is Ownable, GSNRecipient {
      * @dev Constructor that sets supported ERC20 token contract addresses.
      */
     constructor () public {
-
+        Ownable.initialize(msg.sender);
+        GSNRecipient.initialize();
     }
 
     /**

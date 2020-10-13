@@ -1,7 +1,7 @@
 {
     "dYdX": {
         "currencies": {
-            "WETH": {
+            "ETH": {
                 "marketId": 0
             }
         },

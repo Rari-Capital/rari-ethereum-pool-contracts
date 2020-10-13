@@ -12,7 +12,7 @@
  * This file includes the Ethereum contract code for rETH, the ERC20 token contract accounting for the ownership of the funds invested in Rari Capital's RariFund.
  */
 
-pragma solidity ^0.5.7;
+pragma solidity 0.5.17;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
