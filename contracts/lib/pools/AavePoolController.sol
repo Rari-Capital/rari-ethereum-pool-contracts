@@ -49,6 +49,13 @@ library AavePoolController {
      */
     AToken constant private aETH = AToken(AETH_CONTRACT);
 
+
+    /**
+     * @dev Ethereum address abstraction
+     */
+     address constant private ETHEREUM_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
+
+     
     /**
      * @dev Returns the fund's balance of the specified currency in the Aave pool.
      */
@@ -63,7 +70,7 @@ library AavePoolController {
      */
     function deposit(uint256 amount, uint16 referralCode) external {
         require(amount > 0, "Amount must be greater than 0.");
-        _lendingPool.deposit.value(amount)(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, amount, referralCode);
+        _lendingPool.deposit.value(amount)(ETHEREUM_ADDRESS, amount, referralCode);
     }
 
     /**

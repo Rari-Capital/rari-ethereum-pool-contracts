@@ -21,13 +21,6 @@ pragma experimental ABIEncoderV2;
  */
 contract DummyRariFundController {
     /**
-     * @dev Returns the balances of all currencies supported dYdX.
-     */
-    function getDydxBalances() external view returns (address[] memory, uint256[] memory) {
-        return (new address[](0), new uint256[](0));
-    }
-
-    /**
      * @dev Returns the fund controller's balance of the specified currency in the specified pool.
      * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `CompoundPoolController.getBalance`) potentially modifies the state.
      * @param pool The index of the pool.
@@ -49,7 +42,7 @@ contract DummyRariFundController {
      * @dev Return a boolean indicating if the fund controller has funds in `currencyCode` in `pool`.
      * @param pool The index of the pool.
      */
-    function hasCurrencyInPool(uint8 pool) external view returns (bool) {
+    function hasETHInPool(uint8 pool) external view returns (bool) {
         return false;
     }
 }

@@ -28,7 +28,9 @@ contract("RariFundManager", accounts => {
     let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthFundToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthFundToken.deployed());
 
     var amountBN = web3.utils.toBN(1e18);
-    
+
+    await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+
     await fundManagerInstance.deposit({ from: accounts[0], value: amountBN });
 
     // deposit to pool (using Compound as an example)
@@ -93,7 +95,7 @@ contract("RariFundManager", accounts => {
     assert(nowInterestFeesGenerated.gte(initialInterestFeesGenerated.add(nowRawInterestAccrued.sub(initialRawInterestAccrued).divn(10))));
 
     // Check initial account balance
-    let myOldBalanceBN = web3.eth.getBalance(accounts[1]);
+    let myOldBalanceBN = web3.utils.toBN(await web3.eth.getBalance(accounts[1]));
 
     // Withdraw from pool and withdraw fees!
     // TODO: Withdraw exact amount from pool instead of simply withdrawing all
@@ -101,7 +103,7 @@ contract("RariFundManager", accounts => {
     await fundManagerInstance.withdrawFees({ from: accounts[0] });
 
     // Check that we claimed fees
-    let myNewBalanceBN = web3.eth.getBalance(accounts[1]);
+    let myNewBalanceBN = web3.utils.toBN(await web3.eth.getBalance(accounts[1]));
     
     var expectedGainBN = nowInterestFeesGenerated.sub(initialInterestFeesGenerated);
     assert(myNewBalanceBN.gte(myOldBalanceBN.add(expectedGainBN)));

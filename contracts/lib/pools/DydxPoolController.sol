@@ -163,7 +163,7 @@ library DydxPoolController {
 
         _soloMargin.operate(accounts, actions);
 
-        _weth.withdraw(assetAmount.value); // Convert to ETH
+        _weth.withdraw(_weth.balanceOf(address(this))); // Convert to ETH
 
         return true;
     }

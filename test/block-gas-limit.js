@@ -19,6 +19,8 @@ contract("RariFundController", accounts => {
     var amountBN = web3.utils.toBN(1e18);
 
     await fundControllerInstance.approveWethToDydxPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+    await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+
     await fundManagerInstance.deposit({ from: accounts[0], value: web3.utils.toBN(4e18) });
     
     await fundControllerInstance.depositToPool(0, amountBN, { from: accounts[0] }); // dydx
@@ -37,11 +39,12 @@ contract("RariFundController", accounts => {
     await newFundControllerInstance.setFundManager(RariFundManager.address, { from: accounts[0] });
 
     // Upgrade!
-    await fundControllerInstance.upgradeFundController(newFundControllerInstance.address, { from: process.env.DEVELOPMENT_ADDRESS });
-    var result = await debug(fundManagerInstance.setFundController(newFundControllerInstance.address, { from: accounts[0] }));
+    var result = await fundControllerInstance.upgradeFundController(newFundControllerInstance.address, { from: process.env.DEVELOPMENT_ADDRESS });
 
-    console.log("Gas usage of RariFundManager.setFundController:", result.receipt.gasUsed);
+    console.log("Gas usage of RariFundController.upgradeFundController:", result.receipt.gasUsed);
     assert.isAtMost(result.receipt.gasUsed, 5000000); // Assert it uses no more than 5 million gas
+
+    await fundManagerInstance.setFundController(newFundControllerInstance.address, { from: accounts[0] });
 
     // Check balance of new FundManager
     let newRawFundBalance = await fundManagerInstance.getRawFundBalance.call();

@@ -35,7 +35,7 @@ library KeeperDaoPoolController {
     ILiquidityPool constant private _liquidityPool = ILiquidityPool(KEEPERDAO_CONTRACT);
 
     // KeeperDAO's representation of ETH
-    address constant private ETHEREUM_ADDRESS = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    address constant private ETHEREUM_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
 
     /**
      * @dev Returns the fund's balance in the KeeperDAO pool.
@@ -44,8 +44,24 @@ library KeeperDaoPoolController {
         return _liquidityPool.underlyingBalance(ETHEREUM_ADDRESS, address(this));
     }
 
+
     /**
-     * @dev Deposits funds to the dYdX pool. Assumes that you have already approved >= the amount to dYdX.
+     * @dev Approves tokens to KeeperDAO to burn without spending gas on every deposit.
+     * @param amount Amount of the specified token to approve to KeeperDAO.
+     * @return Boolean indicating success.
+     */
+    function approve(uint256 amount) external returns (bool) {
+        IKToken kEther = _liquidityPool.kToken(ETHEREUM_ADDRESS);
+        uint256 allowance = kEther.allowance(address(this), KEEPERDAO_CONTRACT);
+        if (allowance == amount) return true;
+        if (amount > 0 && allowance > 0) kEther.approve(KEEPERDAO_CONTRACT, 0);
+        kEther.approve(KEEPERDAO_CONTRACT, amount);
+        return true;
+    }
+
+
+    /**
+     * @dev Deposits funds to the KeeperDAO pool..
      * @param amount The amount of ETH to be deposited.
      * @return Boolean indicating success.
      */
@@ -91,6 +107,10 @@ library KeeperDaoPoolController {
      */
     function calculatekEtherWithdrawAmount(uint256 amount) internal view returns (uint256) {
         IKToken kEther = _liquidityPool.kToken(ETHEREUM_ADDRESS);
-        return amount.mul(kEther.totalSupply()).div(_liquidityPool.borrowableBalance(ETHEREUM_ADDRESS));    
+        uint256 totalSupply = kEther.totalSupply();
+        uint256 borrowableBalance = _liquidityPool.borrowableBalance(ETHEREUM_ADDRESS);
+        uint256 kEtherAmount = amount.mul(totalSupply).div(borrowableBalance); 
+        if (kEtherAmount.mul(borrowableBalance).div(totalSupply) < amount) kEtherAmount++;
+        return kEtherAmount;
     }
 }

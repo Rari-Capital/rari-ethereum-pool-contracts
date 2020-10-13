@@ -63,10 +63,14 @@ contract RariFundController is Ownable {
      */
     uint8[] private _supportedPools;
 
-
+    /**
+     * @dev WETH contract address.
+     */
     address constant private WETH_CONTRACT = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-
+    /**
+     * @dev COMP token address.
+     */
     address constant private COMP_TOKEN = 0xc00e94Cb662C3520282E6f5717214004A7f26888;
 
 
@@ -193,7 +197,10 @@ contract RariFundController is Ownable {
     function _upgradeFundController(address payable newContract) external onlyOwner {
         require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
         uint256 balance = address(this).balance;
-        if (balance > 0) newContract.transfer(balance);
+        if (balance > 0) {
+            (bool success, ) = newContract.call.value(balance)("");
+            require(success, "Failed to transfer ETH.");
+        }
     }
 
 
@@ -209,18 +216,12 @@ contract RariFundController is Ownable {
                 _withdrawAllFromPool(_supportedPools[i]);
 
         uint256 balance = address(this).balance;
-        if (balance > 0) newContract.transfer(balance);
+        if (balance > 0) {
+            (bool success, ) = newContract.call.value(balance)("");
+            require(success, "Failed to transfer ETH.");
+        }
     }
 
-
-    /**
-     * @dev Returns the balances of all currencies supported by dYdX.
-     * @return An array of ERC20 token contract addresses and a corresponding array of balances.
-     
-    function getDydxBalances() external view returns (address[] memory, uint256[] memory) {
-        return DydxPoolController.getBalances();
-    }
-    */
 
     /**
      * @dev Returns the fund controller's balance of the specified currency in the specified pool.
@@ -260,12 +261,22 @@ contract RariFundController is Ownable {
 
 
     /**
-     * @dev Approves tokens to the specified pool without spending gas on every deposit.
-     * @param amount The amount of tokens to be approved.
+     * @dev Approves WETH to dYdX pool without spending gas on every deposit.
+     * @param amount The amount of WETH to be approved.
      * @return Boolean indicating success.
      */
     function approveWethToDydxPool(uint256 amount) external fundEnabled onlyRebalancer returns (bool) {
         require(DydxPoolController.approve(amount), "Approval of WETH to dYdX failed.");
+        return true;
+    }
+
+    /**
+     * @dev Approves kEther to the specified pool without spending gas on every deposit.
+     * @param amount The amount of tokens to be approved.
+     * @return Boolean indicating success.
+     */
+    function approvekEtherToKeeperDaoPool(uint256 amount) external fundEnabled onlyRebalancer returns (bool) {
+        require(KeeperDaoPoolController.approve(amount), "Approval of kEther to KeeperDao failed.");
         return true;
     }
 
@@ -343,7 +354,7 @@ contract RariFundController is Ownable {
      * @param initialBalance The fund's balance of the specified currency in the specified pool before the withdrawal.
      * @return Boolean indicating success.
      */
-    function withdrawFromPoolKnowingBalance(uint8 pool, uint256 amount, uint256 initialBalance) external fundEnabled onlyManager returns (bool) {
+    function withdrawFromPoolKnowingBalance(uint8 pool, uint256 amount, uint256 initialBalance) public fundEnabled onlyManager returns (bool) {
         _withdrawFromPool(pool, amount);
         if (amount == initialBalance) _poolsWithFunds[pool] = false;
         return true;
@@ -359,7 +370,8 @@ contract RariFundController is Ownable {
     function withdrawFromPoolKnowingBalanceToManager(uint8 pool, uint256 amount, uint256 initialBalance) external fundEnabled onlyManager returns (bool) {
         _withdrawFromPool(pool, amount);
         if (amount == initialBalance) _poolsWithFunds[pool] = false;
-        _rariFundManagerContract.transfer(amount); // Send funds to manager
+        (bool success, ) = _rariFundManagerContract.call.value(amount)(""); // Send funds to manager
+        require(success, "Failed to transfer ETH.");
         return true;
     }
 
@@ -404,30 +416,31 @@ contract RariFundController is Ownable {
      * @return Boolean indicating success.
      */
     function withdrawToManager(uint256 amount) external onlyManager returns (bool) {
-        require(amount < getEntireBalance(), "Withdrawal is too large.");
-        uint256 immediateBalance = address(this).balance;
+        // Input validation
+        require(amount > 0, "Withdrawal amount must be greater than 0.");
 
-        if (immediateBalance >= amount) {
-            _rariFundManagerContract.transfer(amount);
-            return true;
-        }
-
-        uint256 amountLeft = amount.sub(immediateBalance);
+        // Check contract balance and withdraw from pools if necessary
+        uint256 contractBalance = address(this).balance; // get ETH balance
 
         for (uint256 i = 0; i < _supportedPools.length; i++) {
-            if (immediateBalance >= amount) break;
-            uint256 poolBalance = _getPoolBalance(_supportedPools[i]);
+            if (contractBalance >= amount) break;
+            uint8 pool = _supportedPools[i];
+            uint256 poolBalance = getPoolBalance(pool);
             if (poolBalance <= 0) continue;
+            uint256 amountLeft = amount.sub(contractBalance);
             uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
-            amountLeft = amountLeft.sub(poolAmount);
-            _withdrawFromPool(_supportedPools[i], poolAmount);
-            immediateBalance = immediateBalance.add(poolAmount);
+            require(withdrawFromPoolKnowingBalance(pool, poolAmount, poolBalance), "Pool withdrawal failed.");
+            contractBalance = contractBalance.add(poolAmount);
         }
 
-        _rariFundManagerContract.transfer(amount);
+        require(address(this).balance >= amount, "Too little ETH to transfer.");
+
+        (bool success, ) = _rariFundManagerContract.call.value(amount)("");
+        require(success, "Failed to transfer ETH to RariFundManager.");
 
         return true;
     }
+
 
     /**
      * @dev Approves tokens to 0x without spending gas on every deposit.
@@ -451,7 +464,10 @@ contract RariFundController is Ownable {
     function marketSell0xOrdersFillOrKill(LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 takerAssetFillAmount) public payable fundEnabled onlyRebalancer returns (bool) {
         ZeroExExchangeController.marketSellOrdersFillOrKill(orders, signatures, takerAssetFillAmount, msg.value);
         uint256 ethBalance = address(this).balance;
-        if (ethBalance > 0) msg.sender.transfer(ethBalance);
+        if (ethBalance > 0) {
+            (bool success, ) = msg.sender.call.value(ethBalance)("");
+            require(success, "Failed to transfer ETH.");
+        }
         return true;
     }
 }

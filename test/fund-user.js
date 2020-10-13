@@ -5,7 +5,7 @@ const pools = require('./fixtures/pools.json');
 
 const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
-const RariEthFundToken = artifacts.require("RariFundToken");
+const RariEthPoolToken = artifacts.require("RariFundToken");
 
 async function forceAccrueCompound(account) {
   var cErc20Contract = new web3.eth.Contract(cErc20DelegatorAbi, pools["Compound"].currencies["ETH"].cTokenAddress);
@@ -26,7 +26,7 @@ contract("RariFundManager, RariFundController", accounts => {
   it("should make a deposit, deposit to pools, accrue interest, and make a withdrawal", async () => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await RariFundManager.deployed();
-    let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthFundToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthFundToken.deployed());
+    let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthPoolToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthPoolToken.deployed());
 
     // Use Compound as an example
     var amountBN = web3.utils.toBN(1e18);
@@ -60,14 +60,14 @@ contract("RariFundManager, RariFundController", accounts => {
     assert(preWithdrawalAccountBalance.gt(postDepositAccountBalance));
     let preWithdrawalFundBalance = await fundManagerInstance.getFundBalance.call();
     assert(preWithdrawalFundBalance.gt(postDepositFundBalance));
-    let preWithdrawalRftBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
-    assert(preWithdrawalRftBalance.eq(postDepositReftBalance));
+    let preWithdrawalReptBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
+    assert(preWithdrawalReptBalance.eq(postDepositReftBalance));
     let preWithdrawalInterestAccrued = await fundManagerInstance.getInterestAccrued.call();
     assert(preWithdrawalInterestAccrued.gt(postDepositInterestAccrued));
 
     // RariFundManager.withdraw
     await fundTokenInstance.approve(RariFundManager.address, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)), { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
-    await fundManagerInstance.withdraw(amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
+    await debug(fundManagerInstance.withdraw(amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) }));
 
     // TODO: Check balances and assert with post-interest balances
     let finalAccountBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
@@ -75,7 +75,7 @@ contract("RariFundManager, RariFundController", accounts => {
     let finalFundBalance = await fundManagerInstance.getFundBalance.call();
     assert(finalFundBalance.lt(preWithdrawalFundBalance));
     let finalReptBalance = await fundTokenInstance.balanceOf.call(accounts[0]);
-    assert(finalReptBalance.lt(preWithdrawalRftBalance));
+    assert(finalReptBalance.lt(preWithdrawalReptBalance));
     });
     
 

@@ -6,7 +6,7 @@ const erc20Abi = require('./abi/ERC20.json');
 
 const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
-const RariEthFundToken = artifacts.require("RariFundToken");
+const RariEthPoolToken = artifacts.require("RariFundToken");
 
 const DummyRariFundController = artifacts.require("DummyRariFundController");
 const DummyRariFundManager = artifacts.require("DummyRariFundManager");
@@ -44,7 +44,7 @@ contract("RariFundController, RariFundManager", accounts => {
   it("should disable and re-enable the fund", async () => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await RariFundManager.deployed();
-    let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthFundToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthFundToken.deployed());
+    let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthPoolToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthPoolToken.deployed());
 
     // Disable the fund (via RariFundController and RariFundManager)
     await fundControllerInstance.disableFund({ from: accounts[0] });
@@ -53,7 +53,7 @@ contract("RariFundController, RariFundManager", accounts => {
     // TODO: Check _fundDisabled (no way to do this as of now)
     
     // Use ETH to deposit/withdraw
-    var amountBN = web3.utils.toBN(10 ** (18)); // 1 ETH
+    var amountBN = web3.utils.toBN(1e18); // 1 ETH
     
     // Test disabled RariFundManager: make sure we can't deposit or withdraw now (using DAI as an example)
     // var erc20Contract = new web3.eth.Contract(erc20Abi, currencies[currencyCode].tokenAddress);
@@ -75,7 +75,7 @@ contract("RariFundController, RariFundManager", accounts => {
       assert.include(error.message, "This fund manager contract is disabled. This may be due to an upgrade.");
     }
 
-    // Test disabled RariFundController: make sure we can't approve to pools now (using DAI on dYdX as an example)
+    // Test disabled RariFundController: make sure we can't approve to pools now (using WETH on dYdX as an example)
     try {
       await fundControllerInstance.approveWethToDydxPool(amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
       assert.fail();
@@ -88,8 +88,9 @@ contract("RariFundController, RariFundManager", accounts => {
     await fundControllerInstance.enableFund({ from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
 
     // TODO: Check _fundDisabled (no way to do this as of now)
+    await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
 
-    // Test re-enabled RariFundManager: make sure we can deposit and withdraw now (using DAI as an example)
+    // Test re-enabled RariFundManager: make sure we can deposit and withdraw now
     let myInitialBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
     await fundManagerInstance.deposit({ from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]), value: amountBN });
     let myPostDepositBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
@@ -100,9 +101,6 @@ contract("RariFundController, RariFundManager", accounts => {
 
     let myPostWithdrawalBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
     assert(myPostWithdrawalBalance.lt(myPostDepositBalance));
-
-    // Test re-enabled RariFundController: make sure we can approve to pools now (using DAI on dYdX as an example)
-    await fundControllerInstance.approveToPool(0, amountBN, { from: accounts[0] });
   });
 
   it("should put upgrade the fund rebalancer", async () => {
@@ -117,9 +115,6 @@ contract("RariFundController, RariFundManager", accounts => {
 
     // Test fund rebalancer functions from the second account via RariFundManager and RariFundController
     // TODO: Ideally, we actually test the fund rebalancer itself
-    //await fundManagerInstance.setAcceptedCurrency("DAI", false, { from: accounts[1] });
-    //await fundManagerInstance.setAcceptedCurrency("DAI", true, { from: accounts[1] });
-    // await fundControllerInstance.approveToPool(0, web3.utils.toBN(10 ** (currencies["DAI"].decimals - 1)), { from: accounts[1] });
 
     // Reset fund rebalancer addresses
     await fundManagerInstance.setFundRebalancer(accounts[0], { from: accounts[0] });
@@ -191,9 +186,9 @@ contract("RariFundManager", accounts => {
     var newFundManagerInstance = await deployProxy(DummyRariFundManager, [], { unsafeAllowCustomTypes: true });
 
     // Upgrade!
-    await newFundManagerInstance.authorizeFundManagerDataSource(fundManagerInstance.address).send({ from: accounts[0] });
+    await newFundManagerInstance.authorizeFundManagerDataSource(fundManagerInstance.address, { from: accounts[0] });
     await fundManagerInstance.upgradeFundManager(newFundManagerInstance.address);
-    await newFundManagerInstance.authorizeFundManagerDataSource("0x0000000000000000000000000000000000000000").send({ from: accounts[0] });
+    await newFundManagerInstance.authorizeFundManagerDataSource("0x0000000000000000000000000000000000000000", { from: accounts[0] });
   });
 });
 
@@ -202,6 +197,8 @@ contract("RariFundController", accounts => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await RariFundManager.deployed();
     
+    await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+
     // Approve and deposit tokens to the fund (using DAI as an example)
     var amountBN = web3.utils.toBN(10 ** (18));
     // var erc20Contract = new web3.eth.Contract(erc20Abi, currencies["DAI"].tokenAddress);
@@ -246,7 +243,10 @@ contract("RariFundController", accounts => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await RariFundManager.deployed();
     
+    await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+
     var amountBN = web3.utils.toBN(1e18);
+    
     await fundManagerInstance.deposit({ from: accounts[0], value: amountBN });
 
     // Approve and deposit to pool (using Compound as an example)

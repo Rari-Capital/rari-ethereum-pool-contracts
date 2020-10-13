@@ -195,8 +195,8 @@
       }
     },
     "2c9af525c5ae18a19cc94474b969c0559bee05ee4594d2553fb830585f938549": {
-      "address": "0x1C6B9D464D2518E24da034785568000Ac294C56E",
-      "txHash": "0x870142cf95397242f938eb21c25bbeff704959c47644b893a3078862c905e3ab",
+      "address": "0x8aB20BB260e1b62d3E952C7aC1FF952Ce61Ab917",
+      "txHash": "0xcf5bf8b314368c771b998c4541ae55ff9e2e892afa75bea62b7bb5cd00dd7327",
       "layout": {
         "storage": [
           {
@@ -268,7 +268,7 @@
           {
             "contract": "MinterRole",
             "label": "_minters",
-            "type": "t_struct(Role)7693_storage",
+            "type": "t_struct(Role)7900_storage",
             "src": "../@openzeppelin/contracts-ethereum-package/contracts/access/roles/MinterRole.sol:14"
           },
           {
@@ -294,7 +294,7 @@
           "t_array(t_uint256)50_storage": {
             "label": "uint256[50]"
           },
-          "t_struct(Role)7693_storage": {
+          "t_struct(Role)7900_storage": {
             "label": "struct Roles.Role"
           },
           "t_string_storage": {
@@ -705,8 +705,8 @@
       }
     },
     "12d65e0c38d8c400214808ec3fe996cf198d9c3ae478afb71bac43c6ff672f43": {
-      "address": "0x463b583e689eC03EB0eBbcD118025571d77C0ee2",
-      "txHash": "0xcc265985006df96a0b2ea48ba1845bc86c06ec6d57aee91ffa94ccbb87ee5799",
+      "address": "0x053F3451449EA827C27C212280D8Ee86D08Cb0AE",
+      "txHash": "0x09d12d01b699148d1e987d30d2cc25b423e59d223fcc1811573473ddcb0e4d3f",
       "layout": {
         "storage": [
           {
@@ -754,8 +754,8 @@
       }
     },
     "098b2a30371ffa01224a5628438cf31d9716eb292db9ebe9ab9f7f53c6492751": {
-      "address": "0x493dE91a1E2Edcf2988647c69D23DbbB1ad5Cfb7",
-      "txHash": "0x19b434164520b8308e899287456ddf2e386199c364cdae198f44f812404fc6e2",
+      "address": "0x90E61AC015D019927bbcD08bEDD245E3b292d3D1",
+      "txHash": "0xdb1c02d076cd414ea4ec6c3a13377fbc11f3422d15ca5fcb0a2215ad0bb7cc12",
       "layout": {
         "storage": [
           {
@@ -803,7 +803,7 @@
           {
             "contract": "RariFundManager",
             "label": "_rariFundController",
-            "type": "t_contract(RariFundController)1063",
+            "type": "t_contract(RariFundController)1080",
             "src": "RariFundManager.sol:56"
           },
           {
@@ -815,7 +815,7 @@
           {
             "contract": "RariFundManager",
             "label": "_rariEthPoolToken",
-            "type": "t_contract(RariFundToken)3320",
+            "type": "t_contract(RariFundToken)3337",
             "src": "RariFundManager.sol:66"
           },
           {
@@ -876,37 +876,37 @@
             "contract": "RariFundManager",
             "label": "_netDeposits",
             "type": "t_int256",
-            "src": "RariFundManager.sol:604"
+            "src": "RariFundManager.sol:601"
           },
           {
             "contract": "RariFundManager",
             "label": "_interestFeeRate",
             "type": "t_uint256",
-            "src": "RariFundManager.sol:625"
+            "src": "RariFundManager.sol:622"
           },
           {
             "contract": "RariFundManager",
             "label": "_rawInterestAccruedAtLastFeeRateChange",
             "type": "t_int256",
-            "src": "RariFundManager.sol:649"
+            "src": "RariFundManager.sol:646"
           },
           {
             "contract": "RariFundManager",
             "label": "_interestFeesGeneratedAtLastFeeRateChange",
             "type": "t_int256",
-            "src": "RariFundManager.sol:654"
+            "src": "RariFundManager.sol:651"
           },
           {
             "contract": "RariFundManager",
             "label": "_interestFeesClaimed",
             "type": "t_uint256",
-            "src": "RariFundManager.sol:670"
+            "src": "RariFundManager.sol:667"
           },
           {
             "contract": "RariFundManager",
             "label": "_interestFeeMasterBeneficiary",
             "type": "t_address_payable",
-            "src": "RariFundManager.sol:684"
+            "src": "RariFundManager.sol:681"
           }
         ],
         "types": {
@@ -916,13 +916,2522 @@
           "t_address_payable": {
             "label": "address payable"
           },
-          "t_contract(RariFundController)1063": {
+          "t_contract(RariFundController)1080": {
             "label": "contract RariFundController"
           },
           "t_address": {
             "label": "address"
           },
-          "t_contract(RariFundToken)3320": {
+          "t_contract(RariFundToken)3337": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "9662bb587bd56384789bebfc5044fd958c4c3a6c25e3136fd8932c9cd2ce6fda": {
+      "address": "0x507A33fDB90675447B9D2596b5728BD3371C414D",
+      "txHash": "0xa14349d2a92f3368ad57643a224bbfb6031c27a5c73a72a32a7b1907ca162542",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1109",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3371",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:152"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:311"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:316"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:369"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:407"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:420"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:599"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:620"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:644"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:649"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:665"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:679"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1109": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3371": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "dfe0eb32ee3581178e11b3fe657b65b78cd796ed6de9849f04b119b0f6ca9aa8": {
+      "address": "0x78BD516AFC393307300e1F62dA5f6CcA40b4FAd6",
+      "txHash": "0x6a65ef91b4556d13139f0f0b6cfaba32df2fa61c9970ca8ef7d1a2162ea96570",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1109",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3380",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:152"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:311"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:316"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:369"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:407"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:420"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:600"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:621"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:645"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:650"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:666"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:680"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1109": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3380": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "a5fd61d01adb389a361b07bf84b81a09ea351e722f84b11a2af05aa246c7f5fb": {
+      "address": "0x5449da3dD8FE57cf6acC4cf555e7664333449F8C",
+      "txHash": "0x2ace9f880e3cfe1ff72d2cb223bfd5aa752668ab9bbb23121d4fd3eb801374f9",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1165",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3399",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:152"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:311"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:316"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:369"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:407"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:420"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:609"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:630"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:654"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:659"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:675"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:689"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1165": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3399": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "bcc673c7ce0748af04aae01230b267dc89e4cf427e34f9ed2b4c8a80c96a1e08": {
+      "address": "0x52585C7058d390Ad693E600E3293408bcaE750F6",
+      "txHash": "0x0efc23bd1b810c9e6811f79410ac3f409252fc5df0515e74a2fbf6c3ae662ac5",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1165",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3413",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:152"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:311"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:316"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:369"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:407"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:420"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:610"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:631"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:655"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:660"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:676"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:690"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1165": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3413": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "e63c726913633352bc01cb811390f2a3bdb8e7011c453e53aded920f9f73611c": {
+      "address": "0x677C88024036230c3214342916937D44d810Cb63",
+      "txHash": "0x7cd0a7ff717f241a596ea6feb4c75e65849a3b80f4e7c9e440ac5d75c04f21ea",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1165",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3437",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:152"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:311"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:316"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:369"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:407"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:420"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:611"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:632"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:656"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:661"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:677"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:691"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1165": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3437": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "57225bf71a795ddb605afdc7b63f3181f6d1075dd27c87396b370efafcf86ee1": {
+      "address": "0x4e47430125E589548362953B3De1209dF856b5eE",
+      "txHash": "0xd47f83f76a1513cd1be4116a7b783c82e8084aaa9964588eb8473712111f945a",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1165",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3483",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:152"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:311"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:316"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:369"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:407"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:420"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:610"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:631"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:655"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:660"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:676"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:690"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1165": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3483": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "e60f27b249c30f1d0457e87eb1872e7173b29a2871be58039eee3e4ccd033f09": {
+      "address": "0xD5dAf5C7B82b10c404AC3dd7de1faC3944e8bc76",
+      "txHash": "0x702519ede98fd6c3feeac725b4fccf5f9f540348228884d186f16e4c2bd3dba4",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1165",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3483",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:152"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:311"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:316"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:369"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:407"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:420"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:612"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:633"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:657"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:662"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:678"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:692"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1165": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3483": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "22921fcdfd0b809c86fe5ec211c0448657af7fab9eed976ab0a0744250a2ffa2": {
+      "address": "0xE0fA18F6Cc288eD2555f63f229f924D5b12Dbb63",
+      "txHash": "0x68012726350622a0fac8c32315f161ace749baa78164f75e242d09026bfc2aa0",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1165",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3480",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:152"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:311"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:316"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:369"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:407"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:420"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:613"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:634"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:658"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:663"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:679"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:693"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1165": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3480": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "5126371b1ce21f212be2a81a993e71087c370c6da712ae9bf90a1a1684bed245": {
+      "address": "0xd0f2896867A74111682f5bebb92dff907cF5Dde6",
+      "txHash": "0x9d9749c3c239692abedd4fa9fb0dec29f4fdbd89e271bba0eaf905156fe8d12c",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1165",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3373",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:152"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:311"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:316"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:369"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:407"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:420"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:613"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:634"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:658"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:663"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:679"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:693"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1165": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3373": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "76a9f3349f3843865d745415e91c5e4f3b189cf370207f46101d9d19aaae8267": {
+      "address": "0x2E8Dbc8d58dc078E79406246E8eC8E280e582f58",
+      "txHash": "0x1fb14f9c072f9347122ddca57b7141935ad65bdee28dbc31d7f91683ddbfa53a",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1127",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3373",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:152"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:311"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:316"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:369"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:407"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:420"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:614"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:635"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:659"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:664"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:680"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:694"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1127": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3373": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "b9325c577783550453337d5d098573d4201b02801fb1b1cb0e56d5168961bbed": {
+      "address": "0xAb765ED7a1481cBB0032a2152a15f39BF04dC21C",
+      "txHash": "0x41b2257785f11c5eb650de28916f656cd686b674046e03758923e5e4b4d2d8e1",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1127",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3355",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:149"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:308"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:313"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:366"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:404"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:417"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:611"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:632"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:656"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:661"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:677"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:691"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1127": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3355": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "8021b9291da8760d2a65379b48d72efe0288a5e7358477df6b2b05bb7d28943e": {
+      "address": "0xBD74bBf54503096aAD27a9a01A025d7f25025844",
+      "txHash": "0xcd3c1cb71c1a650cb5498ecae82c6dc3214882afb8aef32f804408210de33750",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1127",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3453",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:154"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:313"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:318"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:371"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:409"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:422"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:615"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:636"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:660"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:665"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:681"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:695"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1127": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3453": {
+            "label": "contract RariFundToken"
+          },
+          "t_array(t_uint8)dyn_storage": {
+            "label": "uint8[]"
+          },
+          "t_mapping(t_uint8,t_uint256)": {
+            "label": "mapping(uint8 => uint256)"
+          },
+          "t_int256": {
+            "label": "int256"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_int256)": {
+            "label": "mapping(address => int256)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "e7e7c3efcd03851f642bd663642507448f6cb40276207b28be6a1023518f23df": {
+      "address": "0xa6356AffE0089f25fa0b01fc7ee176203F0F9435",
+      "txHash": "0x4b944532f6254e4a065c2855486cba81bf651e7adabf2b334d55979f86299a4c",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/upgrades/contracts/Initializable.sol:61"
+          },
+          {
+            "contract": "Ownable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:17"
+          },
+          {
+            "contract": "Ownable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol:80"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_fundDisabled",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:46"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundControllerContract",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:51"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundController",
+            "type": "t_contract(RariFundController)1127",
+            "src": "RariFundManager.sol:56"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolTokenContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:61"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariEthPoolToken",
+            "type": "t_contract(RariFundToken)3458",
+            "src": "RariFundManager.sol:66"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundProxyContract",
+            "type": "t_address",
+            "src": "RariFundManager.sol:71"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rariFundRebalancerAddress",
+            "type": "t_address",
+            "src": "RariFundManager.sol:76"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_supportedPools",
+            "type": "t_array(t_uint8)dyn_storage",
+            "src": "RariFundManager.sol:82"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_authorizedFundManagerDataSource",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:154"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_cachePoolBalance",
+            "type": "t_bool",
+            "src": "RariFundManager.sol:313"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_poolBalanceCache",
+            "type": "t_mapping(t_uint8,t_uint256)",
+            "src": "RariFundManager.sol:318"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawFundBalanceCache",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:371"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimitDefault",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:409"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_accountBalanceLimits",
+            "type": "t_mapping(t_address,t_int256)",
+            "src": "RariFundManager.sol:422"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_netDeposits",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:614"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeRate",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:635"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_rawInterestAccruedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:659"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesGeneratedAtLastFeeRateChange",
+            "type": "t_int256",
+            "src": "RariFundManager.sol:664"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeesClaimed",
+            "type": "t_uint256",
+            "src": "RariFundManager.sol:680"
+          },
+          {
+            "contract": "RariFundManager",
+            "label": "_interestFeeMasterBeneficiary",
+            "type": "t_address_payable",
+            "src": "RariFundManager.sol:694"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_address_payable": {
+            "label": "address payable"
+          },
+          "t_contract(RariFundController)1127": {
+            "label": "contract RariFundController"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(RariFundToken)3458": {
             "label": "contract RariFundToken"
           },
           "t_array(t_uint8)dyn_storage": {
@@ -948,7 +3457,7 @@
     }
   },
   "admin": {
-    "address": "0xbfe20740EA82C8d28f1Bc52EB63CaD32166D39d8",
-    "txHash": "0xaa0e854c8a49d16ad574e2d079db6272a7b90b1bb5ac79d28eaa321672ab5e83"
+    "address": "0x4814dCA724A707796a6363d60a0327A570d159db",
+    "txHash": "0x2cfd137593f4614aa2087beb1ce7b85e12ffd8096deba0fca3813f2c5cdb96bd"
   }
 }

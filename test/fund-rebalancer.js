@@ -22,6 +22,7 @@ contract("RariFundController, RariFundManager", accounts => {
     let fundManagerInstance = await RariFundManager.deployed();
 
     await fundControllerInstance.approveWethToDydxPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+    await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
 
     // For each currency of each pool:
     for (const pool of [0, 1, 2, 3]) {

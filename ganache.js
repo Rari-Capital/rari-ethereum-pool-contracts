@@ -1,6 +1,7 @@
 const ganache = require("ganache-core");
-const server = ganache.server({ fork: "https://mainnet.infura.io/v3/834349d34934494f80797f2f551cb12e" });
+// const server = ganache.server({ fork: "https://mainnet.infura.io/v3/834349d34934494f80797f2f551cb12e" });
 // const server = ganache.server({ fork: "http://localhost:8545" });
+const server = ganache.server({ fork: "https://mainnet.infura.io/v3/2b2e9ca647574a7a83285804a4ed947b" });
 
 const fs = require('fs');
 
