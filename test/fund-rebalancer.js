@@ -20,26 +20,20 @@ contract("RariFundController, RariFundManager", accounts => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await RariFundManager.deployed();
 
+    // Approve WETH to dYdX and kEther to KeeperDAO
     await fundControllerInstance.approveWethToDydxPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
     await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
 
-    // For each currency of each pool:
+    var amountBN = web3.utils.toBN(1e18);
+
     for (const pool of [0, 1, 2, 3]) {
-      // Approve and deposit tokens to RariFundManager
-      var amountBN = web3.utils.toBN(1e18);
-
-      await fundManagerInstance.deposit({ from: process.env.DEVELOPMENT_ADDRESS, value: amountBN });
-
       // Check initial pool balance
       var initialBalanceOfUnderlying = await fundControllerInstance.getPoolBalance.call(pool);
-
       await fundManagerInstance.deposit({from: process.env.DEVELOPMENT_ADDRESS, value: amountBN});
-      // Approve and deposit to pool
-      // TODO: Ideally, we add actually call rari-fund-rebalancer
+      // Deposit to pool
       await fundControllerInstance.depositToPool(pool, amountBN, { from: process.env.DEVELOPMENT_ADDRESS });
-
       // Check new pool balance
-      // Accounting for dYdX and Compound losing some dust using amountBN.mul(9999).div(10000)
+      // Accounting for the possibility of a pool losing some dust using amountBN.mul(9999).div(10000)
       var postDepositBalanceOfUnderlying = await fundControllerInstance.getPoolBalance.call(pool);
       assert(postDepositBalanceOfUnderlying.gte(initialBalanceOfUnderlying.add(amountBN.mul(web3.utils.toBN(9999)).div(web3.utils.toBN(10000)))));
     }
@@ -48,19 +42,14 @@ contract("RariFundController, RariFundManager", accounts => {
   it("should withdraw half from all pools via RariFundController.withdrawFromPool", async () => {
     let fundControllerInstance = await RariFundController.deployed();
 
-    // For each currency of each pool:
+    var amountBN = web3.utils.toBN(1e18);
+
     for (const pool of [0, 1, 2, 3]) {
       // Check initial pool balance
       var oldBalanceOfUnderlying = await fundControllerInstance.getPoolBalance.call(pool);
-      
-      // Calculate amount to deposit to & withdraw from the pool
-      var amountBN = web3.utils.toBN(1e18);
-
-      // RariFundController.withdrawFromPool
       // TODO: Ideally, we add actually call rari-fund-rebalancer
       console.log("Withdrawing half from ", pool);
       await fundControllerInstance.withdrawFromPool(pool, amountBN.div(web3.utils.toBN(2)), { from: process.env.DEVELOPMENT_ADDRESS });
-
       // Check new pool balance
       var newBalanceOfUnderlying = await fundControllerInstance.getPoolBalance.call(pool);
       assert(newBalanceOfUnderlying.lt(oldBalanceOfUnderlying));
@@ -72,10 +61,8 @@ contract("RariFundController, RariFundManager", accounts => {
     
     // For each currency of each pool:
     for (const pool of [0, 1, 2, 3]) {
-      // RariFundController.withdrawAllFromPool
       // TODO: Ideally, we add actually call rari-fund-rebalancer
       await fundControllerInstance.withdrawAllFromPool(pool, { from: process.env.DEVELOPMENT_ADDRESS, nonce: await web3.eth.getTransactionCount(process.env.DEVELOPMENT_ADDRESS) });
-
       // Check new pool balance
       var newBalanceOfUnderlying = await fundControllerInstance.getPoolBalance.call(pool);
       assert(newBalanceOfUnderlying.isZero());

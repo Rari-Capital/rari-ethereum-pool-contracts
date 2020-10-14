@@ -22,22 +22,22 @@ contract("RariFundController", accounts => {
     let oldRawFundBalance = await fundManagerInstance.getRawFundBalance.call();
 
     // Tally up ETH deposited
-    var totalEthBN = web3.utils.toBN(0);
+    var totalEthBN = web3.utils.toBN(4e18);
     
     // For each currency of each pool, deposit to fund and deposit to pool
     var amountBN = web3.utils.toBN(1e18);
 
+    // approve WETH to dYdX for deposits and approve kEther to be burned by KeeperDAO
     await fundControllerInstance.approveWethToDydxPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
     await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
 
-    await fundManagerInstance.deposit({ from: accounts[0], value: web3.utils.toBN(4e18) });
+    // deposit 4 ETH
+    await fundManagerInstance.deposit({ from: accounts[0], value: totalEthBN });
     
-    await fundControllerInstance.depositToPool(0, amountBN, { from: accounts[0] }); // dydx
-    await fundControllerInstance.depositToPool(1, amountBN, { from: accounts[0] }); // comp
-    await fundControllerInstance.depositToPool(2, amountBN, { from: accounts[0] }); // keeperdao
-    await fundControllerInstance.depositToPool(3, amountBN, { from: accounts[0] }); // aave
-    
-    totalEthBN.iadd(web3.utils.toBN(4e18));
+    for (const pool of [0, 1, 2, 3]) {
+        // deeposit 1 ETH to each pool
+        await fundControllerInstance.depositToPool(pool, amountBN, { from: accounts[0] });
+    }
 
     // Disable original FundController and FundManager
     await fundControllerInstance.disableFund({ from: accounts[0] });
@@ -49,16 +49,16 @@ contract("RariFundController", accounts => {
 
     // Upgrade!
     var result = await fundControllerInstance.upgradeFundController(newFundControllerInstance.address, { from: process.env.DEVELOPMENT_ADDRESS });
-
     console.log("Gas usage of RariFundController.upgradeFundController:", result.receipt.gasUsed);
-    assert.isAtMost(result.receipt.gasUsed, 5000000); // Assert it uses no more than 5 million gas
-
+    
+    // Assert it uses no more than 5 million gas
+    assert.isAtMost(result.receipt.gasUsed, 5000000);
+    // Set new FundController address
     await fundManagerInstance.setFundController(newFundControllerInstance.address, { from: accounts[0] });
 
-    // Check balance of new FundManager
+    // Check balance of fund with upgraded FundController, accounting for dust lost in conversions
     let newRawFundBalance = await fundManagerInstance.getRawFundBalance.call();
-    console.log("New fund balance: ", newRawFundBalance.toString(10));
-
     assert(newRawFundBalance.gte(oldRawFundBalance.add(totalEthBN.mul(web3.utils.toBN(9999)).div(web3.utils.toBN(10000)))));
+
   });
 });

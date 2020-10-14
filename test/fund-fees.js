@@ -16,6 +16,7 @@ const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
 const RariEthFundToken = artifacts.require("RariFundToken");
 
+// Tries maximum of 2 times to accrue interest from Compound
 async function forceAccrueCompound(account) {
   var cErc20Contract = new web3.eth.Contract(cErc20DelegatorAbi, pools["Compound"].currencies["ETH"].cTokenAddress);
   try {
@@ -38,16 +39,12 @@ contract("RariFundManager", accounts => {
 
     var amountBN = web3.utils.toBN(1e18);
 
-    await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
-
-    await fundManagerInstance.deposit({ from: accounts[0], value: amountBN });
-
     // deposit to pool (using Compound as an example)
+    await fundManagerInstance.deposit({ from: accounts[0], value: amountBN });
     await fundControllerInstance.depositToPool(1, amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0])});
 
     // Set interest fee rate
     await fundManagerInstance.setInterestFeeRate(web3.utils.toBN(1e17), { from: accounts[0] });
-
     // Check interest fee rate
     let interestFeeRate = await fundManagerInstance.getInterestFeeRate.call();
     assert(interestFeeRate.eq(web3.utils.toBN(1e17)));

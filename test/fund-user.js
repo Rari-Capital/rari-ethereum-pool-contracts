@@ -87,5 +87,4 @@ contract("RariFundManager, RariFundController", accounts => {
     assert(finalReptBalance.lt(preWithdrawalReptBalance));
     });
     
-
 });

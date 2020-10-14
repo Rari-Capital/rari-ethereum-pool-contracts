@@ -10,7 +10,7 @@ module.exports = {
         var keys = [process.env.DEVELOPMENT_PRIVATE_KEY];
         if (process.env.DEVELOPMENT_PRIVATE_KEY_SECONDARY) keys.push(process.env.DEVELOPMENT_PRIVATE_KEY_SECONDARY);
         if (process.env.UPGRADE_FUND_OWNER_PRIVATE_KEY) keys.push(process.env.UPGRADE_FUND_OWNER_PRIVATE_KEY);
-        return new HDWalletProvider(keys, "http://localhost:8546"); // Fork mainnet geth instance with compound-finance/ganache-core (Compound's fork fixes a false reentrancy error)
+        return new HDWalletProvider(keys, "http://localhost:8546"); // Fork mainnet geth instance with ganache-core
       },
       network_id: 1,
       gasPrice: 1e8,
