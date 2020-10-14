@@ -61,11 +61,6 @@ contract RariFundController is Ownable {
     uint8[] private _supportedPools;
 
     /**
-     * @dev WETH contract address.
-     */
-    address constant private WETH_CONTRACT = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-
-    /**
      * @dev COMP token address.
      */
     address constant private COMP_TOKEN = 0xc00e94Cb662C3520282E6f5717214004A7f26888;
@@ -110,9 +105,6 @@ contract RariFundController is Ownable {
      * @param newContract The address of the new RariFundManager contract.
      */
     function setFundManager(address payable newContract) external onlyOwner {
-        IERC20 weth = IERC20(WETH_CONTRACT);
-        if (_rariFundManagerContract != address(0)) weth.safeApprove(_rariFundManagerContract, 0);
-        if (newContract != address(0)) weth.safeApprove(newContract, uint256(-1));
         _rariFundManagerContract = newContract;
         emit FundManagerSet(newContract);
     }
