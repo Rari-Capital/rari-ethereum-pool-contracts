@@ -66,6 +66,16 @@ contract RariFundController is Ownable {
     address constant private COMP_TOKEN = 0xc00e94Cb662C3520282E6f5717214004A7f26888;
 
     /**
+     * @dev WETH token address.
+     */
+    address constant private WETH_CONTRACT = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+
+    /**
+     * @dev WETH token abstraction.
+     */
+    IEtherToken constant private _weth = IEtherToken(WETH_CONTRACT);
+
+    /**
      * @dev Caches the balances for each pool, with the sum cached at the end
      */
     uint256[] private _cachedBalances;
@@ -455,5 +465,14 @@ contract RariFundController is Ownable {
             require(success, "Failed to transfer ETH.");
         }
         return true;
+    }
+
+    /**
+     * Unwraps all WETH currently owned by the Controller.
+     */
+    function unwrapAllWeth() external onlyRebalancer {
+        uint256 wethBalance = _weth.balanceOf(address(this));
+        require(wethBalance > 0, "No WETH to withdraw.");
+        _weth.withdraw(wethBalance);
     }
 }

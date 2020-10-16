@@ -3456,8 +3456,8 @@
       }
     },
     "c56f26819a911c539c2bb986f5a45f13256ecad984e542f1023d4e2aea793aa2": {
-      "address": "0xd00F786e3E5CC799f5fB6f496c8F6B4Ce0697a8d",
-      "txHash": "0xe854848d99a029ad4d8c5fb8f55638a8d986ff3158aba2dce591d3aae71903e5",
+      "address": "0x16d07949372962434E965619176Cf407C5F97D4f",
+      "txHash": "0x45e3d94cafe336ad5b253460276ab1851aa919963b5cadf4431c78dff42583f1",
       "layout": {
         "storage": [
           {
@@ -3634,8 +3634,8 @@
       }
     },
     "8c5a135c210fce58b1bff3afaabd166daf57c2377ad50ed8144ccc0e2cf6df42": {
-      "address": "0xB067E11073b69aAe4a6acFf5244D22946084Ae6B",
-      "txHash": "0x377b4239017108edd090d76593763b72938b47085aca6e8bfc20cb65e5557fe6",
+      "address": "0x975c1076FEe18a85007bF3c51481EadeDa499048",
+      "txHash": "0x777e099866f3f141bb3f2acd628af0c4bc6898c95ad4597a6960777bb2d7b4b0",
       "layout": {
         "storage": [
           {
@@ -3707,7 +3707,7 @@
           {
             "contract": "MinterRole",
             "label": "_minters",
-            "type": "t_struct(Role)8301_storage",
+            "type": "t_struct(Role)8185_storage",
             "src": "../@openzeppelin/contracts-ethereum-package/contracts/access/roles/MinterRole.sol:14"
           },
           {
@@ -3742,7 +3742,7 @@
           "t_array(t_uint256)50_storage": {
             "label": "uint256[50]"
           },
-          "t_struct(Role)8301_storage": {
+          "t_struct(Role)8185_storage": {
             "label": "struct Roles.Role"
           },
           "t_string_storage": {
@@ -3768,7 +3768,7 @@
     }
   },
   "admin": {
-    "address": "0xA681D1B14f46099Cf04f9E176BF368A2C13355b5",
-    "txHash": "0x8a825e54010ebf010ca7bf7fb2f9599519862730bf21633911415bd077f383bb"
+    "address": "0x4E317AeCc27161CF631AA75eBCCc77ded8ACa374",
+    "txHash": "0x346f6911c04054ba9d4e82e8ee4d7a9705262188610662a0cd55e8ec0234d832"
   }
 }
