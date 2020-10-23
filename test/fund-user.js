@@ -65,6 +65,7 @@ contract("RariFundManager, RariFundController", accounts => {
     await forceAccrueCompound(accounts[0]);
 
     // Check balances and interest after waiting for interest
+    
     let preWithdrawalAccountBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
     assert(preWithdrawalAccountBalance.gt(postDepositAccountBalance));
     let preWithdrawalFundBalance = await fundManagerInstance.getFundBalance.call();
@@ -73,10 +74,11 @@ contract("RariFundManager, RariFundController", accounts => {
     assert(preWithdrawalReptBalance.eq(postDepositReftBalance));
     let preWithdrawalInterestAccrued = await fundManagerInstance.getInterestAccrued.call();
     assert(preWithdrawalInterestAccrued.gt(postDepositInterestAccrued));
+    
 
     // RariFundManager.withdraw
     await fundTokenInstance.approve(RariFundManager.address, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)), { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
-    await debug(fundManagerInstance.withdraw(amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) }));
+    await fundManagerInstance.withdraw(amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
 
     // TODO: Check balances and assert with post-interest balances
     let finalAccountBalance = await fundManagerInstance.balanceOf.call(accounts[0]);

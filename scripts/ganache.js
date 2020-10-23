@@ -7,15 +7,16 @@ const fs = require('fs');
 
 server.listen(8546, function(err, blockchain) {
     if (err) return console.log(err);
-    // console.log(blockchain);
     let keyVars = 'DEVELOPMENT_ADDRESS=\"' + Object.keys(blockchain['unlocked_accounts'])[0] + "\"\n";
     keyVars += 'DEVELOPMENT_ADDRESS_SECONDARY=\"' + Object.keys(blockchain['unlocked_accounts'])[1] + "\"\n";
     keyVars += 'DEVELOPMENT_PRIVATE_KEY=\"' + blockchain['unlocked_accounts'][Object.keys(blockchain['unlocked_accounts'])[0]]['secretKey'].toString('hex') + '\"\n';
     keyVars += 'DEVELOPMENT_PRIVATE_KEY_SECONDARY=\"' + blockchain['unlocked_accounts'][Object.keys(blockchain['unlocked_accounts'])[1]]['secretKey'].toString('hex') + '\"\n';
 
-    fs.writeFile('.env', keyVars, function(err) {
+    console.log(keyVars);
+
+    fs.writeFile(__dirname + '/../.env', keyVars, function(err) {
     	if(err) console.log(err);
-    	console.log('wrote keys to .env with no errors');
+    	console.log('Wrote keys to .env with no errors.');
     });
 
 });

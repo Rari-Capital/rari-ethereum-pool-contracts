@@ -705,8 +705,8 @@
       }
     },
     "12d65e0c38d8c400214808ec3fe996cf198d9c3ae478afb71bac43c6ff672f43": {
-      "address": "0x343E9777F459f4DA870308B8fFA3C3Ad72b36873",
-      "txHash": "0x23b340ccfc70118eb2e3b6c7cfe3b44dc7134c30b2c543d53b90ecab144aad37",
+      "address": "0x5232339deafAe2f8d7B9C18bB512FD066C98d6E0",
+      "txHash": "0xbb629eb6a8670adb8dad85a9039c3308f50f338b25a68d64fd1698ec2428d42a",
       "layout": {
         "storage": [
           {
@@ -3456,8 +3456,8 @@
       }
     },
     "c56f26819a911c539c2bb986f5a45f13256ecad984e542f1023d4e2aea793aa2": {
-      "address": "0x16d07949372962434E965619176Cf407C5F97D4f",
-      "txHash": "0x45e3d94cafe336ad5b253460276ab1851aa919963b5cadf4431c78dff42583f1",
+      "address": "0xd8BFdAD5E8Fc2E02c624F201d6DCDc9bCB87127A",
+      "txHash": "0x368fd27318d0d9935f8b3520484d12f59177a2b0db85e54313c1f3611737a5ac",
       "layout": {
         "storage": [
           {
@@ -3505,7 +3505,7 @@
           {
             "contract": "RariFundManager",
             "label": "rariFundController",
-            "type": "t_contract(RariFundController)1089",
+            "type": "t_contract(RariFundController)1125",
             "src": "RariFundManager.sol:54"
           },
           {
@@ -3517,7 +3517,7 @@
           {
             "contract": "RariFundManager",
             "label": "rariFundToken",
-            "type": "t_contract(RariFundToken)3802",
+            "type": "t_contract(RariFundToken)3838",
             "src": "RariFundManager.sol:64"
           },
           {
@@ -3606,13 +3606,13 @@
           "t_address_payable": {
             "label": "address payable"
           },
-          "t_contract(RariFundController)1089": {
+          "t_contract(RariFundController)1125": {
             "label": "contract RariFundController"
           },
           "t_address": {
             "label": "address"
           },
-          "t_contract(RariFundToken)3802": {
+          "t_contract(RariFundToken)3838": {
             "label": "contract RariFundToken"
           },
           "t_array(t_uint8)dyn_storage": {
@@ -3634,8 +3634,8 @@
       }
     },
     "8c5a135c210fce58b1bff3afaabd166daf57c2377ad50ed8144ccc0e2cf6df42": {
-      "address": "0x975c1076FEe18a85007bF3c51481EadeDa499048",
-      "txHash": "0x777e099866f3f141bb3f2acd628af0c4bc6898c95ad4597a6960777bb2d7b4b0",
+      "address": "0x7863d2EC1F2a02dACB1A75b53803A9C51aC39905",
+      "txHash": "0x88a3fe1e21c650e9676f14766efd6052d9aa27b193306fd71744a0ccce2297dc",
       "layout": {
         "storage": [
           {
@@ -3707,7 +3707,7 @@
           {
             "contract": "MinterRole",
             "label": "_minters",
-            "type": "t_struct(Role)8185_storage",
+            "type": "t_struct(Role)8337_storage",
             "src": "../@openzeppelin/contracts-ethereum-package/contracts/access/roles/MinterRole.sol:14"
           },
           {
@@ -3731,18 +3731,18 @@
           {
             "contract": "RariFundToken",
             "label": "rariGovernanceTokenDistributor",
-            "type": "t_contract(IRariGovernanceTokenDistributor)4203",
+            "type": "t_contract(IRariGovernanceTokenDistributor)4239",
             "src": "RariFundToken.sol:42"
           }
         ],
         "types": {
-          "t_contract(IRariGovernanceTokenDistributor)4203": {
+          "t_contract(IRariGovernanceTokenDistributor)4239": {
             "label": "contract IRariGovernanceTokenDistributor"
           },
           "t_array(t_uint256)50_storage": {
             "label": "uint256[50]"
           },
-          "t_struct(Role)8185_storage": {
+          "t_struct(Role)8337_storage": {
             "label": "struct Roles.Role"
           },
           "t_string_storage": {
@@ -3768,7 +3768,7 @@
     }
   },
   "admin": {
-    "address": "0x4E317AeCc27161CF631AA75eBCCc77ded8ACa374",
-    "txHash": "0x346f6911c04054ba9d4e82e8ee4d7a9705262188610662a0cd55e8ec0234d832"
+    "address": "0x1B1AD44D1e24B65E173664881Cb003a803F3875d",
+    "txHash": "0x71fb9361714e6a4911efc473f03cc652da0ab03985a4b59f0c1b3ef45cbeb392"
   }
 }
