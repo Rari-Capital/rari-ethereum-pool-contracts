@@ -61,7 +61,7 @@ contract RariFundManager is Initializable, Ownable {
     /**
      * @dev Contract for the REPT tokem.
      */
-    RariFundToken private rariFundToken;
+    RariFundToken public rariFundToken;
 
     /**
      * @dev Address of the RariFundProxy.

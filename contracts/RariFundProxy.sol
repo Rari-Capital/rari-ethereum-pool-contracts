@@ -16,8 +16,6 @@ import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20Detailed.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/GSN/GSNRecipient.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/cryptography/ECDSA.sol";
 
 import "@0x/contracts-exchange-libs/contracts/src/LibOrder.sol";
 import "@0x/contracts-erc20/contracts/src/interfaces/IEtherToken.sol";
@@ -31,10 +29,9 @@ import "./RariFundManager.sol";
  * @author Richter Brzeski <richter@rari.capital> (https://github.com/richtermb)
  * @dev This contract faciliates deposits to RariFundManager from exchanges and withdrawals from RariFundManager for exchanges.
  */
-contract RariFundProxy is Ownable, GSNRecipient {
+contract RariFundProxy is Ownable {
     using SafeMath for uint256;
     using SignedSafeMath for int256;
-    using ECDSA for bytes32;
     using SafeERC20 for IERC20;
 
     /**
@@ -47,7 +44,6 @@ contract RariFundProxy is Ownable, GSNRecipient {
      */
     constructor () public {
         Ownable.initialize(msg.sender);
-        GSNRecipient.initialize();
     }
 
     /**
@@ -59,11 +55,6 @@ contract RariFundProxy is Ownable, GSNRecipient {
      * @dev Contract of the RariFundManager.
      */
     RariFundManager public rariFundManager;
-
-    /**
-     * @dev Address of the trusted GSN signer.
-     */
-    address private _gsnTrustedSigner;
 
     /**
      * @dev Emitted when the RariFundManager of the RariFundProxy is set.
@@ -93,20 +84,6 @@ contract RariFundProxy is Ownable, GSNRecipient {
         _rariFundManagerContract = newContract;
         rariFundManager = RariFundManager(_rariFundManagerContract);
         emit FundManagerSet(newContract);
-    }
-
-    /**
-     * @dev Emitted when the trusted GSN signer of the RariFundProxy is set.
-     */
-    event GsnTrustedSignerSet(address newAddress);
-
-    /**
-     * @dev Sets or upgrades the trusted GSN signer of the RariFundProxy.
-     * @param newAddress The Ethereum address of the new trusted GSN signer.
-     */
-    function setGsnTrustedSigner(address newAddress) external onlyOwner {
-        _gsnTrustedSigner = newAddress;
-        emit GsnTrustedSignerSet(newAddress);
     }
 
     /**
@@ -142,23 +119,17 @@ contract RariFundProxy is Ownable, GSNRecipient {
         // Input validation
         require(_rariFundManagerContract != address(0), "Fund manager contract not set. This may be due to an upgrade of this proxy contract.");
         require(inputAmount > 0, "Input amount must be greater than 0.");
-        address outputErc20Contract = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-        require(inputErc20Contract != outputErc20Contract, "Input and output currencies cannot be the same.");
+        require(inputErc20Contract != 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, "Input and output currencies cannot be the same.");
         require(orders.length > 0, "Orders array is empty.");
         require(orders.length == signatures.length, "Length of orders and signatures arrays must be equal.");
         require(takerAssetFillAmount > 0, "Taker asset fill amount must be greater than 0.");
 
-        if (inputErc20Contract == address(0)) {
-            // Wrap ETH
-            _weth.deposit.value(inputAmount)();
-        } else {
-            // Transfer input tokens from msg.sender if not inputting ETH
-            IERC20(inputErc20Contract).safeTransferFrom(msg.sender, address(this), inputAmount); // The user must approve the transfer of tokens beforehand
-        }
+        // Transfer input tokens from msg.sender if not inputting ETH
+        IERC20(inputErc20Contract).safeTransferFrom(msg.sender, address(this), inputAmount); // The user must approve the transfer of tokens beforehand
 
         // Approve and exchange tokens
         if (inputAmount > ZeroExExchangeController.allowance(inputErc20Contract)) ZeroExExchangeController.approve(inputErc20Contract, uint256(-1));
-        uint256[2] memory filledAmounts = ZeroExExchangeController.marketSellOrdersFillOrKill(orders, signatures, takerAssetFillAmount, inputErc20Contract == address(0) ? msg.value.sub(inputAmount) : msg.value);
+        uint256[2] memory filledAmounts = ZeroExExchangeController.marketSellOrdersFillOrKill(orders, signatures, takerAssetFillAmount, msg.value);
 
         // Unwrap outputted WETH
         uint256 wethBalance = _weth.balanceOf(address(this));
@@ -192,6 +163,7 @@ contract RariFundProxy is Ownable, GSNRecipient {
     function withdrawAndExchange(uint256 inputAmount, address outputErc20Contract, LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 makerAssetFillAmount) public payable {
         // Input validation
         require(inputAmount > 0, "Input amount must be greater than 0.");
+        require(outputErc20Contract != 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, "Input and output currencies cannot be the same.");
         require(makerAssetFillAmount > 0, "Maker asset amount must be greater than 0.");
         require(orders.length > 0 && signatures.length > 0, "Must supply more than 0 orders and signatures.");
         require(orders.length == signatures.length, "Lengths of all orders and signatures arrays must be equal.");
@@ -223,60 +195,5 @@ contract RariFundProxy is Ownable, GSNRecipient {
             (bool success, ) = msg.sender.call.value(ethBalance)("");
             require(success, "Failed to transfer ETH to msg.sender after exchange.");
         }
-    }
-
-    /**
-     * @notice Deposits funds to RariFund in exchange for REFT (with GSN support).
-     * You may only deposit ETH.
-     * Please note that you must approve RariFundProxy to transfer at least `amount`.
-     * @return Boolean indicating success.
-     */
-    function deposit() payable external returns (bool) {
-        require(msg.value > 0, "Must deposit more than 0 eth");
-        return rariFundManager.depositTo.value(msg.value)(_msgSender());
-    }
-
-    /**
-     * @dev Ensures that only transactions with a trusted signature can be relayed through the GSN.
-     */
-    function acceptRelayedCall(
-        address relay,
-        address from,
-        bytes calldata encodedFunction,
-        uint256 transactionFee,
-        uint256 gasPrice,
-        uint256 gasLimit,
-        uint256 nonce,
-        bytes calldata approvalData,
-        uint256
-    ) external view returns (uint256, bytes memory) {
-        bytes memory blob = abi.encodePacked(
-            relay,
-            from,
-            encodedFunction,
-            transactionFee,
-            gasPrice,
-            gasLimit,
-            nonce, // Prevents replays on RelayHub
-            getHubAddr(), // Prevents replays in multiple RelayHubs
-            address(this) // Prevents replays in multiple recipients
-        );
-        if (keccak256(blob).toEthSignedMessageHash().recover(approvalData) != _gsnTrustedSigner) return _rejectRelayedCall(0);
-        if (_gsnTrustedSigner == address(0)) return _rejectRelayedCall(1);
-        return _approveRelayedCall();
-    }
-
-    /**
-     * @dev Code executed before processing a call relayed through the GSN.
-     */
-    function _preRelayedCall(bytes memory) internal returns (bytes32) {
-        // solhint-disable-previous-line no-empty-blocks
-    }
-
-    /**
-     * @dev Code executed after processing a call relayed through the GSN.
-     */
-    function _postRelayedCall(bytes memory, bool, uint256, bytes32) internal {
-        // solhint-disable-previous-line no-empty-blocks
     }
 }

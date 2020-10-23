@@ -17,6 +17,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.so
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
 
 import "@0x/contracts-exchange-libs/contracts/src/LibOrder.sol";
+import "@0x/contracts-erc20/contracts/src/interfaces/IEtherToken.sol";
 
 import "./lib/pools/DydxPoolController.sol";
 import "./lib/pools/CompoundPoolController.sol";
@@ -56,6 +57,11 @@ contract RariFundController is Ownable {
     address private _rariFundRebalancerAddress;
 
     /**
+     * @dev Enum for liqudity pools supported by Rari.
+     */
+    enum LiquidityPool { dYdX, Compound, KeeperDAO, Aave }
+
+    /**
      * @dev Maps arrays of supported pools to currency codes.
      */
     uint8[] private _supportedPools;
@@ -66,14 +72,9 @@ contract RariFundController is Ownable {
     address constant private COMP_TOKEN = 0xc00e94Cb662C3520282E6f5717214004A7f26888;
 
     /**
-     * @dev WETH token address.
+     * @dev WETH token contract.
      */
-    address constant private WETH_CONTRACT = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-
-    /**
-     * @dev WETH token abstraction.
-     */
-    IEtherToken constant private _weth = IEtherToken(WETH_CONTRACT);
+    IEtherToken constant private _weth = IEtherToken(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
 
     /**
      * @dev Caches the balances for each pool, with the sum cached at the end
@@ -303,6 +304,17 @@ contract RariFundController is Ownable {
     }
 
     /**
+     * @dev Enum for pool allocation action types supported by Rari.
+     */
+    enum PoolAllocationAction { Deposit, Withdraw, WithdrawAll }
+
+    /**
+     * @dev Emitted when a deposit or withdrawal is made.
+     * Note that `amount` is not set for `WithdrawAll` actions.
+     */
+    event PoolAllocation(PoolAllocationAction indexed action, LiquidityPool indexed pool, uint256 amount);
+
+    /**
      * @dev Deposits funds to the specified pool.
      * @param pool The index of the pool.
      * @return Boolean indicating success.
@@ -315,6 +327,7 @@ contract RariFundController is Ownable {
         else if (pool == 3) AavePoolController.deposit(amount, _aaveReferralCode);
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = true; 
+        emit PoolAllocation(PoolAllocationAction.Deposit, LiquidityPool(pool), amount);
         return true;
     }
 
@@ -329,6 +342,7 @@ contract RariFundController is Ownable {
         else if (pool == 2) require(KeeperDaoPoolController.withdraw(amount), "Withdrawal from KeeeperDao failed.");
         else if (pool == 3) AavePoolController.withdraw(amount);
         else revert("Invalid pool index.");
+        emit PoolAllocation(PoolAllocationAction.Withdraw, LiquidityPool(pool), amount);
     }
 
     /**
@@ -383,6 +397,7 @@ contract RariFundController is Ownable {
         else if (pool == 3) require(AavePoolController.withdrawAll(), "Withdrawal from Aave failed.");
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = false;
+        emit PoolAllocation(PoolAllocationAction.WithdrawAll, LiquidityPool(pool), 0);
         return true;
     }
 
@@ -437,14 +452,17 @@ contract RariFundController is Ownable {
         return true;
     }
 
+    /**
+     * @dev Emitted when COMP is exchanged to ETH via 0x.
+     */
+    event CompToEthTrade(uint256 inputAmount, uint256 outputAmount);
 
     /**
-     * @dev Approves tokens to 0x without spending gas on every deposit.
+     * @dev Approves COMP to 0x without spending gas on every deposit.
      * @param amount The amount of tokens to be approved.
      * @return Boolean indicating success.
      */
     function approveCompTo0x(uint256 amount) external fundEnabled onlyRebalancer returns (bool) {
-        // COMP only
         require(ZeroExExchangeController.approve(COMP_TOKEN, amount), "Approval of tokens to 0x failed.");
         return true;
     }
@@ -455,24 +473,51 @@ contract RariFundController is Ownable {
      * @param orders The limit orders to be filled in ascending order of price.
      * @param signatures The signatures for the orders.
      * @param takerAssetFillAmount The amount of the taker asset to sell (excluding taker fees).
-     * @return Boolean indicating success.
      */
-    function marketSell0xOrdersFillOrKill(LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 takerAssetFillAmount) public payable fundEnabled onlyRebalancer returns (bool) {
-        ZeroExExchangeController.marketSellOrdersFillOrKill(orders, signatures, takerAssetFillAmount, msg.value);
-        uint256 ethBalance = address(this).balance;
-        if (ethBalance > 0) {
-            (bool success, ) = msg.sender.call.value(ethBalance)("");
-            require(success, "Failed to transfer ETH.");
+    function marketSell0xOrdersFillOrKill(LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 takerAssetFillAmount) public payable fundEnabled onlyRebalancer {
+        // Exchange COMP to ETH
+        uint256 ethBalanceBefore = address(this).balance;
+        uint256[2] memory filledAmounts = ZeroExExchangeController.marketSellOrdersFillOrKill(orders, signatures, takerAssetFillAmount, msg.value);
+        uint256 ethBalanceAfter = address(this).balance;
+        emit CompToEthTrade(filledAmounts[0], filledAmounts[1]);
+
+        // Unwrap outputted WETH
+        uint256 wethBalance = _weth.balanceOf(address(this));
+        require(wethBalance > 0, "No WETH outputted.");
+        _weth.withdraw(wethBalance);
+        
+        // Refund unspent ETH protocol fee
+        uint256 refund = ethBalanceAfter.sub(ethBalanceBefore.sub(msg.value));
+
+        if (refund > 0) {
+            (bool success, ) = msg.sender.call.value(refund)("");
+            require(success, "Failed to refund unspent ETH protocol fee.");
         }
-        return true;
     }
 
     /**
-     * Unwraps all WETH currently owned by the Controller.
+     * Unwraps all WETH currently owned by the fund controller.
      */
-    function unwrapAllWeth() external onlyRebalancer {
+    function unwrapAllWeth() external fundEnabled onlyRebalancer {
         uint256 wethBalance = _weth.balanceOf(address(this));
         require(wethBalance > 0, "No WETH to withdraw.");
         _weth.withdraw(wethBalance);
+    }
+
+    /**
+     * @notice Returns the fund controller's contract ETH balance and balance of each pool (checking `_poolsWithFunds` first to save gas).
+     * @dev Ideally, we can add the `view` modifier, but Compound's `getUnderlyingBalance` function (called by `getPoolBalance`) potentially modifies the state.
+     * @return The fund controller ETH contract balance, an array of pool indexes, and an array of corresponding balances for each pool.
+     */
+    function getRawFundBalances() external returns (uint256, uint8[] memory, uint256[] memory) {
+        uint8[] memory pools = new uint8[](_supportedPools.length);
+        uint256[] memory poolBalances = new uint256[](_supportedPools.length);
+
+        for (uint256 i = 0; i < _supportedPools.length; i++) {
+            pools[i] = _supportedPools[i];
+            poolBalances[i] = getPoolBalance(_supportedPools[i]);
+        }
+
+        return (address(this).balance, pools, poolBalances);
     }
 }

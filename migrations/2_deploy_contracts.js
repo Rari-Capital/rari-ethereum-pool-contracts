@@ -70,8 +70,8 @@ module.exports = async function(deployer, network, accounts) {
   // Set interest fee master beneficiary
   await rariFundManager.setInterestFeeMasterBeneficiary(["live", "live-fork"].indexOf(network) >= 0 ? process.env.LIVE_FUND_INTEREST_FEE_MASTER_BENEFICIARY : process.env.DEVELOPMENT_ADDRESS);
 
-  // Set interest fee rate to 20%
-  await rariFundManager.setInterestFeeRate(web3.utils.toBN(0.2e18));
+  // Set interest fee rate to 9.5%
+  await rariFundManager.setInterestFeeRate(web3.utils.toBN(0.095e18));
 
   // Link libraries to RariFundProxy
   await deployer.link(ZeroExExchangeController, RariFundProxy);
@@ -83,15 +83,14 @@ module.exports = async function(deployer, network, accounts) {
   await rariFundManager.setFundProxy(RariFundProxy.address);
   await rariFundProxy.setFundManager(RariFundManager.address);
 
-  // Set GSN trusted signer
-  await rariFundProxy.setGsnTrustedSigner(["live", "live-fork"].indexOf(network) >= 0 ? process.env.LIVE_FUND_GSN_TRUSTED_SIGNER : process.env.DEVELOPMENT_ADDRESS);
-
   if (["live", "live-fork"].indexOf(network) >= 0) {
     // Live network: transfer ownership of deployed contracts from the deployer to the owner
     await rariFundController.transferOwnership(process.env.LIVE_FUND_OWNER);
     await rariFundManager.transferOwnership(process.env.LIVE_FUND_OWNER);
     await rariFundToken.addMinter(process.env.LIVE_FUND_OWNER);
     await rariFundToken.renounceMinter();
+    await rariFundToken.addPauser(process.env.LIVE_FUND_OWNER);
+    await rariFundToken.renouncePauser();
     await rariFundProxy.transferOwnership(process.env.LIVE_FUND_OWNER);
     await admin.transferProxyAdminOwnership(process.env.LIVE_FUND_OWNER);
   }
