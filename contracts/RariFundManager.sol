@@ -61,7 +61,7 @@ contract RariFundManager is Initializable, Ownable {
     /**
      * @dev Contract for the REPT tokem.
      */
-    RariFundToken private rariFundToken;
+    RariFundToken public rariFundToken;
 
     /**
      * @dev Address of the RariFundProxy.
@@ -512,7 +512,7 @@ contract RariFundManager is Initializable, Ownable {
         uint256 reptAmount = getREPTBurnAmount(from, amount);
         
         _netDeposits = _netDeposits.sub(int256(amount));
-        rariFundToken.burnFrom(from, reptAmount); // The user must approve the burning of tokens beforehand
+        rariFundToken.fundManagerBurnFrom(from, reptAmount); // The user must approve the burning of tokens beforehand
         
         (bool senderSuccess, ) = msg.sender.call.value(amount)(""); // Transfer 'amount' in ETH to the sender
         require(senderSuccess, "Failed to transfer ETH to sender.");

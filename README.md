@@ -28,25 +28,11 @@ To deploy the contracts to your private mainnet fork: `truffle migrate --network
 
 To run automated tests on the contracts on your private mainnet fork, run `npm test` (which runs `npm run ganache` in the background for you).
 
-If you'd like to test gasless deposits via `RariFundProxy.deposit` via the Gas Station Network:
-
-* Download `https://github.com/OpenZeppelin/openzeppelin-gsn-provider/blob/master/bin/gsn-relay` to `bin/gsn-relay` and set permissions with `chmod +x bin/gsn-relay`.
-* Making sure `npx` is installed, run `npm dev-gsn`.
-* Fund `RariFundProxy` using `npx @openzeppelin/gsn-helpers fund-recipient --recipient $RARI_FUND_PROXY_ADDRESS -n http://localhost:8546 -f $FROM_ADDRESS` or [this tool](https://www.opengsn.org/recipients) (or manually send ETH to `RelayHub(0xD216153c06E857cD7f72665E0aF1d7D82172F494).depositFor(address target)`).
-* Run `rari-gsn-signer` with `pm2 start ecosystem.config.js` after configuring `ecosystem.config.js`.
-* *Please note that as of now, the web client and the GSN signer are configured so that gas is paid only for deposits of least 250 DAI/USDC/USDT by first-time users.*
-
 ## Live deployment
 
-In `.env`, configure `LIVE_DEPLOYER_ADDRESS`, `LIVE_DEPLOYER_PRIVATE_KEY`, `LIVE_WEB3_PROVIDER_URL`, `LIVE_GAS_PRICE` (ideally, use the "fast" price listed by [ETH Gas Station](https://www.ethgasstation.info/)), `LIVE_FUND_OWNER`, `LIVE_FUND_REBALANCER`, `LIVE_FUND_INTEREST_FEE_MASTER_BENEFICIARY`, and `LIVE_FUND_GSN_TRUSTED_SIGNER` to deploy to the mainnet.
+In `.env`, configure `LIVE_DEPLOYER_ADDRESS`, `LIVE_DEPLOYER_PRIVATE_KEY`, `LIVE_WEB3_PROVIDER_URL`, `LIVE_GAS_PRICE` (ideally, use the "fast" price listed by [ETH Gas Station](https://www.ethgasstation.info/)), `LIVE_FUND_OWNER`, `LIVE_FUND_REBALANCER`, and `LIVE_FUND_INTEREST_FEE_MASTER_BENEFICIARY` to deploy to the mainnet.
 
 Then, migrate: `truffle migrate --network live`
-
-If you'd like to provide gasless deposits via `RariFundProxy.deposit` via the Gas Station Network:
-
-* Fund `RariFundProxy` using `npx @openzeppelin/gsn-helpers fund-recipient --recipient $RARI_FUND_PROXY_ADDRESS -n $ETHEREUM_NODE_URL -f $FROM_ADDRESS` or [this tool](https://www.opengsn.org/recipients) (or manually send ETH to `RelayHub(0xD216153c06E857cD7f72665E0aF1d7D82172F494).depositFor(address target)`).
-* Run `rari-gsn-signer` with `pm2 start ecosystem.config.js --env production` after configuring `ecosystem.config.js`.
-* *Please note that as of now, the web client and the GSN signer are configured so that gas is paid only for deposits of least 250 DAI/USDC/USDT by first-time users.*
 
 ## Credits
 
