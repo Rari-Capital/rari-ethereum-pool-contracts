@@ -25,13 +25,13 @@
     "@openzeppelin/truffle-upgrades": "^1.1.1",
     "@truffle/hdwallet-provider": "^1.0.36",
     "dotenv": "^8.2.0",
-    "truffle": "^5.1.45"
+    "truffle": "^5.1.45",
+    "ganache-core": "^2.13.0"
   },
   "dependencies": {
     "@0x/contracts-exchange": "^3.2.5",
     "@0x/contracts-exchange-libs": "^4.3.5",
     "@openzeppelin/contracts-ethereum-package": "^2.5.0",
-    "@openzeppelin/upgrades": "^2.8.0",
-    "ganache-core": "^2.13.0"
+    "@openzeppelin/upgrades": "^2.8.0"
   }
 }
