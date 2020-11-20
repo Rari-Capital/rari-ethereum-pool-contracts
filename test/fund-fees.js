@@ -7,14 +7,19 @@
  * This license is liable to change at any time at the sole discretion of David Lucid of Rari Capital, Inc.
  */
 
-const erc20Abi = require('./abi/ERC20.json');
 const cErc20DelegatorAbi = require('./abi/CErc20Delegator.json');
 
 const pools = require('./fixtures/pools.json');
 
 const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
-const RariEthFundToken = artifacts.require("RariFundToken");
+const RariFundToken = artifacts.require("RariFundToken");
+
+if (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0) {
+  RariFundController.address = process.env.UPGRADE_FUND_CONTROLLER_ADDRESS;
+  RariFundManager.address = process.env.UPGRADE_FUND_MANAGER_ADDRESS;
+  RariFundToken.address = process.env.UPGRADE_FUND_TOKEN_ADDRESS;
+}
 
 // Tries maximum of 2 times to accrue interest from Compound
 async function forceAccrueCompound(account) {
@@ -33,9 +38,9 @@ async function forceAccrueCompound(account) {
 // These tests expect the owner and the fund rebalancer of RariFundController and RariFundManager to be set to accounts[0]
 contract("RariFundManager", accounts => {
   it("should deposit to pools, set the interest fee rate, wait for interest, set the master beneficiary of interest fees, deposit fees, wait for interest again, and withdraw fees", async () => {
-    let fundControllerInstance = await RariFundController.deployed();
-    let fundManagerInstance = await RariFundManager.deployed();
-    let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariEthFundToken.at(process.env.UPGRADE_FUND_TOKEN) : RariEthFundToken.deployed());
+    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
+    let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
+    let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundToken.at(process.env.UPGRADE_FUND_TOKEN_ADDRESS) : RariFundToken.deployed());
 
     var amountBN = web3.utils.toBN(1e18);
 

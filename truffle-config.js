@@ -14,7 +14,9 @@ module.exports = {
     },
     live: {
       provider: function() {
-        return new HDWalletProvider([process.env.LIVE_DEPLOYER_PRIVATE_KEY], process.env.LIVE_WEB3_PROVIDER_URL);
+        var keys = [process.env.LIVE_DEPLOYER_PRIVATE_KEY];
+        if (process.env.LIVE_UPGRADE_FUND_OWNER_PRIVATE_KEY) keys.push(process.env.LIVE_UPGRADE_FUND_OWNER_PRIVATE_KEY);
+        return new HDWalletProvider(keys, process.env.LIVE_WEB3_PROVIDER_URL);
       },
       network_id: 1,
       gasPrice: parseInt(process.env.LIVE_GAS_PRICE),

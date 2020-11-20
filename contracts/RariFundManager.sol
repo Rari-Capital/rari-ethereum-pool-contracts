@@ -322,8 +322,8 @@ contract RariFundManager is Initializable, Ownable {
         if (!rariFundController.hasETHInPool(pool)) return 0;
 
         if (_cachePoolBalance) {
-                if (_poolBalanceCache[pool] == 0) _poolBalanceCache[pool] = rariFundController._getPoolBalance(pool);
-                return _poolBalanceCache[pool];
+            if (_poolBalanceCache[pool] == 0) _poolBalanceCache[pool] = rariFundController._getPoolBalance(pool);
+            return _poolBalanceCache[pool];
         }
 
         return rariFundController._getPoolBalance(pool);
@@ -471,7 +471,7 @@ contract RariFundManager is Initializable, Ownable {
      */
     function getREPTBurnAmount(address from, uint256 amount) internal returns (uint256) {
         uint256 reptTotalSupply = rariFundToken.totalSupply();
-        uint256 fundBalance = getFundBalance() + address(this).balance; // accounts for funds currently inside RariFundManager
+        uint256 fundBalance = getFundBalance();
         require(fundBalance > 0, "Fund balance is zero.");
         uint256 reptAmount = amount.mul(reptTotalSupply).div(fundBalance); // check again
         require(reptAmount <= rariFundToken.balanceOf(from), "Your REPT balance is too low for a withdrawal of this amount.");
@@ -492,7 +492,6 @@ contract RariFundManager is Initializable, Ownable {
 
         // Check contract balance of ETH and withdraw from pools if necessary
         uint256 contractBalance = _rariFundControllerContract.balance;
-        if (contractBalance > 0) rariFundController.withdrawToManager(contractBalance);
 
         for (uint256 i = 0; i < _supportedPools.length; i++) {
             if (contractBalance >= amount) break;
@@ -501,7 +500,7 @@ contract RariFundManager is Initializable, Ownable {
             if (poolBalance <= 0) continue;
             uint256 amountLeft = amount.sub(contractBalance);
             uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
-            require(rariFundController.withdrawFromPoolKnowingBalanceToManager(pool, poolAmount, poolBalance), "Pool withdrawal failed.");
+            require(rariFundController.withdrawFromPoolKnowingBalance(pool, poolAmount, poolBalance), "Pool withdrawal failed.");
             _poolBalanceCache[pool] = poolBalance.sub(poolAmount);
             contractBalance = contractBalance.add(poolAmount);
         }
@@ -511,19 +510,12 @@ contract RariFundManager is Initializable, Ownable {
         // Calculate REPT to burn
         uint256 reptAmount = getREPTBurnAmount(from, amount);
         
+        // Update net deposits, burn REPT, transfer ETH to user, and emit event
         _netDeposits = _netDeposits.sub(int256(amount));
-        rariFundToken.fundManagerBurnFrom(from, reptAmount); // The user must approve the burning of tokens beforehand
-        
+        rariFundToken.fundManagerBurnFrom(from, reptAmount);
+        rariFundController.withdrawToManager(amount);
         (bool senderSuccess, ) = msg.sender.call.value(amount)(""); // Transfer 'amount' in ETH to the sender
         require(senderSuccess, "Failed to transfer ETH to sender.");
-
-        uint256 balance = address(this).balance;
-
-        if (balance > 0) {
-            (bool controllerSuccess, ) = _rariFundControllerContract.call.value(balance)(""); // Transfer any leftover eth back to fund controller
-            require(controllerSuccess, "Failed to transfer remaining ETH to RariFundController.");
-        }
-        
         emit Withdrawal(from, msg.sender, amount, reptAmount);
 
         // Update RGT distribution speeds
@@ -713,11 +705,8 @@ contract RariFundManager is Initializable, Ownable {
      */
     function withdrawFees() external fundEnabled onlyRebalancer returns (bool) {
         require(_interestFeeMasterBeneficiary != address(0), "Master beneficiary cannot be the zero address.");
-
         uint256 amount = getInterestFeesUnclaimed();
-
         require(amount > 0, "No new fees are available to claim.");
-
         _interestFeesClaimed = _interestFeesClaimed.add(amount);
         rariFundController.withdrawToManager(amount);
         (bool success, ) = _interestFeeMasterBeneficiary.call.value(amount)("");
