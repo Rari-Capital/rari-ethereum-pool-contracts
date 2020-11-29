@@ -13,12 +13,16 @@ const pools = require('./fixtures/pools.json');
 
 const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
-const RariFundToken = artifacts.require("RariFundToken");
+
+if (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0) {
+  RariFundController.address = process.env.UPGRADE_FUND_CONTROLLER_ADDRESS;
+  RariFundManager.address = process.env.UPGRADE_FUND_MANAGER_ADDRESS;
+}
 
 contract("RariFundController, RariFundManager", accounts => {
   it("should deposit to the fund, approve deposits to dYdX with weth, and deposit to pools via RariFundController.depositToPool", async () => {
-    let fundControllerInstance = await RariFundController.deployed();
-    let fundManagerInstance = await RariFundManager.deployed();
+    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
+    let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
 
     // Approve WETH to dYdX and kEther to KeeperDAO
     await fundControllerInstance.approveWethToDydxPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
@@ -40,7 +44,7 @@ contract("RariFundController, RariFundManager", accounts => {
   });
 
   it("should withdraw half from all pools via RariFundController.withdrawFromPool", async () => {
-    let fundControllerInstance = await RariFundController.deployed();
+    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
 
     var amountBN = web3.utils.toBN(1e18);
 
@@ -57,7 +61,7 @@ contract("RariFundController, RariFundManager", accounts => {
   });
 
   it("should withdraw everything from all pools via RariFundController.withdrawAllFromPool", async () => {
-    let fundControllerInstance = await RariFundController.deployed();
+    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
     
     // For each currency of each pool:
     for (const pool of [0, 1, 2, 3]) {

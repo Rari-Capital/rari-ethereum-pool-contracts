@@ -14,7 +14,7 @@ As follows are all deployments of our smart contracts on the Ethereum mainnet. S
 
 `RariFundManager` is the Rari Ethereum Pool's main contract: it handles deposits, withdrawals, ETH balances, interest, fees, etc.
 
-**v1.0.0**: `0xD6e194aF3d9674b62D1b30Ec676030C23961275e`
+**v1.1.0**: `0xD6e194aF3d9674b62D1b30Ec676030C23961275e`
 
 ### `RariFundToken`
 
@@ -27,3 +27,9 @@ The Rari Ethereum Pool Token (RSPT) is an ERC20 token used to internally account
 `RariFundProxy` includes wrapper functions built on top of `RariFundManager`: exchange and deposit, withdraw and exchange.
 
 **v1.0.0**: `0xa3cc9e4B9784c80a05B3Af215C32ff223C3ebE5c`
+
+## Older Versions
+
+### `RariFundManager`
+
+* **v1.0.0**: `0xD6e194aF3d9674b62D1b30Ec676030C23961275e`
