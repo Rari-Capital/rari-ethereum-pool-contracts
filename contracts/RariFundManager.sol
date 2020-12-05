@@ -350,7 +350,7 @@ contract RariFundManager is Initializable, Ownable {
      * @notice Returns the fund's raw total balance (all REPT holders' funds + all unclaimed fees).
      * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `RariFundController.getPoolBalance`) potentially modifies the state.
      */
-    function getRawFundBalance() public returns (uint256) {
+    function getRawFundBalance() public fundEnabled returns (uint256) {
         uint256 totalBalance = _rariFundControllerContract.balance; // ETH balance in fund controller contract
 
         for (uint256 i = 0; i < _supportedPools.length; i++)
@@ -500,7 +500,7 @@ contract RariFundManager is Initializable, Ownable {
             if (poolBalance <= 0) continue;
             uint256 amountLeft = amount.sub(contractBalance);
             uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
-            require(rariFundController.withdrawFromPoolKnowingBalance(pool, poolAmount, poolBalance), "Pool withdrawal failed.");
+            rariFundController.withdrawFromPoolKnowingBalance(pool, poolAmount, poolBalance);
             _poolBalanceCache[pool] = poolBalance.sub(poolAmount);
             contractBalance = contractBalance.add(poolAmount);
         }

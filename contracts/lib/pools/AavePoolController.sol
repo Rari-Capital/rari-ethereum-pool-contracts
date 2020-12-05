@@ -50,12 +50,10 @@ library AavePoolController {
      */
     AToken constant private aETH = AToken(AETH_CONTRACT);
 
-
     /**
      * @dev Ethereum address abstraction
      */
      address constant private ETHEREUM_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
-
      
     /**
      * @dev Returns the fund's balance of the specified currency in the Aave pool.
@@ -85,12 +83,8 @@ library AavePoolController {
 
     /**
      * @dev Withdraws all funds from the Aave pool.
-     * @return Boolean indicating success.
      */
-    function withdrawAll() external returns (bool) {
-        uint256 balance = aETH.balanceOf(address(this));
-        if (balance <= 0) return false;
-        aETH.redeem(balance);
-        return true;
+    function withdrawAll() external {
+        aETH.redeem(uint256(-1));
     }
 }

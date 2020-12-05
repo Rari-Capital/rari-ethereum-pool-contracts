@@ -28,7 +28,7 @@ library KeeperDaoPoolController {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    address payable constant private KEEPERDAO_CONTRACT = 0xEB7e15B4E38CbEE57a98204D05999C3230d36348;
+    address payable constant private KEEPERDAO_CONTRACT = 0x53463cd0b074E5FDafc55DcE7B1C82ADF1a43B2E;
     ILiquidityPool constant private _liquidityPool = ILiquidityPool(KEEPERDAO_CONTRACT);
 
     // KeeperDAO's representation of ETH
@@ -42,45 +42,35 @@ library KeeperDaoPoolController {
     }
 
     /**
-     * @dev Approves tokens to KeeperDAO to burn without spending gas on every deposit.
-     * @param amount Amount of the specified token to approve to KeeperDAO.
-     * @return Boolean indicating success.
+     * @dev Approves kEther to KeeperDAO to burn without spending gas on every deposit.
+     * @param amount Amount of kEther to approve to KeeperDAO.
      */
-    function approve(uint256 amount) external returns (bool) {
+    function approve(uint256 amount) external {
         IKToken kEther = _liquidityPool.kToken(ETHEREUM_ADDRESS);
         uint256 allowance = kEther.allowance(address(this), KEEPERDAO_CONTRACT);
-        if (allowance == amount) return true;
+        if (allowance == amount) return;
         if (amount > 0 && allowance > 0) kEther.approve(KEEPERDAO_CONTRACT, 0);
         kEther.approve(KEEPERDAO_CONTRACT, amount);
-        return true;
     }
 
     /**
      * @dev Deposits funds to the KeeperDAO pool..
      * @param amount The amount of ETH to be deposited.
-     * @return Boolean indicating success.
      */
-    function deposit(uint256 amount) external returns (bool) {
+    function deposit(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0.");
-
         _liquidityPool.deposit.value(amount)(ETHEREUM_ADDRESS, amount);
-
-        return true;
     }
 
     /**
      * @dev Withdraws funds from the KeeperDAO pool.
      * @param amount The amount of ETH to be withdrawn.
-     * @return Boolean indicating success.
      */
-    function withdraw(uint256 amount) external returns (bool) {
+    function withdraw(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0.");
-
         _liquidityPool.withdraw(address(uint160(address(this))), 
                                 _liquidityPool.kToken(ETHEREUM_ADDRESS), 
                                 calculatekEtherWithdrawAmount(amount));
-
-        return true;
     }
 
     /**
@@ -89,10 +79,9 @@ library KeeperDaoPoolController {
      */
     function withdrawAll() external returns (bool) {
         IKToken kEther = _liquidityPool.kToken(ETHEREUM_ADDRESS);
-        uint256 entireBalance = kEther.balanceOf(address(this));
-
-        _liquidityPool.withdraw(address(uint160(address(this))), kEther, entireBalance);
-
+        uint256 balance = kEther.balanceOf(address(this));
+        if (balance <= 0) return false;
+        _liquidityPool.withdraw(address(uint160(address(this))), kEther, balance);
         return true;
     }
 

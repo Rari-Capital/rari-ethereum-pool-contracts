@@ -47,24 +47,21 @@ library DydxPoolController {
     }
 
     /**
-     * @dev Approves tokens to dYdX without spending gas on every deposit.
-     * @param amount Amount of the specified token to approve to dYdX.
-     * @return Boolean indicating success.
+     * @dev Approves WETH to dYdX without spending gas on every deposit.
+     * @param amount Amount of the WETH to approve to dYdX.
      */
-    function approve(uint256 amount) external returns (bool) {
+    function approve(uint256 amount) external {
         uint256 allowance = _weth.allowance(address(this), SOLO_MARGIN_CONTRACT);
-        if (allowance == amount) return true;
+        if (allowance == amount) return;
         if (amount > 0 && allowance > 0) _weth.approve(SOLO_MARGIN_CONTRACT, 0);
         _weth.approve(SOLO_MARGIN_CONTRACT, amount);
-        return true;
     }
 
     /**
-     * @dev Deposits funds to the dYdX pool. Assumes that you have already approved >= the amount to dYdX.
-     * @param amount The amount of tokens to be deposited.
-     * @return Boolean indicating success.
+     * @dev Deposits funds to the dYdX pool. Assumes that you have already approved >= the amount of WETH to dYdX.
+     * @param amount The amount of ETH to be deposited.
      */
-    function deposit(uint256 amount) external returns (bool) {
+    function deposit(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0.");
 
         _weth.deposit.value(amount)();
@@ -91,16 +88,13 @@ library DydxPoolController {
         actions[0] = action;
 
         _soloMargin.operate(accounts, actions);
-
-        return true;
     }
 
     /**
      * @dev Withdraws funds from the dYdX pool.
-     * @param amount The amount of tokens to be withdrawn.
-     * @return Boolean indicating success.
+     * @param amount The amount of ETH to be withdrawn.
      */
-    function withdraw(uint256 amount) external returns (bool) {
+    function withdraw(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0.");
 
         Account.Info memory account = Account.Info(address(this), 0);
@@ -126,17 +120,13 @@ library DydxPoolController {
 
         _soloMargin.operate(accounts, actions);
 
-        _weth.withdraw(amount); // Convert to ETH
-
-        return true;
+        _weth.withdraw(amount); // Convert WETH to ETH
     }
 
     /**
      * @dev Withdraws all funds from the dYdX pool.
-     * @return Boolean indicating success.
      */
-    function withdrawAll() external returns (bool) {
-
+    function withdrawAll() external {
         Account.Info memory account = Account.Info(address(this), 0);
         Account.Info[] memory accounts = new Account.Info[](1);
         accounts[0] = account;
@@ -160,8 +150,6 @@ library DydxPoolController {
 
         _soloMargin.operate(accounts, actions);
 
-        _weth.withdraw(_weth.balanceOf(address(this))); // Convert to ETH
-
-        return true;
+        _weth.withdraw(_weth.balanceOf(address(this))); // Convert WETH to ETH
     }
 }

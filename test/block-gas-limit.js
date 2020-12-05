@@ -13,21 +13,20 @@ const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
 
 if (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0) {
-  RariFundController.address = process.env.UPGRADE_FUND_CONTROLLER_ADDRESS;
   RariFundManager.address = process.env.UPGRADE_FUND_MANAGER_ADDRESS;
 }
 
 // These tests expect the owner and the fund rebalancer of RariFundManager to be set to accounts[0]
 contract("RariFundController", accounts => {
   it("should put upgrade the FundController with funds in all pools without using too much gas", async () => {
-    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
+    let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
 
     // Check balance before deposits
     let oldRawFundBalance = await fundManagerInstance.getRawFundBalance.call();
 
     // Tally up ETH deposited
-    var totalEthBN = web3.utils.toBN(4e18);
+    var totalEthBN = web3.utils.toBN(5e18);
     
     // For each currency of each pool, deposit to fund and deposit to pool
     var amountBN = web3.utils.toBN(1e18);
@@ -39,7 +38,7 @@ contract("RariFundController", accounts => {
     // deposit 4 ETH
     await fundManagerInstance.deposit({ from: accounts[0], value: totalEthBN });
     
-    for (const pool of [0, 1, 2, 3]) {
+    for (const pool of [0, 1, 2, 3, 4]) {
         // deeposit 1 ETH to each pool
         await fundControllerInstance.depositToPool(pool, amountBN, { from: accounts[0] });
     }
@@ -58,12 +57,16 @@ contract("RariFundController", accounts => {
     
     // Assert it uses no more than 5 million gas
     assert.isAtMost(result.receipt.gasUsed, 5000000);
+
     // Set new FundController address
     await fundManagerInstance.setFundController(newFundControllerInstance.address, { from: accounts[0] });
 
+    // Re-enable fund manager
+    await fundManagerInstance.enableFund({ from: accounts[0] });
+
     // Check balance of fund with upgraded FundController, accounting for dust lost in conversions
     let newRawFundBalance = await fundManagerInstance.getRawFundBalance.call();
-    assert(newRawFundBalance.gte(oldRawFundBalance.add(totalEthBN.mul(web3.utils.toBN(9999)).div(web3.utils.toBN(10000)))));
-
+    let keeperDaoDepositFeeBN = amountBN.muln(64).divn(10000);
+    assert(newRawFundBalance.gte(oldRawFundBalance.add(totalEthBN.sub(keeperDaoDepositFeeBN).mul(web3.utils.toBN(9999)).div(web3.utils.toBN(10000)))));
   });
 });
