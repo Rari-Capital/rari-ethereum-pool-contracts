@@ -85,11 +85,12 @@ contract RariFundManager is Initializable, Ownable {
         // Initialize base contracts
         Ownable.initialize(msg.sender);
 
-        // Add supported currencies
+        // Add supported pools
         addPool(0); // dYdX
         addPool(1); // Compound
         addPool(2); // KeeperDAO
         addPool(3); // Aave
+        addPool(4); // Alpha
 
         // Initialize raw fund balance cache (can't set initial values in field declarations with proxy storage)
         _rawFundBalanceCache = -1;
