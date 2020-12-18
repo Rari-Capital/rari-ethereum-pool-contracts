@@ -27,5 +27,12 @@
                 "aETHAddress": "0x3a3A65aAb0dd2A17E3F1947bA16138cd37d08c04"
             }
         }
+    },
+    "Alpha": {
+        "currencies": {
+            "ETH": {
+                "ibETHAddress": "0x67B66C99D3Eb37Fa76Aa3Ed1ff33E8e39F0b9c7A"
+            }
+        }
     }
 }
