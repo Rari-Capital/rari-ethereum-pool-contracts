@@ -30,11 +30,29 @@ library DydxPoolController {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
+    /**
+     * @dev dYdX SoloMargin contract address.
+     */
     address constant private SOLO_MARGIN_CONTRACT = 0x1E0447b19BB6EcFdAe1e4AE1694b0C3659614e4e;
+
+    /**
+     * @dev dYdX SoloMargin contract object.
+     */
     SoloMargin constant private _soloMargin = SoloMargin(SOLO_MARGIN_CONTRACT);
+
+    /**
+     * @dev The market ID for WETH on dYdX.
+     */
     uint256 constant private WETH_MARKET_ID = 0;
 
+    /**
+     * @dev The WETH contract address.
+     */
     address constant private WETH_CONTRACT = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+
+    /**
+     * @dev The WETH contract object.
+     */
     IEtherToken constant private _weth = IEtherToken(WETH_CONTRACT);
 
     /**

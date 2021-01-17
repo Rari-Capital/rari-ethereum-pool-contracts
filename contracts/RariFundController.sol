@@ -24,6 +24,8 @@ import "./lib/pools/CompoundPoolController.sol";
 import "./lib/pools/KeeperDaoPoolController.sol";
 import "./lib/pools/AavePoolController.sol";
 import "./lib/pools/AlphaPoolController.sol";
+import "./lib/pools/HarvestPoolController.sol";
+import "./lib/pools/CreamPoolController.sol";
 import "./lib/exchanges/ZeroExExchangeController.sol";
 
 /**
@@ -60,7 +62,7 @@ contract RariFundController is Ownable {
     /**
      * @dev Enum for liqudity pools supported by Rari.
      */
-    enum LiquidityPool { dYdX, Compound, KeeperDAO, Aave, Alpha }
+    enum LiquidityPool { dYdX, Compound, KeeperDAO, Aave, Alpha, Harvest, Cream }
 
     /**
      * @dev Maps arrays of supported pools to currency codes.
@@ -76,6 +78,11 @@ contract RariFundController is Ownable {
      * @dev ROOK token address.
      */
     address constant private ROOK_TOKEN = 0xfA5047c9c78B8877af97BDcb85Db743fD7313d4a;
+
+    /**
+     * @dev FARM token address.
+     */
+    address constant private FARM_TOKEN = 0xa0246c9032bC3A600820415aE600c6388619A14D;
 
     /**
      * @dev WETH token contract.
@@ -98,6 +105,8 @@ contract RariFundController is Ownable {
         addPool(2); // KeeperDAO
         addPool(3); // Aave
         addPool(4); // Alpha
+        addPool(5); // Harvest
+        addPool(6); // Cream
     }
 
     /**
@@ -208,6 +217,19 @@ contract RariFundController is Ownable {
         }
     }
 
+    /**
+     * @dev Sets or upgrades RariFundController by forwarding farmed governance tokens from the old to the new.
+     * @param newContract The address of the new RariFundController contract.
+     * @param erc20Contract The address of the farmed governance token contract.
+     */
+    function _upgradeFundController(address payable newContract, address erc20Contract) external onlyOwner {
+        require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
+        require(erc20Contract == COMP_TOKEN || erc20Contract == ROOK_TOKEN || erc20Contract == FARM_TOKEN, "Supplied token address is not COMP, ROOK, or FARM.");
+
+        IERC20 token = IERC20(erc20Contract);
+        uint256 balance = token.balanceOf(address(this));
+        if (balance > 0) IERC20(erc20Contract).safeTransfer(newContract, balance);
+    }
 
     /**
      * @dev Sets or upgrades RariFundController by withdrawing all ETH from all pools and forwarding them from the old to the new.
@@ -216,9 +238,10 @@ contract RariFundController is Ownable {
     function upgradeFundController(address payable newContract) external onlyOwner {
         require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
 
-        for (uint256 i = 0; i < _supportedPools.length; i++)
-            if (hasETHInPool(_supportedPools[i]))
-                _withdrawAllFromPool(_supportedPools[i]);
+        for (uint256 i = 0; i < _supportedPools.length; i++) if (hasETHInPool(_supportedPools[i])) {
+            if (_supportedPools[i] == 5) HarvestPoolController.transferAll(newContract);
+            else _withdrawAllFromPool(_supportedPools[i]);
+        }
 
         uint256 balance = address(this).balance;
 
@@ -228,6 +251,16 @@ contract RariFundController is Ownable {
         }
     }
 
+    /**
+     * @dev Checks for ETH in `pool` and updates `_poolsWithFunds`.
+     * @param pool The index of the pool to check.
+     * @return Boolean indicating if the fund controller has funds in ETH in `pool`.
+     */
+    function checkPoolForETH(uint8 pool) external returns (bool) {
+        bool hasFunds = _getPoolBalance(pool) > 0;
+        _poolsWithFunds[pool] = hasFunds;
+        return hasFunds;
+    }
 
     /**
      * @dev Returns the fund controller's balance of the specified currency in the specified pool.
@@ -240,6 +273,8 @@ contract RariFundController is Ownable {
         else if (pool == 2) return KeeperDaoPoolController.getBalance();
         else if (pool == 3) return AavePoolController.getBalance();
         else if (pool == 4) return AlphaPoolController.getBalance();
+        else if (pool == 5) return HarvestPoolController.getBalance();
+        else if (pool == 6) return CreamPoolController.getBalance();
         else revert("Invalid pool index.");
     }
 
@@ -266,17 +301,19 @@ contract RariFundController is Ownable {
         return sum;
     }
 
-
     /**
-     * @dev Approves WETH to dYdX pool without spending gas on every deposit.
+     * @dev Approves WETH to dYdX/Harvest without spending gas on every deposit.
+     * @param pool The index of the pool.
      * @param amount The amount of WETH to be approved.
      */
-    function approveWethToDydxPool(uint256 amount) external fundEnabled onlyRebalancer {
-        DydxPoolController.approve(amount);
+    function approveWethToPool(uint8 pool, uint256 amount) external fundEnabled onlyRebalancer {
+        if (pool == 0) DydxPoolController.approve(amount);
+        else if (pool == 5) return HarvestPoolController.approve(amount);
+        else revert("Invalid pool index.");
     }
 
     /**
-     * @dev Approves kEther to the specified pool without spending gas on every deposit.
+     * @dev Approves kEther to the KeeperDAO without spending gas on every deposit.
      * @param amount The amount of kEther to be approved.
      */
     function approvekEtherToKeeperDaoPool(uint256 amount) external fundEnabled onlyRebalancer {
@@ -331,6 +368,8 @@ contract RariFundController is Ownable {
         else if (pool == 2) KeeperDaoPoolController.deposit(amount);
         else if (pool == 3) AavePoolController.deposit(amount, _aaveReferralCode);
         else if (pool == 4) AlphaPoolController.deposit(amount);
+        else if (pool == 5) HarvestPoolController.deposit(amount);
+        else if (pool == 6) CreamPoolController.deposit(amount);
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = true; 
         emit PoolAllocation(PoolAllocationAction.Deposit, LiquidityPool(pool), amount);
@@ -347,6 +386,8 @@ contract RariFundController is Ownable {
         else if (pool == 2) KeeperDaoPoolController.withdraw(amount);
         else if (pool == 3) AavePoolController.withdraw(amount);
         else if (pool == 4) AlphaPoolController.withdraw(amount);
+        else if (pool == 5) HarvestPoolController.withdraw(amount);
+        else if (pool == 6) CreamPoolController.withdraw(amount);
         else revert("Invalid pool index.");
         emit PoolAllocation(PoolAllocationAction.Withdraw, LiquidityPool(pool), amount);
     }
@@ -383,11 +424,12 @@ contract RariFundController is Ownable {
         else if (pool == 2) require(KeeperDaoPoolController.withdrawAll(), "No KeeperDAO balance to withdraw from.");
         else if (pool == 3) AavePoolController.withdrawAll();
         else if (pool == 4) require(AlphaPoolController.withdrawAll(), "No Alpha Homora balance to withdraw from.");
+        else if (pool == 5) require(HarvestPoolController.withdrawAll(), "No Harvest balance to withdraw from.");
+        else if (pool == 6) require(CreamPoolController.withdrawAll(), "No Cream balance to withdraw from.");
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = false;
         emit PoolAllocation(PoolAllocationAction.WithdrawAll, LiquidityPool(pool), 0);
     }
-
 
     /**
      * @dev Withdraws all funds from the specified pool.
@@ -441,17 +483,17 @@ contract RariFundController is Ownable {
     event CurrencyTrade(address inputErc20Contract, uint256 inputAmount, uint256 outputAmount);
 
     /**
-     * @dev Approves tokens (COMP or ROOK) to 0x without spending gas on every deposit.
+     * @dev Approves tokens (COMP, ROOK, or FARM) to 0x without spending gas on every deposit.
      * @param erc20Contract The ERC20 contract address of the token to be approved (must be COMP or ROOK).
      * @param amount The amount of tokens to be approved.
      */
     function approveTo0x(address erc20Contract, uint256 amount) external fundEnabled onlyRebalancer {
-        require(erc20Contract == COMP_TOKEN || erc20Contract == ROOK_TOKEN, "Supplied token address is not COMP or ROOK.");
+        require(erc20Contract == COMP_TOKEN || erc20Contract == ROOK_TOKEN || erc20Contract == FARM_TOKEN, "Supplied token address is not COMP, ROOK, or FARM.");
         ZeroExExchangeController.approve(erc20Contract, amount);
     }
 
     /**
-     * @dev Market sell (COMP or ROOK) to 0x exchange orders (reverting if `takerAssetFillAmount` is not filled).
+     * @dev Market sell (COMP, ROOK, or FARM) to 0x exchange orders (reverting if `takerAssetFillAmount` is not filled).
      * We should be able to make this function external and use calldata for all parameters, but Solidity does not support calldata structs (https://github.com/ethereum/solidity/issues/5479).
      * @param inputErc20Contract The input ERC20 token contract address (must be COMP or ROOK).
      * @param orders The limit orders to be filled in ascending order of price.
@@ -459,7 +501,7 @@ contract RariFundController is Ownable {
      * @param takerAssetFillAmount The amount of the taker asset to sell (excluding taker fees).
      */
     function marketSell0xOrdersFillOrKill(address inputErc20Contract, LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 takerAssetFillAmount) public payable fundEnabled onlyRebalancer {
-        // Exchange COMP/ROOK to ETH
+        // Exchange COMP/ROOK/FARM to ETH
         uint256 ethBalanceBefore = address(this).balance;
         uint256[2] memory filledAmounts = ZeroExExchangeController.marketSellOrdersFillOrKill(orders, signatures, takerAssetFillAmount, msg.value);
         uint256 ethBalanceAfter = address(this).balance;

@@ -53,7 +53,7 @@ library AavePoolController {
     /**
      * @dev Ethereum address abstraction
      */
-     address constant private ETHEREUM_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
+    address constant private ETHEREUM_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
      
     /**
      * @dev Returns the fund's balance of the specified currency in the Aave pool.

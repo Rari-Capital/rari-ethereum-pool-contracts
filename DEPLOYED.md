@@ -16,11 +16,15 @@ As follows are all deployments of our smart contracts on the Ethereum mainnet. S
 
 **v1.1.0**: `0xD6e194aF3d9674b62D1b30Ec676030C23961275e`
 
+Implementation contract: `0xce346aD7046222Fd119F6B715B6F60C0FDBFe796`
+
 ### `RariFundToken`
 
 The Rari Ethereum Pool Token (RSPT) is an ERC20 token used to internally account for the ownership of funds supplied to the Rari Ethereum Pool.
 
 **v1.0.0**: `0xCda4770d65B4211364Cb870aD6bE19E7Ef1D65f4`
+
+Implementation contract: `0xB849Daff8045fc295aF2f6b4E27874914b5911C6`
 
 ### `RariFundProxy`
 

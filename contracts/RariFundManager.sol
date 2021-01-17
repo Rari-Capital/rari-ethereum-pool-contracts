@@ -91,6 +91,8 @@ contract RariFundManager is Initializable, Ownable {
         addPool(2); // KeeperDAO
         addPool(3); // Aave
         addPool(4); // Alpha
+        addPool(5); // Harvest
+        addPool(6); // Cream
 
         // Initialize raw fund balance cache (can't set initial values in field declarations with proxy storage)
         _rawFundBalanceCache = -1;

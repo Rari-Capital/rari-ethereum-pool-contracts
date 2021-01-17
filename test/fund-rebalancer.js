@@ -7,10 +7,6 @@
  * This license is liable to change at any time at the sole discretion of David Lucid of Rari Capital, Inc.
  */
 
-const erc20Abi = require('./abi/ERC20.json');
-
-const pools = require('./fixtures/pools.json');
-
 const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
 
@@ -23,13 +19,14 @@ contract("RariFundController, RariFundManager", accounts => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
 
-    // Approve WETH to dYdX and kEther to KeeperDAO
-    await fundControllerInstance.approveWethToDydxPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+    // Approve WETH to dYdX + Harvest and kEther to KeeperDAO
+    await fundControllerInstance.approveWethToPool(0, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+    await fundControllerInstance.approveWethToPool(5, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
     await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
 
     var amountBN = web3.utils.toBN(1e18);
 
-    for (const pool of [0, 1, 2, 3, 4]) {
+    for (const pool of [0, 1, 2, 3, 4, 5, 6]) {
       // Check initial pool balance
       var initialBalanceOfUnderlying = await fundControllerInstance.getPoolBalance.call(pool);
       await fundManagerInstance.deposit({from: process.env.DEVELOPMENT_ADDRESS, value: amountBN});
@@ -48,7 +45,7 @@ contract("RariFundController, RariFundManager", accounts => {
 
     var amountBN = web3.utils.toBN(1e18);
 
-    for (const pool of [0, 1, 2, 3, 4]) {
+    for (const pool of [0, 1, 2, 3, 4, 5, 6]) {
       // Check initial pool balance
       var oldBalanceOfUnderlying = await fundControllerInstance.getPoolBalance.call(pool);
       // TODO: Ideally, we add actually call rari-fund-rebalancer
@@ -63,7 +60,7 @@ contract("RariFundController, RariFundManager", accounts => {
     let fundControllerInstance = await RariFundController.deployed();
     
     // For each currency of each pool:
-    for (const pool of [0, 1, 2, 3, 4]) {
+    for (const pool of [0, 1, 2, 3, 4, 5, 6]) {
       // TODO: Ideally, we add actually call rari-fund-rebalancer
       await fundControllerInstance.withdrawAllFromPool(pool, { from: process.env.DEVELOPMENT_ADDRESS, nonce: await web3.eth.getTransactionCount(process.env.DEVELOPMENT_ADDRESS) });
       // Check new pool balance

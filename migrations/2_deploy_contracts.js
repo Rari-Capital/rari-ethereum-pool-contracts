@@ -15,6 +15,8 @@ var CompoundPoolController = artifacts.require("./lib/pools/CompoundPoolControll
 var KeeperDaoPoolController = artifacts.require("./lib/pools/KeeperDaoPoolController.sol");
 var AavePoolController = artifacts.require("./lib/pools/AavePoolController.sol");
 var AlphaPoolController = artifacts.require("./lib/pools/AlphaPoolController.sol");
+var HarvestPoolController = artifacts.require("./lib/pools/HarvestPoolController.sol");
+var CreamPoolController = artifacts.require("./lib/pools/CreamPoolController.sol");
 var ZeroExExchangeController = artifacts.require("./lib/exchanges/ZeroExExchangeController.sol");
 var RariFundController = artifacts.require("./RariFundController.sol");
 var RariFundManager = artifacts.require("./RariFundManager.sol");
@@ -54,6 +56,8 @@ module.exports = async function(deployer, network, accounts) {
     await deployer.deploy(KeeperDaoPoolController);
     await deployer.deploy(AavePoolController);
     await deployer.deploy(AlphaPoolController);
+    await deployer.deploy(HarvestPoolController);
+    await deployer.deploy(CreamPoolController);
     await deployer.deploy(ZeroExExchangeController);
 
     // Link libraries to RariFundController
@@ -62,6 +66,8 @@ module.exports = async function(deployer, network, accounts) {
     await deployer.link(KeeperDaoPoolController, RariFundController);
     await deployer.link(AavePoolController, RariFundController);
     await deployer.link(AlphaPoolController, RariFundController);
+    await deployer.link(HarvestPoolController, RariFundController);
+    await deployer.link(CreamPoolController, RariFundController);
     await deployer.link(ZeroExExchangeController, RariFundController);
 
     // Deploy new RariFundController
@@ -99,7 +105,6 @@ module.exports = async function(deployer, network, accounts) {
     if (["live", "live-fork"].indexOf(network) >= 0) {
       // Live network: transfer ownership of deployed contracts from the deployer to the owner
       await rariFundController.transferOwnership(process.env.LIVE_FUND_OWNER);
-      await admin.transferProxyAdminOwnership(process.env.LIVE_FUND_OWNER);
     } else {
       // Development network: transfer ownership of contracts to development address and set development address as rebalancer
       await rariFundManager.transferOwnership(process.env.DEVELOPMENT_ADDRESS, { from: process.env.UPGRADE_FUND_OWNER_ADDRESS });
@@ -117,6 +122,8 @@ module.exports = async function(deployer, network, accounts) {
     await deployer.deploy(KeeperDaoPoolController);
     await deployer.deploy(AavePoolController);
     await deployer.deploy(AlphaPoolController);
+    await deployer.deploy(HarvestPoolController);
+    await deployer.deploy(CreamPoolController);
     await deployer.deploy(ZeroExExchangeController);
 
     // Link libraries to RariFundController
@@ -125,6 +132,8 @@ module.exports = async function(deployer, network, accounts) {
     await deployer.link(KeeperDaoPoolController, RariFundController);
     await deployer.link(AavePoolController, RariFundController);
     await deployer.link(AlphaPoolController, RariFundController);
+    await deployer.link(HarvestPoolController, RariFundController);
+    await deployer.link(CreamPoolController, RariFundController);
     await deployer.link(ZeroExExchangeController, RariFundController);
 
     // Deploy RariFundController and RariFundManager

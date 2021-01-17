@@ -15,60 +15,59 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20
 import "../../external/compound/CEther.sol";
 
 /**
- * @title CompoundPoolController
+ * @title CreamPoolController
  * @author David Lucid <david@rari.capital> (https://github.com/davidlucid)
- * @author Richter Brzeski <richter@rari.capital> (https://github.com/richtermb)
- * @dev This library handles deposits to and withdrawals from Compound liquidity pools.
+ * @dev This library handles deposits to and withdrawals from Cream Finance liquidity pools.
  */
-library CompoundPoolController {
+library CreamPoolController {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     /**
-     * @dev Compound Ether cToken (cETH) contract address.
+     * @dev Cream Ether cToken (crETH) contract address.
      */
-    address constant private CETH_CONTACT_ADDRESS = 0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5;
+    address constant private CRETH_CONTACT_ADDRESS = 0xD06527D5e56A3495252A528C4987003b712860eE;
 
     /**
-     * @dev Compound Ether cToken (cETH) contract object.
+     * @dev Cream Ether cToken (crETH) contract object.
      */
-    CEther constant private _cETHContract = CEther(CETH_CONTACT_ADDRESS);
+    CEther constant private _crEthContract = CEther(CRETH_CONTACT_ADDRESS);
 
     /**
-     * @dev Returns the fund's balance of the specified currency in the Compound pool.
+     * @dev Returns the fund's balance of the specified currency in the Cream pool.
      */
     function getBalance() external returns (uint256) {
-        return _cETHContract.balanceOfUnderlying(address(this));
+        return _crEthContract.balanceOfUnderlying(address(this));
     }
 
     /**
-     * @dev Deposits funds to the Compound pool. Assumes that you have already approved >= the amount to Compound.
+     * @dev Deposits funds to the Cream pool. Assumes that you have already approved >= the amount to Cream.
      * @param amount The amount of tokens to be deposited.
      */
     function deposit(uint256 amount) external {
         require(amount > 0, "Amount must be greater than 0.");
-        _cETHContract.mint.value(amount)();
+        _crEthContract.mint.value(amount)();
     }
 
     /**
-     * @dev Withdraws funds from the Compound pool.
+     * @dev Withdraws funds from the Cream pool.
      * @param amount The amount of tokens to be withdrawn.
      */
     function withdraw(uint256 amount) external {
         require(amount > 0, "Amount must be greater than to 0.");
-        uint256 redeemResult = _cETHContract.redeemUnderlying(amount);
-        require(redeemResult == 0, "Error calling redeemUnderlying on Compound cToken: error code not equal to 0");
+        uint256 redeemResult = _crEthContract.redeemUnderlying(amount);
+        require(redeemResult == 0, "Error calling redeemUnderlying on Cream cToken: error code not equal to 0");
     }
 
     /**
-     * @dev Withdraws all funds from the Compound pool.
+     * @dev Withdraws all funds from the Cream pool.
      * @return Boolean indicating success.
      */
     function withdrawAll() external returns (bool) {
-        uint256 balance = _cETHContract.balanceOf(address(this));
+        uint256 balance = _crEthContract.balanceOf(address(this));
         if (balance <= 0) return false;
-        uint256 redeemResult = _cETHContract.redeem(balance);
-        require(redeemResult == 0, "Error calling redeem on Compound cToken: error code not equal to 0");
+        uint256 redeemResult = _crEthContract.redeem(balance);
+        require(redeemResult == 0, "Error calling redeem on Cream cToken: error code not equal to 0");
         return true;
     }
 }

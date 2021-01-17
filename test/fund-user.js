@@ -7,7 +7,6 @@
  * This license is liable to change at any time at the sole discretion of David Lucid of Rari Capital, Inc.
  */
 
-const erc20Abi = require('./abi/ERC20.json');
 const cErc20DelegatorAbi = require('./abi/CErc20Delegator.json');
 
 const pools = require('./fixtures/pools.json');

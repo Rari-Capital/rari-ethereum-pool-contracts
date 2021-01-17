@@ -34,7 +34,7 @@ library ZeroExExchangeController {
      * @dev Gets allowance of the specified token to 0x.
      * @param erc20Contract The ERC20 contract address of the token.
      */
-    function allowance(address erc20Contract) internal view returns (uint256) {
+    function allowance(address erc20Contract) external view returns (uint256) {
         return IERC20(erc20Contract).allowance(address(this), ERC20_PROXY_CONTRACT);
     }
 
@@ -44,7 +44,7 @@ library ZeroExExchangeController {
      * @param amount Amount of the specified token to approve to dYdX.
      * @return Boolean indicating success.
      */
-    function approve(address erc20Contract, uint256 amount) internal returns (bool) {
+    function approve(address erc20Contract, uint256 amount) external returns (bool) {
         IERC20 token = IERC20(erc20Contract);
         uint256 _allowance = token.allowance(address(this), ERC20_PROXY_CONTRACT);
         if (_allowance == amount) return true;
@@ -61,7 +61,7 @@ library ZeroExExchangeController {
      * @param protocolFee The protocol fee in ETH to pay to 0x.
      * @return Array containing the taker asset filled amount (sold) and maker asset filled amount (bought).
      */
-    function marketSellOrdersFillOrKill(LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 takerAssetFillAmount, uint256 protocolFee) internal returns (uint256[2] memory) {
+    function marketSellOrdersFillOrKill(LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 takerAssetFillAmount, uint256 protocolFee) public returns (uint256[2] memory) {
         require(orders.length > 0, "At least one order and matching signature is required.");
         require(orders.length == signatures.length, "Mismatch between number of orders and signatures.");
         require(takerAssetFillAmount > 0, "Taker asset fill amount must be greater than 0.");
@@ -77,7 +77,7 @@ library ZeroExExchangeController {
      * @param protocolFee The protocol fee in ETH to pay to 0x.
      * @return Array containing the taker asset filled amount (sold) and maker asset filled amount (bought).
      */
-    function marketBuyOrdersFillOrKill(LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 makerAssetFillAmount, uint256 protocolFee) internal returns (uint256[2] memory) {
+    function marketBuyOrdersFillOrKill(LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 makerAssetFillAmount, uint256 protocolFee) public returns (uint256[2] memory) {
         require(orders.length > 0, "At least one order and matching signature is required.");
         require(orders.length == signatures.length, "Mismatch between number of orders and signatures.");
         require(makerAssetFillAmount > 0, "Maker asset fill amount must be greater than 0.");

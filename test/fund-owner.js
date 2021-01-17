@@ -9,10 +9,6 @@
 
 const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
 
-const fs = require('fs');
-
-const erc20Abi = require('./abi/ERC20.json');
-
 const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
 const RariFundToken = artifacts.require("RariFundToken");
@@ -83,7 +79,7 @@ contract("RariFundController, RariFundManager", accounts => {
 
     // Test disabled RariFundController: make sure we can't approve to pools now (using WETH on dYdX as an example)
     try {
-      await fundControllerInstance.approveWethToDydxPool(amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
+      await fundControllerInstance.approveWethToPool(0, amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
       assert.fail();
     } catch (error) {
       assert.include(error.message, "This fund controller contract is disabled. This may be due to an upgrade.");
@@ -131,8 +127,8 @@ contract("RariFundManager", accounts => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
 
-    //Approve WETH to dYdX
-    await fundControllerInstance.approveWethToDydxPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+    // Approve WETH to dYdX
+    await fundControllerInstance.approveWethToPool(0, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
 
     // Deposit ETH to the fund
     var amountBN = web3.utils.toBN(1e18);

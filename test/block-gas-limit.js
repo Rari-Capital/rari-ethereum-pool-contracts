@@ -7,8 +7,6 @@
  * This license is liable to change at any time at the sole discretion of David Lucid of Rari Capital, Inc.
  */
 
-const pools = require('./fixtures/pools.json');
-
 const RariFundController = artifacts.require("RariFundController");
 const RariFundManager = artifacts.require("RariFundManager");
 
@@ -26,19 +24,20 @@ contract("RariFundController", accounts => {
     let oldRawFundBalance = await fundManagerInstance.getRawFundBalance.call();
 
     // Tally up ETH deposited
-    var totalEthBN = web3.utils.toBN(5e18);
+    var totalEthBN = web3.utils.toBN(7e18);
     
     // For each currency of each pool, deposit to fund and deposit to pool
     var amountBN = web3.utils.toBN(1e18);
 
-    // approve WETH to dYdX for deposits and approve kEther to be burned by KeeperDAO
-    await fundControllerInstance.approveWethToDydxPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+    // approve WETH to dYdX + Harvest for deposits and approve kEther to be burned by KeeperDAO
+    await fundControllerInstance.approveWethToPool(0, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+    await fundControllerInstance.approveWethToPool(5, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
     await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
 
-    // deposit 4 ETH
+    // Deposit ETH
     await fundManagerInstance.deposit({ from: accounts[0], value: totalEthBN });
     
-    for (const pool of [0, 1, 2, 3, 4]) {
+    for (const pool of [0, 1, 2, 3, 4, 5, 6]) {
         // deeposit 1 ETH to each pool
         await fundControllerInstance.depositToPool(pool, amountBN, { from: accounts[0] });
     }
@@ -54,6 +53,7 @@ contract("RariFundController", accounts => {
     // Upgrade!
     var result = await fundControllerInstance.upgradeFundController(newFundControllerInstance.address, { from: process.env.DEVELOPMENT_ADDRESS });
     console.log("Gas usage of RariFundController.upgradeFundController:", result.receipt.gasUsed);
+    await newFundControllerInstance.checkPoolForETH(5);
     
     // Assert it uses no more than 5 million gas
     assert.isAtMost(result.receipt.gasUsed, 5000000);
