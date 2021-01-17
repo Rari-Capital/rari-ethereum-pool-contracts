@@ -2,6 +2,7 @@
 
 ## `v1.2.0` (contracts not yet deployed; all code not yet pushed)
 
+* Implemented lending via Enzyme Finance.
 * Implemented lending via Alpha Homora (ibETH).
 * Updated KeeperDAO implementation to use their new contracts and liquidate ROOK rewards.
 

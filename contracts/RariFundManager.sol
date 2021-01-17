@@ -494,9 +494,21 @@ contract RariFundManager is Initializable, Ownable {
         // Check contract balance of ETH and withdraw from pools if necessary
         uint256 contractBalance = _rariFundControllerContract.balance;
 
+        if (contractBalance < amount) {
+            uint256 poolBalance = getPoolBalance(5);
+
+            if (poolBalance > 0) {
+                uint256 amountLeft = amount.sub(contractBalance);
+                uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
+                rariFundController.withdrawFromPoolKnowingBalance(5, poolAmount, poolBalance);
+                contractBalance = _rariFundControllerContract.balance;
+            }
+        }
+
         for (uint256 i = 0; i < _supportedPools.length; i++) {
             if (contractBalance >= amount) break;
             uint8 pool = _supportedPools[i];
+            if (pool == 5) continue;
             uint256 poolBalance = getPoolBalance(pool);
             if (poolBalance <= 0) continue;
             uint256 amountLeft = amount.sub(contractBalance);

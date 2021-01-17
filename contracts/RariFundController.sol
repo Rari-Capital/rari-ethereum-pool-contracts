@@ -24,6 +24,7 @@ import "./lib/pools/CompoundPoolController.sol";
 import "./lib/pools/KeeperDaoPoolController.sol";
 import "./lib/pools/AavePoolController.sol";
 import "./lib/pools/AlphaPoolController.sol";
+import "./lib/pools/EnzymePoolController.sol";
 import "./lib/exchanges/ZeroExExchangeController.sol";
 
 /**
@@ -60,7 +61,7 @@ contract RariFundController is Ownable {
     /**
      * @dev Enum for liqudity pools supported by Rari.
      */
-    enum LiquidityPool { dYdX, Compound, KeeperDAO, Aave, Alpha }
+    enum LiquidityPool { dYdX, Compound, KeeperDAO, Aave, Alpha, Enzyme }
 
     /**
      * @dev Maps arrays of supported pools to currency codes.
@@ -98,6 +99,7 @@ contract RariFundController is Ownable {
         addPool(2); // KeeperDAO
         addPool(3); // Aave
         addPool(4); // Alpha
+        addPool(5); // Enzyme
     }
 
     /**
@@ -197,9 +199,11 @@ contract RariFundController is Ownable {
      * @dev Sets or upgrades RariFundController by forwarding immediate balance of ETH from the old to the new.
      * @param newContract The address of the new RariFundController contract.
      */
-    function _upgradeFundController(address payable newContract) external onlyOwner {
+    function _upgradeFundController(address payable newContract) public onlyOwner {
+        // Verify new fund controller contract
         require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
 
+        // Transfer all ETH to new fund controller
         uint256 balance = address(this).balance;
 
         if (balance > 0) {
@@ -214,18 +218,17 @@ contract RariFundController is Ownable {
      * @param newContract The address of the new RariFundController contract.
      */
     function upgradeFundController(address payable newContract) external onlyOwner {
-        require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
+        // Withdraw all from Enzyme first because they output other LP tokens
+        if (hasETHInPool(5))
+            _withdrawAllFromPool(5);
 
+        // Then withdraw all from all other pools
         for (uint256 i = 0; i < _supportedPools.length; i++)
             if (hasETHInPool(_supportedPools[i]))
                 _withdrawAllFromPool(_supportedPools[i]);
 
-        uint256 balance = address(this).balance;
-
-        if (balance > 0) {
-            (bool success, ) = newContract.call.value(balance)("");
-            require(success, "Failed to transfer ETH.");
-        }
+        // Transfer all ETH to new fund controller
+        _upgradeFundController(newContract);
     }
 
 
@@ -240,6 +243,7 @@ contract RariFundController is Ownable {
         else if (pool == 2) return KeeperDaoPoolController.getBalance();
         else if (pool == 3) return AavePoolController.getBalance();
         else if (pool == 4) return AlphaPoolController.getBalance();
+        else if (pool == 5) return EnzymePoolController.getBalance(_enzymeComptroller);
         else revert("Invalid pool index.");
     }
 
@@ -266,13 +270,15 @@ contract RariFundController is Ownable {
         return sum;
     }
 
-
     /**
-     * @dev Approves WETH to dYdX pool without spending gas on every deposit.
+     * @dev Approves WETH to pool without spending gas on every deposit.
+     * @param pool The index of the pool.
      * @param amount The amount of WETH to be approved.
      */
-    function approveWethToDydxPool(uint256 amount) external fundEnabled onlyRebalancer {
-        DydxPoolController.approve(amount);
+    function approveWethToPool(uint8 pool, uint256 amount) external fundEnabled onlyRebalancer {
+        if (pool == 0) return DydxPoolController.approve(amount);
+        else if (pool == 5) return EnzymePoolController.approve(_enzymeComptroller, amount);
+        else revert("Invalid pool index.");
     }
 
     /**
@@ -310,6 +316,19 @@ contract RariFundController is Ownable {
     }
 
     /**
+     * @dev The Enzyme pool Comptroller contract address.
+     */
+    address _enzymeComptroller;
+
+    /**
+     * @dev Sets the Enzyme pool Comptroller contract address.
+     * @param comptroller The Enzyme pool Comptroller contract address.
+     */
+    function setEnzymeComptroller(address comptroller) external onlyOwner {
+        _enzymeComptroller = comptroller;
+    }
+
+    /**
      * @dev Enum for pool allocation action types supported by Rari.
      */
     enum PoolAllocationAction { Deposit, Withdraw, WithdrawAll }
@@ -331,6 +350,7 @@ contract RariFundController is Ownable {
         else if (pool == 2) KeeperDaoPoolController.deposit(amount);
         else if (pool == 3) AavePoolController.deposit(amount, _aaveReferralCode);
         else if (pool == 4) AlphaPoolController.deposit(amount);
+        else if (pool == 5) EnzymePoolController.deposit(_enzymeComptroller, amount);
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = true; 
         emit PoolAllocation(PoolAllocationAction.Deposit, LiquidityPool(pool), amount);
@@ -347,6 +367,7 @@ contract RariFundController is Ownable {
         else if (pool == 2) KeeperDaoPoolController.withdraw(amount);
         else if (pool == 3) AavePoolController.withdraw(amount);
         else if (pool == 4) AlphaPoolController.withdraw(amount);
+        else if (pool == 5) EnzymePoolController.withdraw(_enzymeComptroller, amount);
         else revert("Invalid pool index.");
         emit PoolAllocation(PoolAllocationAction.Withdraw, LiquidityPool(pool), amount);
     }
@@ -383,11 +404,11 @@ contract RariFundController is Ownable {
         else if (pool == 2) require(KeeperDaoPoolController.withdrawAll(), "No KeeperDAO balance to withdraw from.");
         else if (pool == 3) AavePoolController.withdrawAll();
         else if (pool == 4) require(AlphaPoolController.withdrawAll(), "No Alpha Homora balance to withdraw from.");
+        else if (pool == 5) EnzymePoolController.withdrawAll(_enzymeComptroller);
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = false;
         emit PoolAllocation(PoolAllocationAction.WithdrawAll, LiquidityPool(pool), 0);
     }
-
 
     /**
      * @dev Withdraws all funds from the specified pool.
@@ -418,9 +439,21 @@ contract RariFundController is Ownable {
         // Check contract balance and withdraw from pools if necessary
         uint256 contractBalance = address(this).balance; // get ETH balance
 
+        if (contractBalance < amount) {
+            uint256 poolBalance = getPoolBalance(5);
+
+            if (poolBalance > 0) {
+                uint256 amountLeft = amount.sub(contractBalance);
+                uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
+                withdrawFromPoolKnowingBalance(5, poolAmount, poolBalance);
+                contractBalance = address(this).balance;
+            }
+        }
+
         for (uint256 i = 0; i < _supportedPools.length; i++) {
             if (contractBalance >= amount) break;
             uint8 pool = _supportedPools[i];
+            if (pool == 5) continue;
             uint256 poolBalance = getPoolBalance(pool);
             if (poolBalance <= 0) continue;
             uint256 amountLeft = amount.sub(contractBalance);

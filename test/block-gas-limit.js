@@ -32,13 +32,13 @@ contract("RariFundController", accounts => {
     var amountBN = web3.utils.toBN(1e18);
 
     // approve WETH to dYdX for deposits and approve kEther to be burned by KeeperDAO
-    await fundControllerInstance.approveWethToDydxPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+    await fundControllerInstance.approveWethToPool(0, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
     await fundControllerInstance.approvekEtherToKeeperDaoPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
 
     // deposit 4 ETH
     await fundManagerInstance.deposit({ from: accounts[0], value: totalEthBN });
     
-    for (const pool of [0, 1, 2, 3, 4]) {
+    for (const pool of [0, 1, 2, 3, 4, 5]) {
         // deeposit 1 ETH to each pool
         await fundControllerInstance.depositToPool(pool, amountBN, { from: accounts[0] });
     }
