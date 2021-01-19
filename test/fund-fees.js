@@ -45,7 +45,7 @@ contract("RariFundManager", accounts => {
 
     // deposit to pool (using Compound as an example)
     await fundManagerInstance.deposit({ from: accounts[0], value: amountBN });
-    await fundControllerInstance.depositToPool(1, amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0])});
+    await fundControllerInstance.depositToPool(1, amountBN, { from: accounts[0] });
 
     // Set interest fee rate
     await fundManagerInstance.setInterestFeeRate(web3.utils.toBN(1e17), { from: accounts[0] });
