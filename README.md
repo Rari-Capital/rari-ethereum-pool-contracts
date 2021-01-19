@@ -22,6 +22,8 @@ To install all our dependencies: `npm install`
 
 ## Testing the contracts
 
+If you would like to test Enzyme via a real Enzyme Comptroller, set `ENZYME_COMPTROLLER` in `.env.`
+
 If you are upgrading from `v1.1.0`, set `UPGRADE_FROM_LAST_VERSION=1` to enable upgrading and configure the following:
 
     UPGRADE_OLD_FUND_CONTROLLER_ADDRESS=0xD9F223A36C2e398B0886F945a7e556B41EF91A3C
@@ -41,7 +43,7 @@ To run automated tests on the contracts on your private mainnet fork, run `npm t
 
 ## Live deployment
 
-In `.env`, configure `LIVE_DEPLOYER_ADDRESS`, `LIVE_DEPLOYER_PRIVATE_KEY`, `LIVE_WEB3_PROVIDER_URL`, `LIVE_GAS_PRICE` (ideally, use the "fast" price listed by [ETH Gas Station](https://www.ethgasstation.info/)), `LIVE_FUND_OWNER`, `LIVE_FUND_REBALANCER`, and `LIVE_FUND_INTEREST_FEE_MASTER_BENEFICIARY` to deploy to the mainnet.
+In `.env`, configure `ENZYME_COMPTROLLER`, `LIVE_DEPLOYER_ADDRESS`, `LIVE_DEPLOYER_PRIVATE_KEY`, `LIVE_WEB3_PROVIDER_URL`, `LIVE_GAS_PRICE` (ideally, use the "fast" price listed by [ETH Gas Station](https://www.ethgasstation.info/)), `LIVE_FUND_OWNER`, `LIVE_FUND_REBALANCER`, and `LIVE_FUND_INTEREST_FEE_MASTER_BENEFICIARY` to deploy to the mainnet.
 
 If you are upgrading from `v1.1.0`, set `UPGRADE_FROM_LAST_VERSION=1` to enable upgrading and configure the following:
 

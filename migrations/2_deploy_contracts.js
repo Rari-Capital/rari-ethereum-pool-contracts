@@ -24,6 +24,7 @@ var RariFundProxy = artifacts.require("./RariFundProxy.sol");
 
 module.exports = async function(deployer, network, accounts) {
   if (["live", "live-fork"].indexOf(network) >= 0) {
+    if (!process.env.ENZYME_COMPTROLLER) return console.error("ENZYME_COMPTROLLER is missing for live deployment");
     if (!process.env.LIVE_GAS_PRICE) return console.error("LIVE_GAS_PRICE is missing for live deployment");
     if (!process.env.LIVE_FUND_OWNER) return console.error("LIVE_FUND_OWNER is missing for live deployment");
     if (!process.env.LIVE_FUND_REBALANCER) return console.error("LIVE_FUND_REBALANCER is missing for live deployment");
@@ -69,6 +70,9 @@ module.exports = async function(deployer, network, accounts) {
 
     // Deploy new RariFundController
     var rariFundController = await deployer.deploy(RariFundController);
+
+    // Set Enzyme comptroller if applicable
+    if (process.env.ENZYME_COMPTROLLER) await rariFundController.setEnzymeComptroller(process.env.ENZYME_COMPTROLLER);
 
     // Disable the fund on the old RariFundController
     var options = { from: process.env.UPGRADE_FUND_OWNER_ADDRESS };
@@ -135,6 +139,9 @@ module.exports = async function(deployer, network, accounts) {
     // Deploy RariFundController and RariFundManager
     var rariFundController = await deployer.deploy(RariFundController);
     var rariFundManager = await deployProxy(RariFundManager, [], { deployer, unsafeAllowCustomTypes: true });
+
+    // Set Enzyme comptroller if applicable
+    if (process.env.ENZYME_COMPTROLLER) await rariFundController.setEnzymeComptroller(process.env.ENZYME_COMPTROLLER);
 
     // Connect RariFundController and RariFundManager
     await rariFundController.setFundManager(RariFundManager.address);
