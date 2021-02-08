@@ -48,7 +48,7 @@ module.exports = async function(deployer, network, accounts) {
     var rariFundManager = await upgradeProxy(process.env.UPGRADE_FUND_MANAGER_ADDRESS, RariFundManager, { deployer });
 
     // Upgrade from v1.1.0 (RariFundController v1.0.0) to v1.2.0
-    var oldRariFundController = new web3.eth.Contract(oldRariFundControllerAbi, process.env.UPGRADE_OLD_FUND_CONTROLLER_ADDRESS);
+    var oldRariFundController = new web3.eth.Contract(RariFundController.abi, process.env.UPGRADE_OLD_FUND_CONTROLLER_ADDRESS);
 
     // Deploy liquidity pool and currency exchange libraries
     await deployer.deploy(DydxPoolController);
