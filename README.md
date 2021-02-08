@@ -51,7 +51,7 @@ If you are upgrading from `v1.1.0`, set `UPGRADE_FROM_LAST_VERSION=1` to enable 
     UPGRADE_FUND_MANAGER_ADDRESS=0xD6e194aF3d9674b62D1b30Ec676030C23961275e
     UPGRADE_FUND_OWNER_ADDRESS=0x10dB6Bce3F2AE1589ec91A872213DAE59697967a
 
-You must also set `LIVE_UPGRADE_FUND_OWNER_PRIVATE_KEY`.
+You must also set `LIVE_UPGRADE_FUND_OWNER_PRIVATE_KEY` and `LIVE_UPGRADE_TIMESTAMP_COMP_CLAIMED_AND_EXCHANGED` (set to current timestamp after claiming and exchanging COMP via rebalancer; you should run migrations within 1 hour of this timestamp).
 
 Then, migrate: `truffle migrate --network live`
 
