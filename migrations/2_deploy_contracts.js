@@ -45,7 +45,7 @@ module.exports = async function(deployer, network, accounts) {
 
     // Upgrade from v1.1.0 (RariFundManager v1.1.0) to v1.2.0
     RariFundManager.class_defaults.from = process.env.UPGRADE_FUND_OWNER_ADDRESS;
-    var rariFundManager = await upgradeProxy(process.env.UPGRADE_FUND_MANAGER_ADDRESS, RariFundManager, { deployer, unsafeAllowCustomTypes: true });
+    var rariFundManager = await upgradeProxy(process.env.UPGRADE_FUND_MANAGER_ADDRESS, RariFundManager, { deployer });
 
     // Upgrade from v1.1.0 (RariFundController v1.0.0) to v1.2.0
     var oldRariFundController = new web3.eth.Contract(oldRariFundControllerAbi, process.env.UPGRADE_OLD_FUND_CONTROLLER);
@@ -138,7 +138,7 @@ module.exports = async function(deployer, network, accounts) {
 
     // Deploy RariFundController and RariFundManager
     var rariFundController = await deployer.deploy(RariFundController);
-    var rariFundManager = await deployProxy(RariFundManager, [], { deployer, unsafeAllowCustomTypes: true });
+    var rariFundManager = await deployProxy(RariFundManager, [], { deployer });
 
     // Set Enzyme comptroller if applicable
     if (process.env.ENZYME_COMPTROLLER) await rariFundController.setEnzymeComptroller(process.env.ENZYME_COMPTROLLER);
