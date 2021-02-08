@@ -32,7 +32,7 @@ module.exports = async function(deployer, network, accounts) {
   }
   
   if (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0) {
-    if (!process.env.UPGRADE_OLD_FUND_CONTROLLER) return console.error("UPGRADE_OLD_FUND_CONTROLLER is missing for upgrade");
+    if (!process.env.UPGRADE_OLD_FUND_CONTROLLER_ADDRESS) return console.error("UPGRADE_OLD_FUND_CONTROLLER_ADDRESS is missing for upgrade");
     if (!process.env.UPGRADE_FUND_MANAGER_ADDRESS) return console.error("UPGRADE_FUND_MANAGER_ADDRESS is missing for upgrade");
     if (!process.env.UPGRADE_FUND_TOKEN_ADDRESS) return console.error("UPGRADE_FUND_TOKEN_ADDRESS is missing for upgrade");
     if (!process.env.UPGRADE_FUND_PROXY_ADDRESS) return console.error("UPGRADE_FUND_PROXY_ADDRESS is missing for upgrade");
@@ -48,7 +48,7 @@ module.exports = async function(deployer, network, accounts) {
     var rariFundManager = await upgradeProxy(process.env.UPGRADE_FUND_MANAGER_ADDRESS, RariFundManager, { deployer });
 
     // Upgrade from v1.1.0 (RariFundController v1.0.0) to v1.2.0
-    var oldRariFundController = new web3.eth.Contract(oldRariFundControllerAbi, process.env.UPGRADE_OLD_FUND_CONTROLLER);
+    var oldRariFundController = new web3.eth.Contract(oldRariFundControllerAbi, process.env.UPGRADE_OLD_FUND_CONTROLLER_ADDRESS);
 
     // Deploy liquidity pool and currency exchange libraries
     await deployer.deploy(DydxPoolController);
