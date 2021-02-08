@@ -91,6 +91,7 @@ contract RariFundManager is Initializable, Ownable {
         addPool(2); // KeeperDAO
         addPool(3); // Aave
         addPool(4); // Alpha
+        addPool(5); // Enzyme
 
         // Initialize raw fund balance cache (can't set initial values in field declarations with proxy storage)
         _rawFundBalanceCache = -1;
@@ -115,7 +116,7 @@ contract RariFundManager is Initializable, Ownable {
     }
 
     /**
-     * @dev Emitted when RariFundManager is upgraded.
+     * @dev Emitted when RariFundManager is upgraded from this contract to a new one.
      */
     event FundManagerUpgraded(address newContract);
 
@@ -176,7 +177,10 @@ contract RariFundManager is Initializable, Ownable {
      * @param data The data from the old contract necessary to initialize the new contract.
      */
     function setFundManagerData(FundManagerData calldata data) external {
+        // Check source
         require(_authorizedFundManagerDataSource != address(0) && msg.sender == _authorizedFundManagerDataSource, "Caller is not an authorized source.");
+
+        // Copy data from old contract to this one
         _netDeposits = data.netDeposits;
         _rawInterestAccruedAtLastFeeRateChange = data.rawInterestAccruedAtLastFeeRateChange;
         _interestFeesGeneratedAtLastFeeRateChange = data.interestFeesGeneratedAtLastFeeRateChange;
@@ -312,7 +316,6 @@ contract RariFundManager is Initializable, Ownable {
      * @dev Maps cached pool balances to pool indexes
      */
     mapping(uint8 => uint256) _poolBalanceCache;
-
 
     /**
      * @dev Returns the fund controller's balance of the specified currency in the specified pool.

@@ -200,7 +200,8 @@ contract RariFundController is Ownable {
      * @param newContract The address of the new RariFundController contract.
      */
     function _upgradeFundController(address payable newContract) public onlyOwner {
-        // Verify new fund controller contract
+        // Verify fund is disabled + verify new fund controller contract
+        require(_fundDisabled, "This fund controller contract must be disabled before it can be upgraded.");
         require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
 
         // Transfer all ETH to new fund controller

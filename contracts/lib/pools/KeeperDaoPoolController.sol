@@ -28,7 +28,7 @@ library KeeperDaoPoolController {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    address payable constant private KEEPERDAO_CONTRACT = 0x53463cd0b074E5FDafc55DcE7B1C82ADF1a43B2E;
+    address payable constant private KEEPERDAO_CONTRACT = 0x35fFd6E268610E764fF6944d07760D0EFe5E40E5;
     ILiquidityPool constant private _liquidityPool = ILiquidityPool(KEEPERDAO_CONTRACT);
 
     // KeeperDAO's representation of ETH
