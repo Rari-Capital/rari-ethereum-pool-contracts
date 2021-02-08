@@ -106,7 +106,6 @@ module.exports = async function(deployer, network, accounts) {
     if (["live", "live-fork"].indexOf(network) >= 0) {
       // Live network: transfer ownership of deployed contracts from the deployer to the owner
       await rariFundController.transferOwnership(process.env.LIVE_FUND_OWNER);
-      await admin.transferProxyAdminOwnership(process.env.LIVE_FUND_OWNER);
     } else {
       // Development network: transfer ownership of contracts to development address and set development address as rebalancer
       await rariFundManager.transferOwnership(process.env.DEVELOPMENT_ADDRESS, { from: process.env.UPGRADE_FUND_OWNER_ADDRESS });
