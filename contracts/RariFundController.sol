@@ -23,6 +23,8 @@ import "./lib/pools/DydxPoolController.sol";
 import "./lib/pools/CompoundPoolController.sol";
 import "./lib/pools/KeeperDaoPoolController.sol";
 import "./lib/pools/AavePoolController.sol";
+import "./lib/pools/AlphaPoolController.sol";
+import "./lib/pools/EnzymePoolController.sol";
 import "./lib/exchanges/ZeroExExchangeController.sol";
 
 /**
@@ -59,7 +61,7 @@ contract RariFundController is Ownable {
     /**
      * @dev Enum for liqudity pools supported by Rari.
      */
-    enum LiquidityPool { dYdX, Compound, KeeperDAO, Aave }
+    enum LiquidityPool { dYdX, Compound, KeeperDAO, Aave, Alpha, Enzyme }
 
     /**
      * @dev Maps arrays of supported pools to currency codes.
@@ -70,6 +72,11 @@ contract RariFundController is Ownable {
      * @dev COMP token address.
      */
     address constant private COMP_TOKEN = 0xc00e94Cb662C3520282E6f5717214004A7f26888;
+
+    /**
+     * @dev ROOK token address.
+     */
+    address constant private ROOK_TOKEN = 0xfA5047c9c78B8877af97BDcb85Db743fD7313d4a;
 
     /**
      * @dev WETH token contract.
@@ -87,10 +94,12 @@ contract RariFundController is Ownable {
     constructor () public {
         Ownable.initialize(msg.sender);
         // Add supported pools
-        addPool(0); // dydx
-        addPool(1); // compound
-        addPool(2); // keeperdao
-        addPool(3); // aave
+        addPool(0); // dYdX
+        addPool(1); // Compound
+        addPool(2); // KeeperDAO
+        addPool(3); // Aave
+        addPool(4); // Alpha
+        addPool(5); // Enzyme
     }
 
     /**
@@ -190,9 +199,14 @@ contract RariFundController is Ownable {
      * @dev Sets or upgrades RariFundController by forwarding immediate balance of ETH from the old to the new.
      * @param newContract The address of the new RariFundController contract.
      */
-    function _upgradeFundController(address payable newContract) external onlyOwner {
+    function _upgradeFundController(address payable newContract) public onlyOwner {
+        // Verify fund is disabled + verify new fund controller contract
+        require(_fundDisabled, "This fund controller contract must be disabled before it can be upgraded.");
         require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
+
+        // Transfer all ETH to new fund controller
         uint256 balance = address(this).balance;
+
         if (balance > 0) {
             (bool success, ) = newContract.call.value(balance)("");
             require(success, "Failed to transfer ETH.");
@@ -205,18 +219,17 @@ contract RariFundController is Ownable {
      * @param newContract The address of the new RariFundController contract.
      */
     function upgradeFundController(address payable newContract) external onlyOwner {
-        require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
+        // Withdraw all from Enzyme first because they output other LP tokens
+        if (hasETHInPool(5))
+            _withdrawAllFromPool(5);
 
+        // Then withdraw all from all other pools
         for (uint256 i = 0; i < _supportedPools.length; i++)
             if (hasETHInPool(_supportedPools[i]))
                 _withdrawAllFromPool(_supportedPools[i]);
 
-        uint256 balance = address(this).balance;
-
-        if (balance > 0) {
-            (bool success, ) = newContract.call.value(balance)("");
-            require(success, "Failed to transfer ETH.");
-        }
+        // Transfer all ETH to new fund controller
+        _upgradeFundController(newContract);
     }
 
 
@@ -230,6 +243,8 @@ contract RariFundController is Ownable {
         else if (pool == 1) return CompoundPoolController.getBalance();
         else if (pool == 2) return KeeperDaoPoolController.getBalance();
         else if (pool == 3) return AavePoolController.getBalance();
+        else if (pool == 4) return AlphaPoolController.getBalance();
+        else if (pool == 5) return EnzymePoolController.getBalance(_enzymeComptroller);
         else revert("Invalid pool index.");
     }
 
@@ -256,25 +271,23 @@ contract RariFundController is Ownable {
         return sum;
     }
 
-
     /**
-     * @dev Approves WETH to dYdX pool without spending gas on every deposit.
+     * @dev Approves WETH to pool without spending gas on every deposit.
+     * @param pool The index of the pool.
      * @param amount The amount of WETH to be approved.
-     * @return Boolean indicating success.
      */
-    function approveWethToDydxPool(uint256 amount) external fundEnabled onlyRebalancer returns (bool) {
-        require(DydxPoolController.approve(amount), "Approval of WETH to dYdX failed.");
-        return true;
+    function approveWethToPool(uint8 pool, uint256 amount) external fundEnabled onlyRebalancer {
+        if (pool == 0) return DydxPoolController.approve(amount);
+        else if (pool == 5) return EnzymePoolController.approve(_enzymeComptroller, amount);
+        else revert("Invalid pool index.");
     }
 
     /**
      * @dev Approves kEther to the specified pool without spending gas on every deposit.
-     * @param amount The amount of tokens to be approved.
-     * @return Boolean indicating success.
+     * @param amount The amount of kEther to be approved.
      */
-    function approvekEtherToKeeperDaoPool(uint256 amount) external fundEnabled onlyRebalancer returns (bool) {
-        require(KeeperDaoPoolController.approve(amount), "Approval of kEther to KeeperDao failed.");
-        return true;
+    function approvekEtherToKeeperDaoPool(uint256 amount) external fundEnabled onlyRebalancer {
+        KeeperDaoPoolController.approve(amount);
     }
 
     /**
@@ -304,6 +317,19 @@ contract RariFundController is Ownable {
     }
 
     /**
+     * @dev The Enzyme pool Comptroller contract address.
+     */
+    address _enzymeComptroller;
+
+    /**
+     * @dev Sets the Enzyme pool Comptroller contract address.
+     * @param comptroller The Enzyme pool Comptroller contract address.
+     */
+    function setEnzymeComptroller(address comptroller) external onlyOwner {
+        _enzymeComptroller = comptroller;
+    }
+
+    /**
      * @dev Enum for pool allocation action types supported by Rari.
      */
     enum PoolAllocationAction { Deposit, Withdraw, WithdrawAll }
@@ -317,18 +343,18 @@ contract RariFundController is Ownable {
     /**
      * @dev Deposits funds to the specified pool.
      * @param pool The index of the pool.
-     * @return Boolean indicating success.
      */
-    function depositToPool(uint8 pool, uint256 amount) external fundEnabled onlyRebalancer  returns (bool) {
-        require(amount > 0, "Amount too small.");
-        if (pool == 0) require(DydxPoolController.deposit(amount), "Deposit to dYdX failed.");
-        else if (pool == 1) require(CompoundPoolController.deposit(amount), "Deposit to Compound failed.");
-        else if (pool == 2) require(KeeperDaoPoolController.deposit(amount), "Deposit to KeeeperDao failed.");
+    function depositToPool(uint8 pool, uint256 amount) external fundEnabled onlyRebalancer {
+        require(amount > 0, "Amount must be greater than 0.");
+        if (pool == 0) DydxPoolController.deposit(amount);
+        else if (pool == 1) CompoundPoolController.deposit(amount);
+        else if (pool == 2) KeeperDaoPoolController.deposit(amount);
         else if (pool == 3) AavePoolController.deposit(amount, _aaveReferralCode);
+        else if (pool == 4) AlphaPoolController.deposit(amount);
+        else if (pool == 5) EnzymePoolController.deposit(_enzymeComptroller, amount);
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = true; 
         emit PoolAllocation(PoolAllocationAction.Deposit, LiquidityPool(pool), amount);
-        return true;
     }
 
     /**
@@ -337,10 +363,12 @@ contract RariFundController is Ownable {
      * @param amount The amount of tokens to be withdrawn.
      */
     function _withdrawFromPool(uint8 pool, uint256 amount) internal {
-        if (pool == 0) require(DydxPoolController.withdraw(amount), "Withdrawal from dYdX failed.");
-        else if (pool == 1) require(CompoundPoolController.withdraw(amount), "Withdrawal from Compound failed.");
-        else if (pool == 2) require(KeeperDaoPoolController.withdraw(amount), "Withdrawal from KeeeperDao failed.");
+        if (pool == 0) DydxPoolController.withdraw(amount);
+        else if (pool == 1) CompoundPoolController.withdraw(amount);
+        else if (pool == 2) KeeperDaoPoolController.withdraw(amount);
         else if (pool == 3) AavePoolController.withdraw(amount);
+        else if (pool == 4) AlphaPoolController.withdraw(amount);
+        else if (pool == 5) EnzymePoolController.withdraw(_enzymeComptroller, amount);
         else revert("Invalid pool index.");
         emit PoolAllocation(PoolAllocationAction.Withdraw, LiquidityPool(pool), amount);
     }
@@ -349,12 +377,11 @@ contract RariFundController is Ownable {
      * @dev Withdraws funds from the specified pool.
      * @param pool The index of the pool.
      * @param amount The amount of tokens to be withdrawn.
-     * @return Boolean indicating success.
      */
-    function withdrawFromPool(uint8 pool, uint256 amount) external fundEnabled onlyRebalancer returns (bool) {
+    function withdrawFromPool(uint8 pool, uint256 amount) external fundEnabled onlyRebalancer {
+        require(amount > 0, "Amount must be greater than 0.");
         _withdrawFromPool(pool, amount);
         _poolsWithFunds[pool] = _getPoolBalance(pool) > 0;
-        return true;
     }
 
     /**
@@ -362,53 +389,35 @@ contract RariFundController is Ownable {
      * @param pool The index of the pool.
      * @param amount The amount of tokens to be withdrawn.
      * @param initialBalance The fund's balance of the specified currency in the specified pool before the withdrawal.
-     * @return Boolean indicating success.
      */
-    function withdrawFromPoolKnowingBalance(uint8 pool, uint256 amount, uint256 initialBalance) public fundEnabled onlyManager returns (bool) {
+    function withdrawFromPoolKnowingBalance(uint8 pool, uint256 amount, uint256 initialBalance) public fundEnabled onlyManager {
         _withdrawFromPool(pool, amount);
         if (amount == initialBalance) _poolsWithFunds[pool] = false;
-        return true;
-    }
-
-    /**
-     * @dev Withdraws funds from the specified pool and sends it to RariFundManager (caching the `initialBalance` parameter).
-     * @param pool The index of the pool.
-     * @param amount The amount of ETH to be withdrawn.
-     * @param initialBalance The fund's balance of the specified currency in the specified pool before the withdrawal.
-     * @return Boolean indicating success.
-     */
-    function withdrawFromPoolKnowingBalanceToManager(uint8 pool, uint256 amount, uint256 initialBalance) external fundEnabled onlyManager returns (bool) {
-        _withdrawFromPool(pool, amount);
-        if (amount == initialBalance) _poolsWithFunds[pool] = false;
-        (bool success, ) = _rariFundManagerContract.call.value(amount)(""); // Send funds to manager
-        require(success, "Failed to transfer ETH.");
-        return true;
     }
 
     /**
      * @dev Internal function that withdraws all funds from the specified pool.
      * @param pool The index of the pool.
-     * @return Boolean indicating success.
      */
-    function _withdrawAllFromPool(uint8 pool) internal returns (bool) {
-        if (pool == 0) require(DydxPoolController.withdrawAll(), "Withdrawal from dYdX failed.");
-        else if (pool == 1) require(CompoundPoolController.withdrawAll(), "Withdrawal from Compound failed.");
-        else if (pool == 2) require(KeeperDaoPoolController.withdrawAll(), "Withdrawal from KeeperDao failed.");
-        else if (pool == 3) require(AavePoolController.withdrawAll(), "Withdrawal from Aave failed.");
+    function _withdrawAllFromPool(uint8 pool) internal {
+        if (pool == 0) DydxPoolController.withdrawAll();
+        else if (pool == 1) require(CompoundPoolController.withdrawAll(), "No Compound balance to withdraw from.");
+        else if (pool == 2) require(KeeperDaoPoolController.withdrawAll(), "No KeeperDAO balance to withdraw from.");
+        else if (pool == 3) AavePoolController.withdrawAll();
+        else if (pool == 4) require(AlphaPoolController.withdrawAll(), "No Alpha Homora balance to withdraw from.");
+        else if (pool == 5) EnzymePoolController.withdrawAll(_enzymeComptroller);
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = false;
         emit PoolAllocation(PoolAllocationAction.WithdrawAll, LiquidityPool(pool), 0);
-        return true;
     }
-
 
     /**
      * @dev Withdraws all funds from the specified pool.
      * @param pool The index of the pool.
      * @return Boolean indicating success.
      */
-    function withdrawAllFromPool(uint8 pool) external fundEnabled onlyRebalancer returns (bool) {
-        return _withdrawAllFromPool(pool);
+    function withdrawAllFromPool(uint8 pool) external fundEnabled onlyRebalancer {
+        _withdrawAllFromPool(pool);
     }
 
     /**
@@ -416,31 +425,41 @@ contract RariFundController is Ownable {
      * @param pool The index of the pool.
      * @return Boolean indicating success.
      */
-    function withdrawAllFromPoolOnUpgrade(uint8 pool) external onlyOwner returns (bool) {
-        return _withdrawAllFromPool(pool);
+    function withdrawAllFromPoolOnUpgrade(uint8 pool) external onlyOwner {
+        _withdrawAllFromPool(pool);
     }
-
 
     /**
      * @dev Withdraws ETH and sends amount to the manager.
      * @param amount Amount of ETH to withdraw.
-     * @return Boolean indicating success.
      */
-    function withdrawToManager(uint256 amount) external onlyManager returns (bool) {
+    function withdrawToManager(uint256 amount) external onlyManager {
         // Input validation
         require(amount > 0, "Withdrawal amount must be greater than 0.");
 
         // Check contract balance and withdraw from pools if necessary
         uint256 contractBalance = address(this).balance; // get ETH balance
 
+        if (contractBalance < amount) {
+            uint256 poolBalance = getPoolBalance(5);
+
+            if (poolBalance > 0) {
+                uint256 amountLeft = amount.sub(contractBalance);
+                uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
+                withdrawFromPoolKnowingBalance(5, poolAmount, poolBalance);
+                contractBalance = address(this).balance;
+            }
+        }
+
         for (uint256 i = 0; i < _supportedPools.length; i++) {
             if (contractBalance >= amount) break;
             uint8 pool = _supportedPools[i];
+            if (pool == 5) continue;
             uint256 poolBalance = getPoolBalance(pool);
             if (poolBalance <= 0) continue;
             uint256 amountLeft = amount.sub(contractBalance);
             uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
-            require(withdrawFromPoolKnowingBalance(pool, poolAmount, poolBalance), "Pool withdrawal failed.");
+            withdrawFromPoolKnowingBalance(pool, poolAmount, poolBalance);
             contractBalance = contractBalance.add(poolAmount);
         }
 
@@ -448,38 +467,37 @@ contract RariFundController is Ownable {
 
         (bool success, ) = _rariFundManagerContract.call.value(amount)("");
         require(success, "Failed to transfer ETH to RariFundManager.");
-
-        return true;
     }
 
     /**
      * @dev Emitted when COMP is exchanged to ETH via 0x.
      */
-    event CompToEthTrade(uint256 inputAmount, uint256 outputAmount);
+    event CurrencyTrade(address inputErc20Contract, uint256 inputAmount, uint256 outputAmount);
 
     /**
-     * @dev Approves COMP to 0x without spending gas on every deposit.
+     * @dev Approves tokens (COMP or ROOK) to 0x without spending gas on every deposit.
+     * @param erc20Contract The ERC20 contract address of the token to be approved (must be COMP or ROOK).
      * @param amount The amount of tokens to be approved.
-     * @return Boolean indicating success.
      */
-    function approveCompTo0x(uint256 amount) external fundEnabled onlyRebalancer returns (bool) {
-        require(ZeroExExchangeController.approve(COMP_TOKEN, amount), "Approval of tokens to 0x failed.");
-        return true;
+    function approveTo0x(address erc20Contract, uint256 amount) external fundEnabled onlyRebalancer {
+        require(erc20Contract == COMP_TOKEN || erc20Contract == ROOK_TOKEN, "Supplied token address is not COMP or ROOK.");
+        ZeroExExchangeController.approve(erc20Contract, amount);
     }
 
     /**
-     * @dev Market sell to 0x exchange orders (reverting if `takerAssetFillAmount` is not filled).
+     * @dev Market sell (COMP or ROOK) to 0x exchange orders (reverting if `takerAssetFillAmount` is not filled).
      * We should be able to make this function external and use calldata for all parameters, but Solidity does not support calldata structs (https://github.com/ethereum/solidity/issues/5479).
+     * @param inputErc20Contract The input ERC20 token contract address (must be COMP or ROOK).
      * @param orders The limit orders to be filled in ascending order of price.
      * @param signatures The signatures for the orders.
      * @param takerAssetFillAmount The amount of the taker asset to sell (excluding taker fees).
      */
-    function marketSell0xOrdersFillOrKill(LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 takerAssetFillAmount) public payable fundEnabled onlyRebalancer {
-        // Exchange COMP to ETH
+    function marketSell0xOrdersFillOrKill(address inputErc20Contract, LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 takerAssetFillAmount) public payable fundEnabled onlyRebalancer {
+        // Exchange COMP/ROOK to ETH
         uint256 ethBalanceBefore = address(this).balance;
         uint256[2] memory filledAmounts = ZeroExExchangeController.marketSellOrdersFillOrKill(orders, signatures, takerAssetFillAmount, msg.value);
         uint256 ethBalanceAfter = address(this).balance;
-        emit CompToEthTrade(filledAmounts[0], filledAmounts[1]);
+        emit CurrencyTrade(inputErc20Contract, filledAmounts[0], filledAmounts[1]);
 
         // Unwrap outputted WETH
         uint256 wethBalance = _weth.balanceOf(address(this));

@@ -1,6 +1,6 @@
 {
   "name": "rari-ethereum-pool-contracts",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Smart contracts for the Rari Ethereum Pool.",
   "main": "truffle.js",
   "directories": {
@@ -22,11 +22,11 @@
   },
   "homepage": "https://github.com/Rari-Capital/rari-ethereum-pool-contracts#readme",
   "devDependencies": {
-    "@openzeppelin/truffle-upgrades": "^1.1.1",
+    "@openzeppelin/truffle-upgrades": "^1.5.0",
     "@truffle/hdwallet-provider": "^1.0.36",
     "dotenv": "^8.2.0",
-    "truffle": "^5.1.45",
-    "ganache-core": "^2.13.0"
+    "ganache-core": "^2.13.2",
+    "truffle": "^5.1.45"
   },
   "dependencies": {
     "@0x/contracts-exchange": "^3.2.5",

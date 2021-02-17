@@ -85,11 +85,13 @@ contract RariFundManager is Initializable, Ownable {
         // Initialize base contracts
         Ownable.initialize(msg.sender);
 
-        // Add supported currencies
+        // Add supported pools
         addPool(0); // dYdX
         addPool(1); // Compound
         addPool(2); // KeeperDAO
         addPool(3); // Aave
+        addPool(4); // Alpha
+        addPool(5); // Enzyme
 
         // Initialize raw fund balance cache (can't set initial values in field declarations with proxy storage)
         _rawFundBalanceCache = -1;
@@ -114,7 +116,16 @@ contract RariFundManager is Initializable, Ownable {
     }
 
     /**
-     * @dev Emitted when RariFundManager is upgraded.
+     * @dev UPGRADE ONLY: Add the missing pools (Alpha and Enzyme).
+     */
+    function addMissingPools() external onlyOwner {
+        require(_supportedPools.length == 4, "Already upgraded/added missing pools.");
+        addPool(4); // Alpha
+        addPool(5); // Enzyme
+    }
+
+    /**
+     * @dev Emitted when RariFundManager is upgraded from this contract to a new one.
      */
     event FundManagerUpgraded(address newContract);
 
@@ -175,7 +186,10 @@ contract RariFundManager is Initializable, Ownable {
      * @param data The data from the old contract necessary to initialize the new contract.
      */
     function setFundManagerData(FundManagerData calldata data) external {
+        // Check source
         require(_authorizedFundManagerDataSource != address(0) && msg.sender == _authorizedFundManagerDataSource, "Caller is not an authorized source.");
+
+        // Copy data from old contract to this one
         _netDeposits = data.netDeposits;
         _rawInterestAccruedAtLastFeeRateChange = data.rawInterestAccruedAtLastFeeRateChange;
         _interestFeesGeneratedAtLastFeeRateChange = data.interestFeesGeneratedAtLastFeeRateChange;
@@ -312,7 +326,6 @@ contract RariFundManager is Initializable, Ownable {
      */
     mapping(uint8 => uint256) _poolBalanceCache;
 
-
     /**
      * @dev Returns the fund controller's balance of the specified currency in the specified pool.
      * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `CompoundPoolController.getBalance`) potentially modifies the state.
@@ -350,7 +363,7 @@ contract RariFundManager is Initializable, Ownable {
      * @notice Returns the fund's raw total balance (all REPT holders' funds + all unclaimed fees).
      * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `RariFundController.getPoolBalance`) potentially modifies the state.
      */
-    function getRawFundBalance() public returns (uint256) {
+    function getRawFundBalance() public fundEnabled returns (uint256) {
         uint256 totalBalance = _rariFundControllerContract.balance; // ETH balance in fund controller contract
 
         for (uint256 i = 0; i < _supportedPools.length; i++)
@@ -493,14 +506,26 @@ contract RariFundManager is Initializable, Ownable {
         // Check contract balance of ETH and withdraw from pools if necessary
         uint256 contractBalance = _rariFundControllerContract.balance;
 
+        if (contractBalance < amount) {
+            uint256 poolBalance = getPoolBalance(5);
+
+            if (poolBalance > 0) {
+                uint256 amountLeft = amount.sub(contractBalance);
+                uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
+                rariFundController.withdrawFromPoolKnowingBalance(5, poolAmount, poolBalance);
+                contractBalance = _rariFundControllerContract.balance;
+            }
+        }
+
         for (uint256 i = 0; i < _supportedPools.length; i++) {
             if (contractBalance >= amount) break;
             uint8 pool = _supportedPools[i];
+            if (pool == 5) continue;
             uint256 poolBalance = getPoolBalance(pool);
             if (poolBalance <= 0) continue;
             uint256 amountLeft = amount.sub(contractBalance);
             uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
-            require(rariFundController.withdrawFromPoolKnowingBalance(pool, poolAmount, poolBalance), "Pool withdrawal failed.");
+            rariFundController.withdrawFromPoolKnowingBalance(pool, poolAmount, poolBalance);
             _poolBalanceCache[pool] = poolBalance.sub(poolAmount);
             contractBalance = contractBalance.add(poolAmount);
         }

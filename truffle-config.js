@@ -9,7 +9,7 @@ module.exports = {
       host: "127.0.0.1",
       port: "8546",
       network_id: "*",
-      gasPrice: 1e8,
+      gasPrice: 1e6,
       from: process.env.DEVELOPMENT_ADDRESS
     },
     live: {

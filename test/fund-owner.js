@@ -18,7 +18,6 @@ const RariFundManager = artifacts.require("RariFundManager");
 const RariFundToken = artifacts.require("RariFundToken");
 
 if (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0) {
-  RariFundController.address = process.env.UPGRADE_FUND_CONTROLLER_ADDRESS;
   RariFundManager.address = process.env.UPGRADE_FUND_MANAGER_ADDRESS;
   RariFundToken.address = process.env.UPGRADE_FUND_TOKEN_ADDRESS;
 }
@@ -42,7 +41,7 @@ contract("RariFundController, RariFundManager", accounts => {
   });
 
   it("should upgrade the fund controller owner", async () => {
-    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
+    let fundControllerInstance = await RariFundController.deployed();
 
     await fundControllerInstance.transferOwnership(accounts[1], { from: accounts[0] });
 
@@ -55,7 +54,7 @@ contract("RariFundController, RariFundManager", accounts => {
   });
 
   it("should disable and re-enable the fund", async () => {
-    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
+    let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
     let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundToken.at(process.env.UPGRADE_FUND_TOKEN_ADDRESS) : RariFundToken.deployed());
 
@@ -84,7 +83,7 @@ contract("RariFundController, RariFundManager", accounts => {
 
     // Test disabled RariFundController: make sure we can't approve to pools now (using WETH on dYdX as an example)
     try {
-      await fundControllerInstance.approveWethToDydxPool(amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
+      await fundControllerInstance.approveWethToPool(0, amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
       assert.fail();
     } catch (error) {
       assert.include(error.message, "This fund controller contract is disabled. This may be due to an upgrade.");
@@ -100,7 +99,7 @@ contract("RariFundController, RariFundManager", accounts => {
     let myInitialBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
     await fundManagerInstance.deposit({ from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]), value: amountBN });
     let myPostDepositBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
-    assert(myPostDepositBalance.gte(myInitialBalance.add(amountBN)));
+    assert(myPostDepositBalance.gte(myInitialBalance.add(amountBN.muln(999999).divn(1000000))));
     await fundTokenInstance.approve(RariFundManager.address, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)), { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
     await fundManagerInstance.withdraw(amountBN, { from: accounts[0], nonce: await web3.eth.getTransactionCount(accounts[0]) });
 
@@ -109,7 +108,7 @@ contract("RariFundController, RariFundManager", accounts => {
   });
 
   it("should put upgrade the fund rebalancer", async () => {
-    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
+    let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
 
     // Set fund rebalancer addresses
@@ -129,11 +128,11 @@ contract("RariFundController, RariFundManager", accounts => {
 
 contract("RariFundManager", accounts => {
   it("should upgrade the FundManager implementation to a copy of its code", async () => {
-    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
+    let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
 
     //Approve WETH to dYdX
-    await fundControllerInstance.approveWethToDydxPool(web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
+    await fundControllerInstance.approveWethToPool(0, web3.utils.toBN(2).pow(web3.utils.toBN(256)).sub(web3.utils.toBN(1)));
 
     // Deposit ETH to the fund
     var amountBN = web3.utils.toBN(1e18);
@@ -147,15 +146,9 @@ contract("RariFundManager", accounts => {
     var oldFundBalance = await fundManagerInstance.getFundBalance.call();
     var oldAccountBalance = await fundManagerInstance.balanceOf.call(accounts[0]);
 
-    // Disable FundController and original FundManager
-    await fundControllerInstance.disableFund({ from: accounts[0] });
-    await fundManagerInstance.disableFund({ from: accounts[0] });
-
-    // TODO: Check _fundDisabled (no way to do this as of now)
-
-    // Create new FundManager
+    // Upgrade FundManager
     if (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0) RariFundManager.class_defaults.from = process.env.UPGRADE_FUND_OWNER_ADDRESS;
-    var newFundManagerInstance = await upgradeProxy(RariFundManager.address, RariFundManager, { unsafeAllowCustomTypes: true });
+    var newFundManagerInstance = await upgradeProxy(RariFundManager.address, RariFundManager);
     if (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0) RariFundManager.class_defaults.from = process.env.DEVELOPMENT_ADDRESS;
 
     // Check balance of new FundManager
@@ -170,7 +163,7 @@ contract("RariFundManager", accounts => {
 
 contract("RariFundManager", accounts => {
   it("should upgrade the proxy and implementation of FundManager to new code", async () => {
-    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
+    let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
 
     // Deposit ETH
@@ -187,7 +180,7 @@ contract("RariFundManager", accounts => {
     // TODO: Check _fundDisabled (no way to do this as of now)
 
     // Create new FundManager
-    var newFundManagerInstance = await deployProxy(DummyRariFundManager, [], { unsafeAllowCustomTypes: true });
+    var newFundManagerInstance = await deployProxy(DummyRariFundManager, []);
 
     // Upgrade!
     await newFundManagerInstance.authorizeFundManagerDataSource(fundManagerInstance.address, { from: accounts[0] });
@@ -198,7 +191,7 @@ contract("RariFundManager", accounts => {
 
 contract("RariFundController", accounts => {
   it("should put upgrade the FundController to a copy of its code by disabling the old FundController and the FundManager, withdrawing all tokens from all pools, and transferring them to the new FundController", async () => {
-    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
+    let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
 
     // Approve kEther to KeeperDAO contract
@@ -230,6 +223,9 @@ contract("RariFundController", accounts => {
     await fundControllerInstance.upgradeFundController(newFundControllerInstance.address, { from: process.env.DEVELOPMENT_ADDRESS });
     await fundManagerInstance.setFundController(newFundControllerInstance.address, { from: accounts[0] });
 
+    // Re-enable fund manager
+    await fundManagerInstance.enableFund({ from: accounts[0] });
+
     // Check balance of new FundController
     let newRawFundBalance = await fundManagerInstance.getRawFundBalance.call();
     assert(newRawFundBalance.gte(oldRawFundBalance));
@@ -242,7 +238,7 @@ contract("RariFundController", accounts => {
 
 contract("RariFundController", accounts => {
   it("should put upgrade the FundController to new code by disabling the old FundController and the FundManager, withdrawing all ETH from all pools, and transferring them to the new FundController", async () => {
-    let fundControllerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundController.at(process.env.UPGRADE_FUND_CONTROLLER_ADDRESS) : RariFundController.deployed());
+    let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
 
     var amountBN = web3.utils.toBN(1e18);
@@ -268,6 +264,9 @@ contract("RariFundController", accounts => {
     // Upgrade!
     await fundControllerInstance.upgradeFundController(newFundControllerInstance.address, { from: process.env.DEVELOPMENT_ADDRESS });
     await fundManagerInstance.setFundController(newFundControllerInstance.address, { from: accounts[0] });
+
+    // Re-enable fund manager
+    await fundManagerInstance.enableFund({ from: accounts[0] });
 
     // Check balance of new FundController
     let newRawFundBalance = await fundManagerInstance.getRawFundBalance.call();

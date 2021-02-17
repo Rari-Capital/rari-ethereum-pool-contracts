@@ -34,17 +34,17 @@ See [`USAGE.md`](USAGE.md) for more information on how to withdraw via the smart
 The Rari Ethereum Pool is composed of 5 user-facing **smart contracts** in total (see [`DEPLOYED.md`](DEPLOYED.md) for deployed addresses):
 
 * `RariFundManager` is the Rari Ethereum Pool's main contract, handling deposits, withdrawals, ETH balances, interest, fees, etc.
-* `RariFundController` holds supplied funds and is used by the rebalancer to deposit and withdraw from pools and liquidate COMP rewards into ETH.
+* `RariFundController` holds supplied funds and is used by the rebalancer to deposit and withdraw from pools and liquidate COMP and ROOK rewards into ETH.
 * `RariFundToken` is the contract behind the Rari Ethereum Pool Token (REPT), an ERC20 token used to internally account for the ownership of funds supplied to the Rari Ethereum Pool.
 * `RariFundProxy` includes wrapper functions built on top of `RariFundManager`: exchange and deposit and withdraw and exchange.
 
-A centralized (but soon to be decentralized) **rebalancer** controls which pools hold which currencies at any given time but only has permission to move funds between pools and liquidate COMP rewards, not withdraw funds elsewhere.
+A centralized (but soon to be decentralized) **rebalancer** controls which pools hold which currencies at any given time but only has permission to move funds between pools and liquidate COMP and ROOK rewards, not withdraw funds elsewhere.
 
 ## Security
 
 Rari's Ethereum-based smart contracts are written in Solidity and audited by [Quantstamp](https://quantstamp.com/) (as well as various other partners) for security. Rari does not have control over your funds: instead, the Ethereum blockchain executes all secure code across its entire decentralized network (making it very difficult and extremely costly to rewrite history), and your funds are only withdrawable by you.
 
-While the centralized (but soon to be decentralized) rebalancer does have control over which pools hold which currencies at any given time but only has permission to move funds between pools and liquidate COMP rewards, not withdraw funds elsewhere. However, note that the rebalancer can approve any amount of funds to the pools integrated (and can approve any amount of COMP to 0x for liquidation).
+While the centralized (but soon to be decentralized) rebalancer does have control over which pools hold which currencies at any given time but only has permission to move funds between pools and liquidate COMP and ROOK rewards, not withdraw funds elsewhere. However, note that the rebalancer can approve any amount of funds to the pools integrated (and can approve any amount of COMP or ROOK to 0x for liquidation).
 
 Please note that at the moment, smart contract upgrades are approved via a 3-of-5 multisig federation controlled by Rari's co-founders and partners. However, upgrades will become decentralized in the future via a governance protocol based on the Rari Governance Token (RGT).
 
@@ -61,6 +61,6 @@ See [this Notion article](https://www.notion.so/Fees-e4689d7b800f485098548dd9e9d
 * A *9.5% performance fee* is deducted from all interest earned by REPT holders. This fee is liable to change in the future (but fees on past interest cannot be changed).
 * There is *no withdrawal fee* deducted from withdrawals from the Rari Ethereum Pool.
 
-## COMP
+## COMP and ROOK
 
-All [COMP (Compound's governance token)](https://compound.finance/governance/comp) earned by the fund is liquidated into additional interest for REPT holders approximately every 3 days.
+All [COMP (Compound's governance token)](https://compound.finance/governance/comp) and [ROOK (KeeperDAO's governance token)](https://medium.com/keeperdao/caro-kann-introducing-rook-liquidity-mining-arbitrage-mining-adbe319905fd) earned by the fund is liquidated into additional interest for REPT holders approximately every 3 days.

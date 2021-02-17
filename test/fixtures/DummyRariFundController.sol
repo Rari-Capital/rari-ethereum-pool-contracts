@@ -26,7 +26,7 @@ contract DummyRariFundController {
     bool public constant IS_RARI_FUND_CONTROLLER = true;
 
     /**
-     * @dev Function to receive ETH from old Fund Controller
+     * @dev Payable fallback function to receive ETH from old fund controller.
      */
     function () external payable { }
 
