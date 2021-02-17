@@ -7,6 +7,7 @@ const fs = require('fs');
 server.listen(8546, function(err, blockchain) {
   if (err) return console.log(err);
 
+  if (dotenv === undefined) dotenv = {};
   dotenv.DEVELOPMENT_ADDRESS = Object.keys(blockchain['unlocked_accounts'])[1];
   dotenv.DEVELOPMENT_ADDRESS_SECONDARY = Object.keys(blockchain['unlocked_accounts'])[2];
   dotenv.DEVELOPMENT_PRIVATE_KEY = blockchain['unlocked_accounts'][Object.keys(blockchain['unlocked_accounts'])[1]]['secretKey'].toString('hex');
