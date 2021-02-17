@@ -116,6 +116,15 @@ contract RariFundManager is Initializable, Ownable {
     }
 
     /**
+     * @dev UPGRADE ONLY: Add the missing pools (Alpha and Enzyme).
+     */
+    function addMissingPools() external onlyOwner {
+        require(_supportedPools.length == 4, "Already upgraded/added missing pools.");
+        addPool(4); // Alpha
+        addPool(5); // Enzyme
+    }
+
+    /**
      * @dev Emitted when RariFundManager is upgraded from this contract to a new one.
      */
     event FundManagerUpgraded(address newContract);

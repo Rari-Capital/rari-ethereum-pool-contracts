@@ -47,6 +47,9 @@ module.exports = async function(deployer, network, accounts) {
     RariFundManager.class_defaults.from = process.env.UPGRADE_FUND_OWNER_ADDRESS;
     var rariFundManager = await upgradeProxy(process.env.UPGRADE_FUND_MANAGER_ADDRESS, RariFundManager, { deployer });
 
+    // Add missing pools
+    await rariFundManager.addMissingPools();
+
     // Upgrade from v1.1.0 (RariFundController v1.0.0) to v1.2.0
     var oldRariFundController = new web3.eth.Contract(RariFundController.abi, process.env.UPGRADE_OLD_FUND_CONTROLLER_ADDRESS);
 
