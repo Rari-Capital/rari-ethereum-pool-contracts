@@ -1,10 +1,11 @@
 # Changelog
 
-## `v1.2.0` (contracts not yet deployed; all code not yet pushed)
+## `v1.2.0` (contracts deployed 2020-02-08; all code pushed 2020-02-16)
 
 * Implemented lending via Enzyme Finance.
 * Implemented lending via Alpha Homora (ibETH).
 * Updated KeeperDAO implementation to use their new contracts and liquidate ROOK rewards.
+* Check `fundDisabled` in `RariFundManager.upgradeFundController`.
 
 ## `v1.1.0` (contracts deployed 2020-11-19; all code pushed 2020-11-25)
 
