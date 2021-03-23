@@ -130,6 +130,11 @@ contract RariFundManager is Initializable, Ownable {
     event FundManagerUpgraded(address newContract);
 
     /**
+     * @dev Emitted when RariFundManager is upgraded from an old contract to this one.
+     */
+    event FundManagerUpgradedFrom(address oldContract);
+
+    /**
      * @dev Upgrades RariFundManager.
      * Sends data to the new contract, sets the new REPT minter, and forwards eth from the old to the new.
      * @param newContract The address of the new RariFundManager contract.
@@ -195,6 +200,12 @@ contract RariFundManager is Initializable, Ownable {
         _interestFeesGeneratedAtLastFeeRateChange = data.interestFeesGeneratedAtLastFeeRateChange;
         _interestFeesClaimed = data.interestFeesClaimed;
         _interestFeeRate = RariFundManager(_authorizedFundManagerDataSource).getInterestFeeRate();
+
+        // Reset data source to zero address
+        _authorizedFundManagerDataSource = address(0);
+
+        // Emit event
+        emit FundManagerUpgradedFrom(msg.sender);
     }
 
     /**

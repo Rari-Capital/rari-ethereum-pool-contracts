@@ -10,6 +10,8 @@
 pragma solidity 0.5.17;
 pragma experimental ABIEncoderV2;
 
+import "../../contracts/RariFundManager.sol";
+
 /**
  * @title DummyRariFundManager
  * @author David Lucid <david@rari.capital> (https://github.com/davidlucid)
@@ -46,12 +48,21 @@ contract DummyRariFundManager {
      * @param data The data from the old contract necessary to initialize the new contract.
      */
     function setFundManagerData(FundManagerData calldata data) external {
+        // Check source
         require(_authorizedFundManagerDataSource != address(0) && msg.sender == _authorizedFundManagerDataSource, "Caller is not an authorized source.");
-        
+
+        // Copy data from old contract to this one
         _netDeposits = data.netDeposits;
         _rawInterestAccruedAtLastFeeRateChange = data.rawInterestAccruedAtLastFeeRateChange;
         _interestFeesGeneratedAtLastFeeRateChange = data.interestFeesGeneratedAtLastFeeRateChange;
         _interestFeesClaimed = data.interestFeesClaimed;
+        _interestFeeRate = RariFundManager(_authorizedFundManagerDataSource).getInterestFeeRate();
+
+        // Reset data source to zero address
+        _authorizedFundManagerDataSource = address(0);
+
+        // Emit event
+        emit FundManagerUpgradedFrom(msg.sender);
     }
 
     /**
@@ -74,4 +85,9 @@ contract DummyRariFundManager {
      * @dev The total claimed amount of interest fees.
      */
     uint256 private _interestFeesClaimed;
+
+    /**
+     * @dev The proportion of interest accrued that is taken as a service fee (scaled by 1e18).
+     */
+    uint256 private _interestFeeRate;
 }

@@ -185,7 +185,6 @@ contract("RariFundManager", accounts => {
     // Upgrade!
     await newFundManagerInstance.authorizeFundManagerDataSource(fundManagerInstance.address, { from: accounts[0] });
     await fundManagerInstance.upgradeFundManager(newFundManagerInstance.address);
-    await newFundManagerInstance.authorizeFundManagerDataSource("0x0000000000000000000000000000000000000000", { from: accounts[0] });
   });
 });
 

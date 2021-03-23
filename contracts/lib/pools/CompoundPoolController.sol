@@ -9,9 +9,6 @@
 
 pragma solidity 0.5.17;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
-
 import "../../external/compound/CEther.sol";
 
 /**
@@ -21,9 +18,6 @@ import "../../external/compound/CEther.sol";
  * @dev This library handles deposits to and withdrawals from Compound liquidity pools.
  */
 library CompoundPoolController {
-    using SafeMath for uint256;
-    using SafeERC20 for IERC20;
-
     address constant private cETH_CONTACT_ADDRESS = 0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5; 
     CEther constant private _cETHContract = CEther(cETH_CONTACT_ADDRESS);
 

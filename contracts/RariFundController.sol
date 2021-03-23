@@ -214,7 +214,6 @@ contract RariFundController is Ownable {
         }
     }
 
-
     /**
      * @dev Sets or upgrades RariFundController by withdrawing all ETH from all pools and forwarding them from the old to the new.
      * @param newContract The address of the new RariFundController contract.
@@ -233,6 +232,14 @@ contract RariFundController is Ownable {
         _upgradeFundController(newContract);
     }
 
+    /**
+     * @dev Sets or upgrades RariFundController by withdrawing all ETH from all pools and forwarding them from the old to the new.
+     * @param newContract The address of the new RariFundController contract.
+     */
+    function upgradeFundController(address payable newContract, address erc20Contract) external onlyOwner {
+        IERC20 token = IERC20(erc20Contract);
+        token.safeTransfer(newContract, token.balanceOf(address(this)));
+    }
 
     /**
      * @dev Returns the fund controller's balance of the specified currency in the specified pool.
@@ -267,9 +274,7 @@ contract RariFundController is Ownable {
      */
     function getEntireBalance() public returns (uint256) {
         uint256 sum = address(this).balance; // start with immediate eth balance
-        for (uint256 i = 0; i < _supportedPools.length; i++) {
-            sum = getPoolBalance(_supportedPools[i]).add(sum);
-        }
+        for (uint256 i = 0; i < _supportedPools.length; i++) sum = getPoolBalance(_supportedPools[i]).add(sum);
         return sum;
     }
 
@@ -328,6 +333,7 @@ contract RariFundController is Ownable {
      * @param comptroller The Enzyme pool Comptroller contract address.
      */
     function setEnzymeComptroller(address comptroller) external onlyOwner {
+        require(!hasETHInPool(5), "Enzyme Comptroller has ETH in the pool.");
         _enzymeComptroller = comptroller;
     }
 
@@ -442,9 +448,10 @@ contract RariFundController is Ownable {
         // Input validation
         require(amount > 0, "Withdrawal amount must be greater than 0.");
 
-        // Check contract balance and withdraw from pools if necessary
-        uint256 contractBalance = address(this).balance; // get ETH balance
+        // Check contract balance
+        uint256 contractBalance = address(this).balance;
 
+        // Withdraw from Enzyme if necessary
         if (contractBalance < amount) {
             uint256 poolBalance = getPoolBalance(5);
 
@@ -456,10 +463,12 @@ contract RariFundController is Ownable {
             }
         }
 
+        // Withdraw from other pools if necessary
         for (uint256 i = 0; i < _supportedPools.length; i++) {
             if (contractBalance >= amount) break;
             uint8 pool = _supportedPools[i];
-            if (pool == 5) continue;
+            if (pool == 5) continue; // Don't withdraw from Enzyme since we already did
+
             uint256 poolBalance = getPoolBalance(pool);
             if (poolBalance <= 0) continue;
             uint256 amountLeft = amount.sub(contractBalance);
@@ -468,8 +477,8 @@ contract RariFundController is Ownable {
             contractBalance = contractBalance.add(poolAmount);
         }
 
+        // Transfer out ETH
         require(address(this).balance >= amount, "Too little ETH to transfer.");
-
         (bool success, ) = _rariFundManagerContract.call.value(amount)("");
         require(success, "Failed to transfer ETH to RariFundManager.");
     }
