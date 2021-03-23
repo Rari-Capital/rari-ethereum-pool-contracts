@@ -26,6 +26,7 @@ import "./lib/pools/AavePoolController.sol";
 import "./lib/pools/AlphaPoolController.sol";
 import "./lib/pools/EnzymePoolController.sol";
 import "./lib/exchanges/ZeroExExchangeController.sol";
+import "./external/compound/CEther.sol";
 
 /**
  * @title RariFundController
@@ -245,6 +246,7 @@ contract RariFundController is Ownable {
         else if (pool == 3) return AavePoolController.getBalance();
         else if (pool == 4) return AlphaPoolController.getBalance();
         else if (pool == 5) return EnzymePoolController.getBalance(_enzymeComptroller);
+        else if (fuseAssets[pool] != address(0)) return FusePoolController.getBalance(fuseAssets[pool]);
         else revert("Invalid pool index.");
     }
 
@@ -338,7 +340,7 @@ contract RariFundController is Ownable {
      * @dev Emitted when a deposit or withdrawal is made.
      * Note that `amount` is not set for `WithdrawAll` actions.
      */
-    event PoolAllocation(PoolAllocationAction indexed action, LiquidityPool indexed pool, uint256 amount);
+    event PoolAllocation(PoolAllocationAction indexed action, uint8 indexed pool, uint256 amount);
 
     /**
      * @dev Deposits funds to the specified pool.
@@ -352,9 +354,10 @@ contract RariFundController is Ownable {
         else if (pool == 3) AavePoolController.deposit(amount, _aaveReferralCode);
         else if (pool == 4) AlphaPoolController.deposit(amount);
         else if (pool == 5) EnzymePoolController.deposit(_enzymeComptroller, amount);
+        else if (fuseAssets[pool] != address(0)) FusePoolController.deposit(fuseAssets[pool], amount);
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = true; 
-        emit PoolAllocation(PoolAllocationAction.Deposit, LiquidityPool(pool), amount);
+        emit PoolAllocation(PoolAllocationAction.Deposit, pool, amount);
     }
 
     /**
@@ -369,8 +372,9 @@ contract RariFundController is Ownable {
         else if (pool == 3) AavePoolController.withdraw(amount);
         else if (pool == 4) AlphaPoolController.withdraw(amount);
         else if (pool == 5) EnzymePoolController.withdraw(_enzymeComptroller, amount);
+        else if (fuseAssets[pool] != address(0)) FusePoolController.withdraw(fuseAssets[pool], amount);
         else revert("Invalid pool index.");
-        emit PoolAllocation(PoolAllocationAction.Withdraw, LiquidityPool(pool), amount);
+        emit PoolAllocation(PoolAllocationAction.Withdraw, pool, amount);
     }
 
     /**
@@ -406,9 +410,10 @@ contract RariFundController is Ownable {
         else if (pool == 3) AavePoolController.withdrawAll();
         else if (pool == 4) require(AlphaPoolController.withdrawAll(), "No Alpha Homora balance to withdraw from.");
         else if (pool == 5) EnzymePoolController.withdrawAll(_enzymeComptroller);
+        else if (fuseAssets[pool] != address(0)) require(FusePoolController.withdrawAll(fuseAssets[pool]), "No Fuse pool balance to withdraw from.");
         else revert("Invalid pool index.");
         _poolsWithFunds[pool] = false;
-        emit PoolAllocation(PoolAllocationAction.WithdrawAll, LiquidityPool(pool), 0);
+        emit PoolAllocation(PoolAllocationAction.WithdrawAll, pool, 0);
     }
 
     /**
@@ -537,5 +542,29 @@ contract RariFundController is Ownable {
         }
 
         return (address(this).balance, pools, poolBalances);
+    }
+
+    /**
+     * @notice Fuse cToken contract addresses approved for deposits by the rebalancer.
+     */
+    address[] public fuseAssets;
+
+    /**
+     * @dev Adds `_fuseAssets` to `fuseAssets`.
+     * @param pools The pool indexes.
+     * @param _fuseAssets The Fuse cToken contract addresses.
+     * @param currencyCodes The corresponding currency codes for `_fuseAssets`.
+     */
+    function addFuseAssets(uint8[] pools, address[] calldata cTokens) external onlyOwner {
+        require(pools.length > 0 && pools.length == cTokens.length);
+
+        for (uint256 i = 0; i < pools.length; i++) {
+            require(pools[i] > 100, "Pool index too low.");
+            require(fusePools[pools[i]] == address(0), "cToken address already set for this pool index.");
+            require(CEther(cTokens[i]).isCEther(), "Supplied cToken address does not correspond to a valid Fuse CEther contract.");
+            fusePools[pools[i]] = cTokens[i];
+            addPool(pools[i]);
+            rariFundManager.addPool(pools[i]);
+        }
     }
 }

@@ -108,7 +108,7 @@ contract RariFundManager is Initializable, Ownable {
     }
 
     /**
-     * @dev Adds a supported pool for eth.
+     * @dev Internal function to add a supported pool for ETH.
      * @param pool Pool ID to be supported.
      */
     function addPool(uint8 pool) internal {
@@ -116,12 +116,12 @@ contract RariFundManager is Initializable, Ownable {
     }
 
     /**
-     * @dev UPGRADE ONLY: Add the missing pools (Alpha and Enzyme).
+     * @dev Adds a supported pool for ETH.
+     * @param pool Pool ID to be supported.
      */
-    function addMissingPools() external onlyOwner {
-        require(_supportedPools.length == 4, "Already upgraded/added missing pools.");
-        addPool(4); // Alpha
-        addPool(5); // Enzyme
+    function addPool(uint8 pool) external onlyController {
+        require(_rariFundControllerContract == msg.sender, "Caller is not the RariFundController.");
+        addPool(pool);
     }
 
     /**
