@@ -20,4 +20,5 @@ interface CEther {
   function redeemUnderlying(uint redeemAmount) external returns (uint);
   function balanceOf(address account) external view returns (uint);
   function balanceOfUnderlying(address owner) external returns (uint);
+  function transfer(address dst, uint256 amount) external returns (bool);
 }

@@ -224,19 +224,25 @@ contract RariFundController is Ownable {
             _withdrawAllFromPool(5);
 
         // Then withdraw all from all other pools
-        for (uint256 i = 0; i < _supportedPools.length; i++)
-            if (hasETHInPool(_supportedPools[i]))
-                _withdrawAllFromPool(_supportedPools[i]);
+        for (uint256 i = 0; i < _supportedPools.length; i++) if (hasETHInPool(_supportedPools[i])) {
+            if (fuseAssets[_supportedPools[i]] != address(0)) FusePoolController.transferAll(fuseAssets[_supportedPools[i]], newContract); // Transfer Fuse cTokens directly
+            else _withdrawAllFromPool(_supportedPools[i]);
+        }
 
         // Transfer all ETH to new fund controller
         _upgradeFundController(newContract);
     }
 
     /**
-     * @dev Sets or upgrades RariFundController by withdrawing all ETH from all pools and forwarding them from the old to the new.
+     * @dev Sets or upgrades RariFundController by forwarding tokens from the old to the new.
      * @param newContract The address of the new RariFundController contract.
      */
     function upgradeFundController(address payable newContract, address erc20Contract) external onlyOwner {
+        // Verify fund is disabled + verify new fund controller contract
+        require(_fundDisabled, "This fund controller contract must be disabled before it can be upgraded.");
+        require(RariFundController(newContract).IS_RARI_FUND_CONTROLLER(), "New contract does not have IS_RARI_FUND_CONTROLLER set to true.");
+
+        // Transfer all of the specified token to new fund controller
         IERC20 token = IERC20(erc20Contract);
         token.safeTransfer(newContract, token.balanceOf(address(this)));
     }
