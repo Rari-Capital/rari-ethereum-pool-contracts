@@ -1,0 +1,50 @@
+{
+    "R1": {
+        "currencies": {
+            "ETH": {
+                "cTokenAddress": "0x97fe54066fbb0550fe133aac0970618485133552"
+            }
+        },
+        "comptrollerAddress": "0x4dd657e0ac3d6eac84b1b3be6da0018d2aa1dbc8"
+    },
+    "R2": {
+        "currencies": {
+            "ETH": {
+                "cTokenAddress": "0xca1ee2f5f11d99901fbb30f8fa082e0592a9542b"
+            }
+        },
+        "comptrollerAddress": "0x8560b9839e10766ebfdbc901605b5cc72ce4afd8 "
+    },
+    "R3": {
+        "currencies": {
+            "ETH": {
+                "cTokenAddress": "0x54b12f3df34aa30a88935b617c0a1013b97000dc"
+            }
+        },
+        "comptrollerAddress": "0xc18057f85f752f1ce181aead1f081d116333d02c "
+    },
+    "R4": {
+        "currencies": {
+            "ETH": {
+                "cTokenAddress": "0x95fd9ac18d72c84d47442181828202b9ec8419c6"
+            }
+        },
+        "comptrollerAddress": "0x6e7fb6c5865e8533d5ed31b6d43fd95f4c411834"
+    },
+    "R5": {
+        "currencies": {
+            "ETH": {
+                "cTokenAddress": "0x92cC95dc3842a7B8B5B6dCB4DC6f5aDbA9D86fA1"
+            }
+        },
+        "comptrollerAddress": "0x64fcabe3dbb99d8427194a83f0f4af20ee7d739e"
+    },
+    "R7": {
+        "currencies": {
+            "ETH": {
+                "cTokenAddress": "0x53ca7a9d09fd07b132963c2efd14dbd5ed0f0cae"
+            }
+        },
+        "comptrollerAddress": "0x2a1bf27578c14e868e42a49f0d87de45d29f7efa"
+    }
+}

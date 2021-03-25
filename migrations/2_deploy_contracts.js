@@ -111,6 +111,17 @@ module.exports = async function(deployer, network, accounts) {
       // Live network: transfer ownership of deployed contracts from the deployer to the owner
       await rariFundController.transferOwnership(process.env.LIVE_FUND_OWNER);
     } else {
+      // Register Fuse pools
+      var testFusePools = require("../test/fuse.json");
+      var poolKeys = Object.keys(testFusePools);
+      var poolIds = [];
+      var cTokens = [];
+      for (var i = 0; i < poolKeys.length; i++) {
+        poolIds[i] = 100 + i;
+        cTokens[i] = testFusePools[poolKeys[i]].currencies["ETH"].cTokenAddress;
+      }
+      await rariFundController.addFuseAssets(poolIds, cTokens);
+
       // Development network: transfer ownership of contracts to development address and set development address as rebalancer
       await rariFundManager.transferOwnership(process.env.DEVELOPMENT_ADDRESS, { from: process.env.UPGRADE_FUND_OWNER_ADDRESS });
       var rariFundProxy = await RariFundProxy.at(process.env.UPGRADE_FUND_PROXY_ADDRESS);
@@ -192,6 +203,17 @@ module.exports = async function(deployer, network, accounts) {
       await rariFundToken.renouncePauser();
       await rariFundProxy.transferOwnership(process.env.LIVE_FUND_OWNER);
       await admin.transferProxyAdminOwnership(process.env.LIVE_FUND_OWNER);
+    } else {
+      // Register Fuse pools
+      var testFusePools = require("../test/fuse.json");
+      var poolKeys = Object.keys(testFusePools);
+      var poolIds = [];
+      var cTokens = [];
+      for (var i = 0; i < poolKeys.length; i++) {
+        poolIds[i] = 100 + i;
+        cTokens[i] = testFusePools[poolKeys[i]].currencies["ETH"].cTokenAddress;
+      }
+      await rariFundController.addFuseAssets(poolIds, cTokens);
     }
   }
 };
