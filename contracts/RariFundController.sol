@@ -25,8 +25,10 @@ import "./lib/pools/KeeperDaoPoolController.sol";
 import "./lib/pools/AavePoolController.sol";
 import "./lib/pools/AlphaPoolController.sol";
 import "./lib/pools/EnzymePoolController.sol";
+import "./lib/pools/FusePoolController.sol";
 import "./lib/exchanges/ZeroExExchangeController.sol";
-import "./external/compound/CEther.sol";
+import "./interfaces/FuseCEther.sol";
+import "./RariFundManager.sol";
 
 /**
  * @title RariFundController
@@ -50,9 +52,9 @@ contract RariFundController is Ownable {
     bool private _fundDisabled;
 
     /**
-     * @dev Address of the RariFundManager.
+     * @dev Contract object of the RariFundManager.
      */
-    address payable private _rariFundManagerContract;
+    RariFundManager public rariFundManager;
 
     /**
      * @dev Address of the rebalancer.
@@ -126,7 +128,7 @@ contract RariFundController is Ownable {
      * @param newContract The address of the new RariFundManager contract.
      */
     function setFundManager(address payable newContract) external onlyOwner {
-        _rariFundManagerContract = newContract;
+        rariFundManager = RariFundManager(newContract);
         emit FundManagerSet(newContract);
     }
 
@@ -134,7 +136,7 @@ contract RariFundController is Ownable {
      * @dev Throws if called by any account other than the RariFundManager.
      */
     modifier onlyManager() {
-        require(_rariFundManagerContract == msg.sender, "Caller is not the fund manager.");
+        require(address(rariFundManager) == msg.sender, "Caller is not the fund manager.");
         _;
     }
 
@@ -485,7 +487,7 @@ contract RariFundController is Ownable {
 
         // Transfer out ETH
         require(address(this).balance >= amount, "Too little ETH to transfer.");
-        (bool success, ) = _rariFundManagerContract.call.value(amount)("");
+        (bool success, ) = address(rariFundManager).call.value(amount)("");
         require(success, "Failed to transfer ETH to RariFundManager.");
     }
 
@@ -565,19 +567,18 @@ contract RariFundController is Ownable {
     address[] public fuseAssets;
 
     /**
-     * @dev Adds `_fuseAssets` to `fuseAssets`.
+     * @dev Adds `cTokens` to `fuseAssets` (indexed by `pools`).
      * @param pools The pool indexes.
-     * @param _fuseAssets The Fuse cToken contract addresses.
-     * @param currencyCodes The corresponding currency codes for `_fuseAssets`.
+     * @param cTokens The Fuse cToken contract addresses.
      */
-    function addFuseAssets(uint8[] pools, address[] calldata cTokens) external onlyOwner {
+    function addFuseAssets(uint8[] calldata pools, address[] calldata cTokens) external onlyOwner {
         require(pools.length > 0 && pools.length == cTokens.length);
 
         for (uint256 i = 0; i < pools.length; i++) {
             require(pools[i] > 100, "Pool index too low.");
-            require(fusePools[pools[i]] == address(0), "cToken address already set for this pool index.");
-            require(CEther(cTokens[i]).isCEther(), "Supplied cToken address does not correspond to a valid Fuse CEther contract.");
-            fusePools[pools[i]] = cTokens[i];
+            require(fuseAssets[pools[i]] == address(0), "cToken address already set for this pool index.");
+            require(FuseCEther(cTokens[i]).isCEther(), "Supplied cToken address does not correspond to a valid Fuse CEther contract.");
+            fuseAssets[pools[i]] = cTokens[i];
             addPool(pools[i]);
             rariFundManager.addPool(pools[i]);
         }
