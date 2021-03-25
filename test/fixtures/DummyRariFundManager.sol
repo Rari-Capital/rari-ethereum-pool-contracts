@@ -19,16 +19,21 @@ import "../../contracts/RariFundManager.sol";
  */
 contract DummyRariFundManager {
     /**
+     * @dev Emitted when RariFundManager is upgraded from an old contract to this one.
+     */
+    event FundManagerUpgradedFrom(address oldContract);
+
+    /**
      * @dev Old RariFundManager contract authorized to migrate its data to the new one.
      */
-    address private _authorizedFundManagerDataSource;
+    address payable private _authorizedFundManagerDataSource;
 
     /**
      * @dev Upgrades RariFundManager.
      * Authorizes the source for fund manager data (i.e., the old fund manager).
      * @param authorizedFundManagerDataSource Authorized source for data (i.e., the old fund manager).
      */
-    function authorizeFundManagerDataSource(address authorizedFundManagerDataSource) external {
+    function authorizeFundManagerDataSource(address payable authorizedFundManagerDataSource) external {
         _authorizedFundManagerDataSource = authorizedFundManagerDataSource;
     }
 
