@@ -119,7 +119,7 @@ contract RariFundManager is Initializable, Ownable {
      * @dev Adds a supported pool for ETH.
      * @param pool Pool ID to be supported.
      */
-    function addPool(uint8 pool) external onlyController {
+    function addPool(uint8 pool) external {
         require(_rariFundControllerContract == msg.sender, "Caller is not the RariFundController.");
         _addPool(pool);
     }
@@ -222,14 +222,6 @@ contract RariFundManager is Initializable, Ownable {
         _rariFundControllerContract = newContract;
         rariFundController = RariFundController(_rariFundControllerContract);
         emit FundControllerSet(newContract);
-    }
-
-    /**
-     * @dev Throws if called by any account other than the RariFundController.
-     */
-    modifier onlyController() {
-        require(_rariFundControllerContract == msg.sender, "Caller is not the RariFundController.");
-        _;
     }
 
     /**
