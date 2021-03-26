@@ -49,7 +49,7 @@ contract("RariFundController", async accounts => {
     // deposit 4 ETH
     await fundManagerInstance.deposit({ from: accounts[0], value: totalEthBN });
     
-    for (const pool of [0, 1, 2, 3, 4, 5]) {
+    for (var pool = 0; pool < Object.keys(pools).length; pool++) {
         // deeposit 1 ETH to each pool
         await fundControllerInstance.depositToPool(pool, amountBN, { from: accounts[0] });
     }

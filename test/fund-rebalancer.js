@@ -41,7 +41,7 @@ contract("RariFundController, RariFundManager", async accounts => {
 
     var amountBN = web3.utils.toBN(1e18);
 
-    for (const pool of [0, 1, 2, 3, 4, 5]) {
+    for (var pool = 0; pool < Object.keys(pools).length; pool++) {
       // Check initial pool balance
       var initialBalanceOfUnderlying = await fundControllerInstance.getPoolBalance.call(pool);
       await fundManagerInstance.deposit({from: process.env.DEVELOPMENT_ADDRESS, value: amountBN});
@@ -60,7 +60,7 @@ contract("RariFundController, RariFundManager", async accounts => {
 
     var amountBN = web3.utils.toBN(1e18);
 
-    for (const pool of [0, 1, 2, 3, 4, 5]) {
+    for (var pool = 0; pool < Object.keys(pools).length; pool++) {
       // Check initial pool balance
       var oldBalanceOfUnderlying = await fundControllerInstance.getPoolBalance.call(pool);
       // TODO: Ideally, we add actually call rari-fund-rebalancer
@@ -75,7 +75,7 @@ contract("RariFundController, RariFundManager", async accounts => {
     let fundControllerInstance = await RariFundController.deployed();
     
     // For each currency of each pool:
-    for (const pool of [0, 1, 2, 3, 4, 5]) {
+    for (var pool = 0; pool < Object.keys(pools).length; pool++) {
       // TODO: Ideally, we add actually call rari-fund-rebalancer
       await fundControllerInstance.withdrawAllFromPool(pool, { from: process.env.DEVELOPMENT_ADDRESS, nonce: await web3.eth.getTransactionCount(process.env.DEVELOPMENT_ADDRESS) });
       // Check new pool balance
