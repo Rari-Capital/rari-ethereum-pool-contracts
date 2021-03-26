@@ -16,6 +16,7 @@ var KeeperDaoPoolController = artifacts.require("./lib/pools/KeeperDaoPoolContro
 var AavePoolController = artifacts.require("./lib/pools/AavePoolController.sol");
 var AlphaPoolController = artifacts.require("./lib/pools/AlphaPoolController.sol");
 var EnzymePoolController = artifacts.require("./lib/pools/EnzymePoolController.sol");
+var FusePoolController = artifacts.require("./lib/pools/FusePoolController.sol");
 var ZeroExExchangeController = artifacts.require("./lib/exchanges/ZeroExExchangeController.sol");
 var RariFundController = artifacts.require("./RariFundController.sol");
 var RariFundManager = artifacts.require("./RariFundManager.sol");
@@ -61,6 +62,7 @@ module.exports = async function(deployer, network, accounts) {
     await deployer.deploy(AavePoolController);
     await deployer.deploy(AlphaPoolController);
     await deployer.deploy(EnzymePoolController);
+    await deployer.deploy(FusePoolController);
     await deployer.deploy(ZeroExExchangeController);
 
     // Link libraries to RariFundController
@@ -70,6 +72,7 @@ module.exports = async function(deployer, network, accounts) {
     await deployer.link(AavePoolController, RariFundController);
     await deployer.link(AlphaPoolController, RariFundController);
     await deployer.link(EnzymePoolController, RariFundController);
+    await deployer.link(FusePoolController, RariFundController);
     await deployer.link(ZeroExExchangeController, RariFundController);
 
     // Deploy new RariFundController
@@ -139,6 +142,7 @@ module.exports = async function(deployer, network, accounts) {
     await deployer.deploy(AavePoolController);
     await deployer.deploy(AlphaPoolController);
     await deployer.deploy(EnzymePoolController);
+    await deployer.deploy(FusePoolController);
     await deployer.deploy(ZeroExExchangeController);
 
     // Link libraries to RariFundController
@@ -148,6 +152,7 @@ module.exports = async function(deployer, network, accounts) {
     await deployer.link(AavePoolController, RariFundController);
     await deployer.link(AlphaPoolController, RariFundController);
     await deployer.link(EnzymePoolController, RariFundController);
+    await deployer.link(FusePoolController, RariFundController);
     await deployer.link(ZeroExExchangeController, RariFundController);
 
     // Deploy RariFundController and RariFundManager
