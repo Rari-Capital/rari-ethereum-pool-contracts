@@ -580,7 +580,7 @@ contract RariFundController is Ownable {
      * @param cTokens The Fuse cToken contract addresses.
      */
     function addFuseAssets(uint8[] calldata pools, address[] calldata cTokens) external onlyOwner {
-        require(pools.length > 0 && pools.length == cTokens.length);
+        require(pools.length > 0 && pools.length == cTokens.length, "Array parameter lengths must all be equal and greater than 0.");
 
         for (uint256 i = 0; i < pools.length; i++) {
             require(pools[i] > 100, "Pool index too low.");
