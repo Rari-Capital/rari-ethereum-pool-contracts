@@ -300,7 +300,7 @@ contract RariFundManager is Initializable, Ownable {
     /**
      * @dev Boolean indicating if return values of `getPoolBalance` are to be cached.
      */
-    bool _cachePoolBalance;
+    bool _cachePoolBalances;
 
     /**
      * @dev Maps cached pool balances to pool indexes
@@ -315,7 +315,7 @@ contract RariFundManager is Initializable, Ownable {
     function getPoolBalance(uint8 pool) internal returns (uint256) {
         if (!rariFundController.hasETHInPool(pool)) return 0;
 
-        if (_cachePoolBalance) {
+        if (_cachePoolBalances) {
             if (_poolBalanceCache[pool] == 0) _poolBalanceCache[pool] = rariFundController._getPoolBalance(pool);
             return _poolBalanceCache[pool];
         }
@@ -327,13 +327,13 @@ contract RariFundManager is Initializable, Ownable {
      * @dev Caches return value of `getPoolBalance` for the duration of the function.
      */
     modifier cachePoolBalance() {
-        bool cacheSetPreviously = _cachePoolBalance; // Store if cache is already in use (so we don't unset it at the end of this function)
-        _cachePoolBalance = true; // Set cache to in use
+        bool cacheSetPreviously = _cachePoolBalances; // Store if cache is already in use (so we don't unset it at the end of this function)
+        _cachePoolBalances = true; // Set cache to in use
         _; // Execute function
 
         // If cache was set previously:
         if (!cacheSetPreviously) {
-            _cachePoolBalance = false; // Set cache to NOT in use
+            _cachePoolBalances = false; // Set cache to NOT in use
             uint8[] memory _supportedPools = rariFundController.getSupportedPools();
             for (uint256 i = 0; i < _supportedPools.length; i++) _poolBalanceCache[_supportedPools[i]] = 0; // Reset all pool balance cache storage for a refund
         }
