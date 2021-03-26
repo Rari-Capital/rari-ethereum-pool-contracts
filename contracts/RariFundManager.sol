@@ -86,12 +86,12 @@ contract RariFundManager is Initializable, Ownable {
         Ownable.initialize(msg.sender);
 
         // Add supported pools
-        _addPool(0); // dYdX
-        _addPool(1); // Compound
-        _addPool(2); // KeeperDAO
-        _addPool(3); // Aave
-        _addPool(4); // Alpha
-        _addPool(5); // Enzyme
+        addPool(RariFundController.LiquidityPool.dYdX);
+        addPool(RariFundController.LiquidityPool.Compound);
+        addPool(RariFundController.LiquidityPool.KeeperDAO);
+        addPool(RariFundController.LiquidityPool.Aave);
+        addPool(RariFundController.LiquidityPool.Alpha);
+        addPool(RariFundController.LiquidityPool.Enzyme);
 
         // Initialize raw fund balance cache (can't set initial values in field declarations with proxy storage)
         _rawFundBalanceCache = -1;
@@ -111,8 +111,8 @@ contract RariFundManager is Initializable, Ownable {
      * @dev Internal function to add a supported pool for ETH.
      * @param pool Pool ID to be supported.
      */
-    function _addPool(uint8 pool) internal {
-        _supportedPools.push(pool);
+    function addPool(RariFundController.LiquidityPool pool) internal {
+        _supportedPools.push(uint8(pool));
     }
 
     /**
@@ -121,7 +121,7 @@ contract RariFundManager is Initializable, Ownable {
      */
     function addPool(uint8 pool) external {
         require(_rariFundControllerContract == msg.sender, "Caller is not the RariFundController.");
-        _addPool(pool);
+        _supportedPools.push(pool);
     }
 
     /**

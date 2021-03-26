@@ -96,21 +96,22 @@ contract RariFundController is Ownable {
      */
     constructor () public {
         Ownable.initialize(msg.sender);
+
         // Add supported pools
-        addPool(0); // dYdX
-        addPool(1); // Compound
-        addPool(2); // KeeperDAO
-        addPool(3); // Aave
-        addPool(4); // Alpha
-        addPool(5); // Enzyme
+        addPool(LiquidityPool.dYdX);
+        addPool(LiquidityPool.Compound);
+        addPool(LiquidityPool.KeeperDAO);
+        addPool(LiquidityPool.Aave);
+        addPool(LiquidityPool.Alpha);
+        addPool(LiquidityPool.Enzyme);
     }
 
     /**
      * @dev Adds a supported pool for a token.
      * @param pool Pool ID to be supported.
      */
-    function addPool(uint8 pool) internal {
-        _supportedPools.push(pool);
+    function addPool(LiquidityPool pool) internal {
+        _supportedPools.push(uint8(pool));
     }
 
     /**
@@ -579,7 +580,7 @@ contract RariFundController is Ownable {
             require(fuseAssets[pools[i]] == address(0), "cToken address already set for this pool index.");
             require(FuseCEther(cTokens[i]).isCEther(), "Supplied cToken address does not correspond to a valid Fuse CEther contract.");
             fuseAssets[pools[i]] = cTokens[i];
-            addPool(pools[i]);
+            _supportedPools.push(pools[i]);
             rariFundManager.addPool(pools[i]);
         }
     }
