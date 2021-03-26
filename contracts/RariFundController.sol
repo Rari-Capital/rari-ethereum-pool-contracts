@@ -115,6 +115,13 @@ contract RariFundController is Ownable {
     }
 
     /**
+     * @dev External getter function for `_supportedPools` array.
+     */
+    function getSupportedPools() external view returns (uint8[] memory) {
+        return _supportedPools;
+    }
+
+    /**
      * @dev Payable fallback function called by 0x exchange to refund unspent protocol fee.
      */
     function () external payable { }
@@ -581,7 +588,6 @@ contract RariFundController is Ownable {
             require(FuseCEther(cTokens[i]).isCEther(), "Supplied cToken address does not correspond to a valid Fuse CEther contract.");
             fuseAssets[pools[i]] = cTokens[i];
             _supportedPools.push(pools[i]);
-            rariFundManager.addPool(pools[i]);
         }
     }
 }

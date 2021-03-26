@@ -74,24 +74,11 @@ contract RariFundManager is Initializable, Ownable {
     address private _rariFundRebalancerAddress;
 
     /**
-     * @dev Array of supported pools.
-     */
-    uint8[] private _supportedPools;
-
-    /**
      * @dev Initializer that sets supported ETH pools.
      */
     function initialize() public initializer {
         // Initialize base contracts
         Ownable.initialize(msg.sender);
-
-        // Add supported pools
-        addPool(RariFundController.LiquidityPool.dYdX);
-        addPool(RariFundController.LiquidityPool.Compound);
-        addPool(RariFundController.LiquidityPool.KeeperDAO);
-        addPool(RariFundController.LiquidityPool.Aave);
-        addPool(RariFundController.LiquidityPool.Alpha);
-        addPool(RariFundController.LiquidityPool.Enzyme);
 
         // Initialize raw fund balance cache (can't set initial values in field declarations with proxy storage)
         _rawFundBalanceCache = -1;
@@ -105,23 +92,6 @@ contract RariFundManager is Initializable, Ownable {
             require(msg.value > 0, "Not enough money deposited.");
             require(_depositTo(msg.sender, msg.value), "Deposit failed.");
         }
-    }
-
-    /**
-     * @dev Internal function to add a supported pool for ETH.
-     * @param pool Pool ID to be supported.
-     */
-    function addPool(RariFundController.LiquidityPool pool) internal {
-        _supportedPools.push(uint8(pool));
-    }
-
-    /**
-     * @dev Adds a supported pool for ETH.
-     * @param pool Pool ID to be supported.
-     */
-    function addPool(uint8 pool) external {
-        require(_rariFundControllerContract == msg.sender, "Caller is not the RariFundController.");
-        _supportedPools.push(pool);
     }
 
     /**
@@ -357,16 +327,15 @@ contract RariFundManager is Initializable, Ownable {
      * @dev Caches return value of `getPoolBalance` for the duration of the function.
      */
     modifier cachePoolBalance() {
-        bool cacheSetPreviously = _cachePoolBalance;
-        _cachePoolBalance = true;
-        _;
+        bool cacheSetPreviously = _cachePoolBalance; // Store if cache is already in use (so we don't unset it at the end of this function)
+        _cachePoolBalance = true; // Set cache to in use
+        _; // Execute function
 
+        // If cache was set previously:
         if (!cacheSetPreviously) {
-            _cachePoolBalance = false;
-
-            for (uint256 i = 0; i < _supportedPools.length; i++) {
-                _poolBalanceCache[_supportedPools[i]] = 0;
-            }
+            _cachePoolBalance = false; // Set cache to NOT in use
+            uint8[] memory _supportedPools = rariFundController.getSupportedPools();
+            for (uint256 i = 0; i < _supportedPools.length; i++) _poolBalanceCache[_supportedPools[i]] = 0; // Reset all pool balance cache storage for a refund
         }
     }
 
@@ -375,11 +344,10 @@ contract RariFundManager is Initializable, Ownable {
      * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `RariFundController.getPoolBalance`) potentially modifies the state.
      */
     function getRawFundBalance() public fundEnabled returns (uint256) {
-        uint256 totalBalance = _rariFundControllerContract.balance; // ETH balance in fund controller contract
-
-        for (uint256 i = 0; i < _supportedPools.length; i++)
-            totalBalance = totalBalance.add(getPoolBalance(_supportedPools[i]));
-
+        // Sum ETH balance in fund controller contract and balance of each supported pool
+        uint256 totalBalance = _rariFundControllerContract.balance; 
+        uint8[] memory _supportedPools = rariFundController.getSupportedPools();
+        for (uint256 i = 0; i < _supportedPools.length; i++) totalBalance = totalBalance.add(getPoolBalance(_supportedPools[i]));
         return totalBalance;
     }
 
@@ -527,6 +495,8 @@ contract RariFundManager is Initializable, Ownable {
                 contractBalance = _rariFundControllerContract.balance;
             }
         }
+
+        uint8[] memory _supportedPools = rariFundController.getSupportedPools();
 
         for (uint256 i = 0; i < _supportedPools.length; i++) {
             if (contractBalance >= amount) break;
