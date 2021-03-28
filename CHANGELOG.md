@@ -1,5 +1,9 @@
 # Changelog
 
+## `v1.3.0` (contracts not yet deployed; all code not yet pushed)
+
+* Fuse integration!
+
 ## `v1.2.0` (contracts deployed 2020-02-08; all code pushed 2020-02-16)
 
 * Implemented lending via Enzyme Finance.
