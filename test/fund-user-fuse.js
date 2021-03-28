@@ -37,7 +37,7 @@ async function forceAccrueCompound(account) {
 
 // These tests expect the owner and the fund rebalancer of RariFundManager to be set to accounts[0]
 contract("RariFundManager, RariFundController", accounts => {
-  it("should make a deposit, deposit to pools, accrue interest, and make a withdrawal", async () => {
+  it("should make a deposit, deposit to Rari DAO Fuse Pool R4, accrue interest, and make a withdrawal", async () => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
     let fundTokenInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundToken.at(process.env.UPGRADE_FUND_TOKEN_ADDRESS) : RariFundToken.deployed());
@@ -62,7 +62,7 @@ contract("RariFundManager, RariFundController", accounts => {
     assert(postDepositReftBalance.gt(initialReftBalance));
     let postDepositInterestAccrued = await fundManagerInstance.getInterestAccrued.call();
 
-    // Deposit to pool (using Compound as an example)
+    // Deposit to pool (using Fuse R4 as an example)
     // TODO: Ideally, deposit to pool via rari-fund-rebalancer
     await fundControllerInstance.depositToPool(100 + Object.keys(fusePools).indexOf("R4"), amountBN, { from: accounts[0] });
 

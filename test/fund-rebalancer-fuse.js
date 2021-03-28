@@ -19,7 +19,7 @@ if (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0) {
 }
 
 contract("RariFundController, RariFundManager", async accounts => {
-  it("should deposit to the fund and deposit to pools via RariFundController.depositToPool", async () => {
+  it("should deposit to the fund and deposit to Fuse pools via RariFundController.depositToPool", async () => {
     let fundControllerInstance = await RariFundController.deployed();
     let fundManagerInstance = await (parseInt(process.env.UPGRADE_FROM_LAST_VERSION) > 0 ? RariFundManager.at(process.env.UPGRADE_FUND_MANAGER_ADDRESS) : RariFundManager.deployed());
 
@@ -39,7 +39,7 @@ contract("RariFundController, RariFundManager", async accounts => {
     }
   });
 
-  it("should withdraw half from all pools via RariFundController.withdrawFromPool", async () => {
+  it("should withdraw half from all Fuse pools via RariFundController.withdrawFromPool", async () => {
     let fundControllerInstance = await RariFundController.deployed();
 
     var amountBN = web3.utils.toBN(1e18);
@@ -55,7 +55,7 @@ contract("RariFundController, RariFundManager", async accounts => {
     }
   });
 
-  it("should withdraw everything from all pools via RariFundController.withdrawAllFromPool", async () => {
+  it("should withdraw everything from all Fuse pools via RariFundController.withdrawAllFromPool", async () => {
     let fundControllerInstance = await RariFundController.deployed();
     
     // For each currency of each pool:
