@@ -572,7 +572,7 @@ contract RariFundController is Ownable {
     /**
      * @notice Fuse cToken contract addresses approved for deposits by the rebalancer.
      */
-    address[] public fuseAssets;
+    mapping(uint8 => address) public fuseAssets;
 
     /**
      * @dev Adds `cTokens` to `fuseAssets` (indexed by `pools`).
@@ -583,7 +583,7 @@ contract RariFundController is Ownable {
         require(pools.length > 0 && pools.length == cTokens.length, "Array parameter lengths must all be equal and greater than 0.");
 
         for (uint256 i = 0; i < pools.length; i++) {
-            require(pools[i] > 100, "Pool index too low.");
+            require(pools[i] >= 100, "Pool index too low.");
             require(fuseAssets[pools[i]] == address(0), "cToken address already set for this pool index.");
             require(FuseCEther(cTokens[i]).isCEther(), "Supplied cToken address does not correspond to a valid Fuse CEther contract.");
             fuseAssets[pools[i]] = cTokens[i];
