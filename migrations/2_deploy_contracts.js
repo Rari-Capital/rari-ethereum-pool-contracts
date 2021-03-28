@@ -115,7 +115,7 @@ module.exports = async function(deployer, network, accounts) {
       await rariFundController.transferOwnership(process.env.LIVE_FUND_OWNER);
     } else {
       // Register Fuse pools
-      var testFusePools = require("../test/fuse.json");
+      var testFusePools = require("../test/fixtures/fuse.json");
       var poolKeys = Object.keys(testFusePools);
       var poolIds = [];
       var cTokens = [];
@@ -210,7 +210,7 @@ module.exports = async function(deployer, network, accounts) {
       await admin.transferProxyAdminOwnership(process.env.LIVE_FUND_OWNER);
     } else {
       // Register Fuse pools
-      var testFusePools = require("../test/fuse.json");
+      var testFusePools = require("../test/fixtures/fuse.json");
       var poolKeys = Object.keys(testFusePools);
       var poolIds = [];
       var cTokens = [];
