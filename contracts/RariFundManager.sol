@@ -74,6 +74,11 @@ contract RariFundManager is Initializable, Ownable {
     address private _rariFundRebalancerAddress;
 
     /**
+     * @dev UNUSED AFTER UPGRADE: Array of supported pools.
+     */
+    uint8[] private _supportedPools;
+
+    /**
      * @dev Initializer that sets supported ETH pools.
      */
     function initialize() public initializer {
