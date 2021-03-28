@@ -331,7 +331,7 @@ contract RariFundManager is Initializable, Ownable {
         _cachePoolBalances = true; // Set cache to in use
         _; // Execute function
 
-        // If cache was set previously:
+        // If cache was not set previously:
         if (!cacheSetPreviously) {
             _cachePoolBalances = false; // Set cache to NOT in use
             uint8[] memory _supportedPools = rariFundController.getSupportedPools();
@@ -360,10 +360,10 @@ contract RariFundManager is Initializable, Ownable {
      * @dev Caches the value of getRawFundBalance() for the duration of the function.
      */
     modifier cacheRawFundBalance() {
-        bool cacheSetPreviously = _rawFundBalanceCache >= 0;
-        if (!cacheSetPreviously) _rawFundBalanceCache = int256(getRawFundBalance());
-        _;
-        if (!cacheSetPreviously) _rawFundBalanceCache = -1;
+        bool cacheSetPreviously = _rawFundBalanceCache >= 0; // Store if cache is already in use (so we don't unset it at the end of this function)
+        if (!cacheSetPreviously) _rawFundBalanceCache = int256(getRawFundBalance()); // Initialize cached raw fund balance
+        _; // Execute function
+        if (!cacheSetPreviously) _rawFundBalanceCache = -1; // If cache was not set previously, unset it
     }
 
     /**
@@ -376,7 +376,8 @@ contract RariFundManager is Initializable, Ownable {
 
     /**
      * @notice Returns an account's total balance in ETH.
-     * @dev Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.
+     * @dev REP user account balance in ETH = user REPT balance * total ETH supplied to REP / REPT total supply.
+     * Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.
      * @param account The account whose balance we are calculating.
      */
     function balanceOf(address account) external returns (uint256) {
