@@ -55,4 +55,11 @@ contract DummyRariFundController {
     function hasETHInPool(uint8 pool) external view returns (bool) {
         return false;
     }
+
+    /**
+     * @dev External getter function for `_supportedPools` array.
+     */
+    function getSupportedPools() external view returns (uint8[] memory) {
+        return new uint8[](0);
+    }
 }
