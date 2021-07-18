@@ -411,7 +411,7 @@ contract RariFundManager is Initializable, Ownable {
      * @param amount The amount of tokens to be deposited.
      * @return Boolean indicating success.
      */
-    function _depositTo(address to, uint256 amount) internal fundEnabled returns (bool) {
+    function _depositTo(address to, uint256 amount) internal fundEnabled actionNotPaused(Action.Deposit) returns (bool) {
         // Input validation
         require(amount > 0, "Deposit amount must be greater than 0.");
 
@@ -425,19 +425,24 @@ contract RariFundManager is Initializable, Ownable {
 
         require(reptAmount > 0, "Deposit amount is so small that no REPT would be minted.");
 
-        // Update net deposits, transfer funds from msg.sender, mint REPT, emit event, and return true
+        // Update net deposits
         _netDeposits = _netDeposits.add(int256(amount));
 
+        // Transfer funds from msg.sender and mint REPT
         (bool success, ) = _rariFundControllerContract.call.value(amount)(""); // Transfer ETH to RariFundController
         require(success, "Failed to transfer ETH.");
 
         require(rariFundToken.mint(to, reptAmount), "Failed to mint output tokens.");
 
+        // Emit Deposit event
         emit Deposit(msg.sender, to, amount, reptAmount);
+
+        // Update stored fund balance
+        fundBalanceStored = getFundBalance();
     
         // Update RGT distribution speeds
         IRariGovernanceTokenDistributor rariGovernanceTokenDistributor = rariFundToken.rariGovernanceTokenDistributor();
-        if (address(rariGovernanceTokenDistributor) != address(0) && block.number < rariGovernanceTokenDistributor.distributionEndBlock()) rariGovernanceTokenDistributor.refreshDistributionSpeeds(IRariGovernanceTokenDistributor.RariPool.Ethereum, getFundBalance());
+        if (address(rariGovernanceTokenDistributor) != address(0) && block.number < rariGovernanceTokenDistributor.distributionEndBlock()) rariGovernanceTokenDistributor.refreshDistributionSpeeds(IRariGovernanceTokenDistributor.RariPool.Ethereum, fundBalanceStored);
 
         return true;
     }
@@ -461,7 +466,6 @@ contract RariFundManager is Initializable, Ownable {
         return true;
     }
 
-
     /**
      * @dev Returns the amount of REPT to burn for a withdrawal (used by `_withdrawFrom`).
      * @param from The address from which REPT will be burned.
@@ -484,37 +488,46 @@ contract RariFundManager is Initializable, Ownable {
      * @param amount The amount of tokens to be withdrawn.
      * @return Boolean indicating success.
      */
-    function _withdrawFrom(address from, uint256 amount) internal fundEnabled cachePoolBalance returns (bool) {
+    function _withdrawFrom(address from, uint256 amount) internal fundEnabled actionNotPaused(Action.Withdrawal) cachePoolBalance returns (bool) {
         // Input validation
         require(amount > 0, "Withdrawal amount must be greater than 0.");
 
         // Check contract balance of ETH and withdraw from pools if necessary
         uint256 contractBalance = _rariFundControllerContract.balance;
 
+        // If we don't already have enough:
         if (contractBalance < amount) {
+            // Withdraw from Enzyme first because we may receieve ibETH
             uint256 poolBalance = getPoolBalance(5);
 
+            // If there is anything in the pool, withdraw it!
             if (poolBalance > 0) {
-                uint256 amountLeft = amount.sub(contractBalance);
-                uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
-                rariFundController.withdrawFromPoolKnowingBalance(5, poolAmount, poolBalance);
-                contractBalance = _rariFundControllerContract.balance;
+                uint256 amountLeft = amount.sub(contractBalance); // Get amount left
+                uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance; // Amount to withdraw = min(amountLeft, poolBalance)
+                rariFundController.withdrawFromPoolKnowingBalance(5, poolAmount, poolBalance); // Withdraw from pool
+                _poolBalanceCache[5] = poolBalance.sub(poolAmount); // Update this pool in the balance cache
+                if (_poolBalanceCache[4] > 0) _poolBalanceCache[4] = rariFundController._getPoolBalance(4); // Update cached Alpha balance if its being cached from outside this function
+                contractBalance = _rariFundControllerContract.balance; // Update RariFundController raw ETH balance
             }
         }
 
+        // Withdraw from all other pools
         uint8[] memory _supportedPools = rariFundController.getSupportedPools();
 
         for (uint256 i = 0; i < _supportedPools.length; i++) {
+            // Check if we have enough, skip Enzymne, and skip pools without a balance
             if (contractBalance >= amount) break;
             uint8 pool = _supportedPools[i];
             if (pool == 5) continue;
             uint256 poolBalance = getPoolBalance(pool);
             if (poolBalance <= 0) continue;
-            uint256 amountLeft = amount.sub(contractBalance);
-            uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance;
-            rariFundController.withdrawFromPoolKnowingBalance(pool, poolAmount, poolBalance);
-            _poolBalanceCache[pool] = poolBalance.sub(poolAmount);
-            contractBalance = contractBalance.add(poolAmount);
+
+            // Withdraw from pool
+            uint256 amountLeft = amount.sub(contractBalance); // Get amount left
+            uint256 poolAmount = amountLeft < poolBalance ? amountLeft : poolBalance; // Amount to withdraw = min(amountLeft, poolBalance)
+            rariFundController.withdrawFromPoolKnowingBalance(pool, poolAmount, poolBalance); // Withdraw from pool
+            _poolBalanceCache[pool] = poolBalance.sub(poolAmount); // Update this pool in the balance cache
+            contractBalance = _rariFundControllerContract.balance; // Update RariFundController raw ETH balance
         }
 
         require(amount <= contractBalance, "Available balance not enough to cover amount even after withdrawing from pools.");
@@ -522,17 +535,25 @@ contract RariFundManager is Initializable, Ownable {
         // Calculate REPT to burn
         uint256 reptAmount = getREPTBurnAmount(from, amount);
         
-        // Update net deposits, burn REPT, transfer ETH to user, and emit event
+        // Update net deposits
         _netDeposits = _netDeposits.sub(int256(amount));
+
+        // Burn REPT and transfer ETH to user
         rariFundToken.fundManagerBurnFrom(from, reptAmount);
+
         rariFundController.withdrawToManager(amount);
         (bool senderSuccess, ) = msg.sender.call.value(amount)(""); // Transfer 'amount' in ETH to the sender
         require(senderSuccess, "Failed to transfer ETH to sender.");
+
+        // Emit event
         emit Withdrawal(from, msg.sender, amount, reptAmount);
+
+        // Update stored fund balance
+        fundBalanceStored = getFundBalance();
 
         // Update RGT distribution speeds
         IRariGovernanceTokenDistributor rariGovernanceTokenDistributor = rariFundToken.rariGovernanceTokenDistributor();
-        if (address(rariGovernanceTokenDistributor) != address(0) && block.number < rariGovernanceTokenDistributor.distributionEndBlock()) rariGovernanceTokenDistributor.refreshDistributionSpeeds(IRariGovernanceTokenDistributor.RariPool.Ethereum, getFundBalance());
+        if (address(rariGovernanceTokenDistributor) != address(0) && block.number < rariGovernanceTokenDistributor.distributionEndBlock()) rariGovernanceTokenDistributor.refreshDistributionSpeeds(IRariGovernanceTokenDistributor.RariPool.Ethereum, fundBalanceStored);
         
         return true;
     }
@@ -670,12 +691,15 @@ contract RariFundManager is Initializable, Ownable {
      * @dev Internal function to deposit all accrued fees on interest back into the fund on behalf of the master beneficiary.
      * @return Integer indicating success (0), no fees to claim (1), or no REPT to mint (2).
      */
-    function _depositFees() internal fundEnabled cacheRawFundBalance returns (uint8) {
+    function _depositFees() internal fundEnabled actionNotPaused(Action.InterestFeeClaim) cacheRawFundBalance returns (uint8) {
+        // Check beneficiary
         require(_interestFeeMasterBeneficiary != address(0), "Master beneficiary cannot be the zero address.");
 
+        // Get and check amount unclaimed
         uint256 amount = getInterestFeesUnclaimed();
         if (amount <= 0) return 1;
 
+        // Get REPT to mint
         uint256 reptTotalSupply = rariFundToken.totalSupply();
         uint256 reptAmount = 0;
 
@@ -687,18 +711,27 @@ contract RariFundManager is Initializable, Ownable {
 
         if (reptAmount <= 0) return 2;
 
+        // Update claimed fees and net deposits
         _interestFeesClaimed = _interestFeesClaimed.add(amount);
         _netDeposits = _netDeposits.add(int256(amount));
 
+        // Mint REPT
         require(rariFundToken.mint(_interestFeeMasterBeneficiary, reptAmount), "Failed to mint output tokens.");
+
+        // Emit Deposit event
         emit Deposit(_interestFeeMasterBeneficiary, _interestFeeMasterBeneficiary, amount, reptAmount);
 
+        // Emit special InterestFeeDeposit event
         emit InterestFeeDeposit(_interestFeeMasterBeneficiary, amount);
+
+        // Update stored fund balance
+        fundBalanceStored = getFundBalance();
 
         // Update RGT distribution speeds
         IRariGovernanceTokenDistributor rariGovernanceTokenDistributor = rariFundToken.rariGovernanceTokenDistributor();
-        if (address(rariGovernanceTokenDistributor) != address(0) && block.number < rariGovernanceTokenDistributor.distributionEndBlock()) rariGovernanceTokenDistributor.refreshDistributionSpeeds(IRariGovernanceTokenDistributor.RariPool.Ethereum, getFundBalance());
+        if (address(rariGovernanceTokenDistributor) != address(0) && block.number < rariGovernanceTokenDistributor.distributionEndBlock()) rariGovernanceTokenDistributor.refreshDistributionSpeeds(IRariGovernanceTokenDistributor.RariPool.Ethereum, fundBalanceStored);
 
+        // Return no error
         return 0;
     }
 
@@ -715,15 +748,104 @@ contract RariFundManager is Initializable, Ownable {
      * @notice Withdraws all accrued fees on interest to the master beneficiary.
      * @return Boolean indicating success.
      */
-    function withdrawFees() external fundEnabled onlyRebalancer returns (bool) {
+    function withdrawFees() external fundEnabled actionNotPaused(Action.InterestFeeClaim) onlyRebalancer returns (bool) {
+        // Check beneficiary
         require(_interestFeeMasterBeneficiary != address(0), "Master beneficiary cannot be the zero address.");
+
+        // Get and check unclaimed amount
         uint256 amount = getInterestFeesUnclaimed();
         require(amount > 0, "No new fees are available to claim.");
+
+        // Add to claimed counter
         _interestFeesClaimed = _interestFeesClaimed.add(amount);
+
+        // Withdraw from RariFundController, then to beneficiary
         rariFundController.withdrawToManager(amount);
         (bool success, ) = _interestFeeMasterBeneficiary.call.value(amount)("");
         require(success, "Failed to transfer ETH.");
+
+        // Emit event and return true
         emit InterestFeeWithdrawal(_interestFeeMasterBeneficiary, amount);
         return true;
+    }
+
+    /**
+     * @dev Caches this vault's total investor balance (all RFT holders' funds but not unclaimed fees) of all currencies in USD (scaled by 1e18).
+     */
+    uint256 public fundBalanceStored;
+
+    /**
+     * @dev Caches the peak RSPT exchange rate.
+     */
+    uint256 public peakExchangeRate;
+
+    /**
+     * @dev The maximum proportional loss in RSPT exchange rate for the invariant to be triggered.
+     */
+    uint256 public constant MAX_EXCHANGE_RATE_LOSS = 0.05e18; // 5%
+
+    /**
+     * @dev RSPT exchange rate invariant modifier.
+     */
+    modifier exchangeRateInvariant {
+        uint256 currentExchangeRate = getFundBalance().mul(1e18).div(rariFundToken.totalSupply());
+        require(currentExchangeRate >= peakExchangeRate.mul(uint256(1e18).sub(MAX_EXCHANGE_RATE_LOSS)).div(1e18), "INVARIANT BROKEN: RSPT exchange rate has gone down too much since peak.");
+        if (currentExchangeRate > peakExchangeRate) peakExchangeRate = currentExchangeRate;
+        _;
+    }
+
+    /**
+     * @dev Resets the RSPT exchange rate invariant. Pauser only.
+     */
+    function resetExchangeRateInvariant() external onlyPauser {
+        peakExchangeRate = 0;
+    }
+
+    /**
+     * @dev Pauser only modifier.
+     */
+    modifier onlyPauser {
+        require(isPauser[msg.sender]);
+        _;
+    }
+
+    /**
+     * @dev Caches the peak RSPT exchange rate.
+     */
+    mapping(address => bool) public isPauser;
+
+    /**
+     * @dev Resets the RSPT exchange rate invariant. Pauser only.
+     */
+    function setPausers(address[] calldata pausers, bool[] calldata enabled) external onlyOwner {
+        require(pausers.length > 0 && pausers.length == enabled.length, "Array lengths must be equal and greater than 0.");
+        for (uint256 i = 0; i < pausers.length; i++) isPauser[pausers[i]] = enabled[i];
+    }
+
+    enum Action {
+        Deposit,
+        Withdrawal,
+        Rebalance,
+        InterestFeeClaim
+    }
+
+    /**
+     * @dev Paused actions.
+     */
+    mapping(uint8 => bool) public isActionPaused;
+
+    /**
+     * @dev Requires that `action` is not paused.
+     */
+    modifier actionNotPaused(Action action) {
+        require(!isActionPaused[uint8(action)], "Action is paused.");
+        _;
+    }
+
+    /**
+     * @dev Pauses an action.
+     */
+    function setActionPaused(Action action, bool paused) external onlyPauser {
+        isActionPaused[uint8(action)] = paused;
     }
 }
