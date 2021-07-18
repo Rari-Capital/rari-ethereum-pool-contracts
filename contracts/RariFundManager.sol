@@ -76,7 +76,7 @@ contract RariFundManager is Initializable, Ownable {
     /**
      * @dev UNUSED AFTER UPGRADE: Array of supported pools.
      */
-    uint8[] private _supportedPools;
+    uint8[] private __supportedPools;
 
     /**
      * @dev Initializer that sets supported ETH pools.
