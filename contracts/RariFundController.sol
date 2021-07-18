@@ -26,7 +26,7 @@ import "./lib/pools/AavePoolController.sol";
 import "./lib/pools/AlphaPoolController.sol";
 import "./lib/pools/EnzymePoolController.sol";
 import "./lib/pools/FusePoolController.sol";
-import "./lib/exchanges/ZeroExExchangeController.sol";
+import "./lib/exchanges/UniswapExchangeController.sol";
 import "./interfaces/FuseCEther.sol";
 import "./RariFundManager.sol";
 
@@ -506,42 +506,21 @@ contract RariFundController is Ownable {
     event CurrencyTrade(address inputErc20Contract, uint256 inputAmount, uint256 outputAmount);
 
     /**
-     * @dev Approves tokens (COMP or ROOK) to 0x without spending gas on every deposit.
-     * @param erc20Contract The ERC20 contract address of the token to be approved (must be COMP or ROOK).
-     * @param amount The amount of tokens to be approved.
-     */
-    function approveTo0x(address erc20Contract, uint256 amount) external fundEnabled onlyRebalancer {
-        require(erc20Contract == COMP_TOKEN || erc20Contract == ROOK_TOKEN, "Supplied token address is not COMP or ROOK.");
-        ZeroExExchangeController.approve(erc20Contract, amount);
-    }
-
-    /**
-     * @dev Market sell (COMP or ROOK) to 0x exchange orders (reverting if `takerAssetFillAmount` is not filled).
+     * @dev Market sell `inputAmount` via Uniswap (reverting if the output is not a supported stablecoin, there is not enough liquidity to sell `inputAmount`, `minOutputAmount` is not satisfied, or the 24-hour slippage limit is surpassed).
      * We should be able to make this function external and use calldata for all parameters, but Solidity does not support calldata structs (https://github.com/ethereum/solidity/issues/5479).
-     * @param inputErc20Contract The input ERC20 token contract address (must be COMP or ROOK).
-     * @param orders The limit orders to be filled in ascending order of price.
-     * @param signatures The signatures for the orders.
-     * @param takerAssetFillAmount The amount of the taker asset to sell (excluding taker fees).
+     * @param path The Uniswap V2 ERC20 token address path to use for the exchange.
+     * @param inputAmount The amount of the input asset to sell/send.
+     * @param minOutputAmount The minimum amount of the output asset to buy/receive.
      */
-    function marketSell0xOrdersFillOrKill(address inputErc20Contract, LibOrder.Order[] memory orders, bytes[] memory signatures, uint256 takerAssetFillAmount) public payable fundEnabled onlyRebalancer {
-        // Exchange COMP/ROOK to ETH
-        uint256 ethBalanceBefore = address(this).balance;
-        uint256[2] memory filledAmounts = ZeroExExchangeController.marketSellOrdersFillOrKill(orders, signatures, takerAssetFillAmount, msg.value);
-        uint256 ethBalanceAfter = address(this).balance;
-        emit CurrencyTrade(inputErc20Contract, filledAmounts[0], filledAmounts[1]);
+    function swapExactTokensForTokens(address[] calldata path, uint256 inputAmount, uint256 minOutputAmount) external fundEnabled onlyRebalancer {
+        // Approve tokens
+        UniswapExchangeController.approve(path[0], inputAmount);
 
-        // Unwrap outputted WETH
-        uint256 wethBalance = _weth.balanceOf(address(this));
-        require(wethBalance > 0, "No WETH outputted.");
-        _weth.withdraw(wethBalance);
-        
-        // Refund unspent ETH protocol fee
-        uint256 refund = ethBalanceAfter.sub(ethBalanceBefore.sub(msg.value));
+        // Market sell
+        uint256 outputAmount = UniswapExchangeController.swapExactTokensForEth(inputAmount, minOutputAmount, path);
 
-        if (refund > 0) {
-            (bool success, ) = msg.sender.call.value(refund)("");
-            require(success, "Failed to refund unspent ETH protocol fee.");
-        }
+        // Emit event
+        emit CurrencyTrade(path[0], inputAmount, outputAmount);
     }
 
     /**
